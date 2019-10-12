@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "62408106269",
+    "firebase_url": "https://gameplex-5a29e.firebaseio.com",
+    "project_id": "gameplex-5a29e",
+    "storage_bucket": "gameplex-5a29e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62408106269:android:64973deac30bccee1cc1f4",
+        "android_client_info": {
+          "package_name": "com.gameplex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62408106269-ctd4ivdkam3eldqp779tpdjnn7he3q9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPHycAZBXskVmHj7vAX7-4N5tkJYHkG9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62408106269-ctd4ivdkam3eldqp779tpdjnn7he3q9f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
