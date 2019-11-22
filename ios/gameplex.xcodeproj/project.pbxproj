@@ -17,6 +17,23 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* gameplexTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* gameplexTests.m */; };
 		36CF8A73C5022F0D8F4D736B /* libPods-gameplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16CA6C0EFAEE2194F90FBDE6 /* libPods-gameplex.a */; };
+		40C057432386F9B500F0F696 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057322386F9B500F0F696 /* Fontisto.ttf */; };
+		40C057452386F9B500F0F696 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057332386F9B500F0F696 /* Octicons.ttf */; };
+		40C057472386F9B500F0F696 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057342386F9B500F0F696 /* Feather.ttf */; };
+		40C057492386F9B500F0F696 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057352386F9B500F0F696 /* Entypo.ttf */; };
+		40C0574B2386F9B500F0F696 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057362386F9B500F0F696 /* FontAwesome5_Brands.ttf */; };
+		40C0574D2386F9B500F0F696 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057372386F9B500F0F696 /* MaterialCommunityIcons.ttf */; };
+		40C0574F2386F9B500F0F696 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057382386F9B500F0F696 /* AntDesign.ttf */; };
+		40C057512386F9B500F0F696 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057392386F9B500F0F696 /* Foundation.ttf */; };
+		40C057532386F9B500F0F696 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C0573A2386F9B500F0F696 /* Ionicons.ttf */; };
+		40C057552386F9B500F0F696 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C0573B2386F9B500F0F696 /* FontAwesome5_Solid.ttf */; };
+		40C057572386F9B500F0F696 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C0573C2386F9B500F0F696 /* FontAwesome5_Regular.ttf */; };
+		40C057592386F9B500F0F696 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C0573D2386F9B500F0F696 /* FontAwesome.ttf */; };
+		40C0575B2386F9B500F0F696 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C0573E2386F9B500F0F696 /* Zocial.ttf */; };
+		40C0575D2386F9B500F0F696 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C0573F2386F9B500F0F696 /* EvilIcons.ttf */; };
+		40C0575F2386F9B500F0F696 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057402386F9B500F0F696 /* SimpleLineIcons.ttf */; };
+		40C057612386F9B500F0F696 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40C057412386F9B500F0F696 /* MaterialIcons.ttf */; };
+		40E927372366C60900EE4534 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 40E927362366C60900EE4534 /* GoogleService-Info.plist */; };
 		4A327799BE524A69D5401A6C /* libPods-gameplex-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F97A27DFB4F1C92CEB6F2DDA /* libPods-gameplex-tvOSTests.a */; };
 		52EAF45377CA84DC1CB8DC6F /* libPods-gameplex-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEE516098CDCFA5F41E96A8 /* libPods-gameplex-tvOS.a */; };
 		EA2FB95575F9B184333B7531 /* libPods-gameplexTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4335363064E4265C5DA30D00 /* libPods-gameplexTests.a */; };
@@ -44,7 +61,7 @@
 		00E356EE1AD99517003FC87E /* gameplexTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = gameplexTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* gameplexTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = gameplexTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* gameplex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameplex.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Gameplex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gameplex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = gameplex/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = gameplex/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -55,6 +72,23 @@
 		2D02E47B1E0B4A5D006451C7 /* gameplex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gameplex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* gameplex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "gameplex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EFCBD3AA4AB24AC2048E9F0 /* Pods-gameplex.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gameplex.release.xcconfig"; path = "Target Support Files/Pods-gameplex/Pods-gameplex.release.xcconfig"; sourceTree = "<group>"; };
+		40C057322386F9B500F0F696 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		40C057332386F9B500F0F696 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		40C057342386F9B500F0F696 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		40C057352386F9B500F0F696 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		40C057362386F9B500F0F696 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		40C057372386F9B500F0F696 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		40C057382386F9B500F0F696 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		40C057392386F9B500F0F696 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		40C0573A2386F9B500F0F696 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		40C0573B2386F9B500F0F696 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		40C0573C2386F9B500F0F696 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		40C0573D2386F9B500F0F696 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		40C0573E2386F9B500F0F696 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		40C0573F2386F9B500F0F696 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		40C057402386F9B500F0F696 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		40C057412386F9B500F0F696 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		40E927362366C60900EE4534 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4335363064E4265C5DA30D00 /* libPods-gameplexTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gameplexTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		56999659CFD24E9A55F5404C /* Pods-gameplex-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gameplex-tvOS.release.xcconfig"; path = "Target Support Files/Pods-gameplex-tvOS/Pods-gameplex-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		A3F8FB4F841096075E0B83BC /* Pods-gameplex-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gameplex-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-gameplex-tvOS/Pods-gameplex-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -127,11 +161,13 @@
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				40C057312386F9B500F0F696 /* Fonts */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				40E927362366C60900EE4534 /* GoogleService-Info.plist */,
 			);
 			name = gameplex;
 			sourceTree = "<group>";
@@ -147,6 +183,37 @@
 				4335363064E4265C5DA30D00 /* libPods-gameplexTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		40C057312386F9B500F0F696 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				40C057322386F9B500F0F696 /* Fontisto.ttf */,
+				40C057332386F9B500F0F696 /* Octicons.ttf */,
+				40C057342386F9B500F0F696 /* Feather.ttf */,
+				40C057352386F9B500F0F696 /* Entypo.ttf */,
+				40C057362386F9B500F0F696 /* FontAwesome5_Brands.ttf */,
+				40C057372386F9B500F0F696 /* MaterialCommunityIcons.ttf */,
+				40C057382386F9B500F0F696 /* AntDesign.ttf */,
+				40C057392386F9B500F0F696 /* Foundation.ttf */,
+				40C0573A2386F9B500F0F696 /* Ionicons.ttf */,
+				40C0573B2386F9B500F0F696 /* FontAwesome5_Solid.ttf */,
+				40C0573C2386F9B500F0F696 /* FontAwesome5_Regular.ttf */,
+				40C0573D2386F9B500F0F696 /* FontAwesome.ttf */,
+				40C0573E2386F9B500F0F696 /* Zocial.ttf */,
+				40C0573F2386F9B500F0F696 /* EvilIcons.ttf */,
+				40C057402386F9B500F0F696 /* SimpleLineIcons.ttf */,
+				40C057412386F9B500F0F696 /* MaterialIcons.ttf */,
+			);
+			name = Fonts;
+			path = "../node_modules/react-native-vector-icons/Fonts";
+			sourceTree = "<group>";
+		};
+		55B1F8A989DD44D6947A628D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -165,6 +232,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				F69118A363BCF952DF976CBE /* Pods */,
+				55B1F8A989DD44D6947A628D /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -174,7 +242,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* gameplex.app */,
+				13B07F961A680F5B00A75B9A /* Gameplex.app */,
 				00E356EE1AD99517003FC87E /* gameplexTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* gameplex-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* gameplex-tvOSTests.xctest */,
@@ -194,7 +262,6 @@
 				F0DA0D87B57C3C9923870A86 /* Pods-gameplexTests.debug.xcconfig */,
 				DA04C75EF8680B655DD0FCA5 /* Pods-gameplexTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -230,6 +297,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				8F83F1D25DC4EA5AF4F82620 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -237,7 +305,7 @@
 			);
 			name = gameplex;
 			productName = gameplex;
-			productReference = 13B07F961A680F5B00A75B9A /* gameplex.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Gameplex.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* gameplex-tvOS */ = {
@@ -285,12 +353,16 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 940;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = AN2NGS6M96;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = AN2NGS6M96;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -308,6 +380,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -329,6 +402,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40C057452386F9B500F0F696 /* Octicons.ttf in Resources */,
+				40C057512386F9B500F0F696 /* Foundation.ttf in Resources */,
+				40C0575F2386F9B500F0F696 /* SimpleLineIcons.ttf in Resources */,
+				40C057532386F9B500F0F696 /* Ionicons.ttf in Resources */,
+				40C0575D2386F9B500F0F696 /* EvilIcons.ttf in Resources */,
+				40C057572386F9B500F0F696 /* FontAwesome5_Regular.ttf in Resources */,
+				40C0575B2386F9B500F0F696 /* Zocial.ttf in Resources */,
+				40C057492386F9B500F0F696 /* Entypo.ttf in Resources */,
+				40C057612386F9B500F0F696 /* MaterialIcons.ttf in Resources */,
+				40C0574F2386F9B500F0F696 /* AntDesign.ttf in Resources */,
+				40C057552386F9B500F0F696 /* FontAwesome5_Solid.ttf in Resources */,
+				40C057432386F9B500F0F696 /* Fontisto.ttf in Resources */,
+				40C057472386F9B500F0F696 /* Feather.ttf in Resources */,
+				40C0574D2386F9B500F0F696 /* MaterialCommunityIcons.ttf in Resources */,
+				40C0574B2386F9B500F0F696 /* FontAwesome5_Brands.ttf in Resources */,
+				40C057592386F9B500F0F696 /* FontAwesome.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +427,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				40E927372366C60900EE4534 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +565,54 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8F83F1D25DC4EA5AF4F82620 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-gameplex/Pods-gameplex-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-gameplex/Pods-gameplex-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -583,6 +721,8 @@
 			baseConfigurationReference = F0DA0D87B57C3C9923870A86 /* Pods-gameplexTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				DEVELOPMENT_TEAM = AN2NGS6M96;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -606,7 +746,9 @@
 			baseConfigurationReference = DA04C75EF8680B655DD0FCA5 /* Pods-gameplexTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = AN2NGS6M96;
 				INFOPLIST_FILE = gameplexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -628,6 +770,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = AN2NGS6M96;
 				INFOPLIST_FILE = gameplex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -635,8 +778,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = gameplex;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gameplex;
+				PRODUCT_NAME = Gameplex;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -647,6 +790,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AN2NGS6M96;
 				INFOPLIST_FILE = gameplex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -654,8 +798,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = gameplex;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gameplex;
+				PRODUCT_NAME = Gameplex;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

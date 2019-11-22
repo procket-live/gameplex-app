@@ -1,6 +1,39 @@
 PODS:
+  - appcenter (2.6.0):
+    - AppCenterReactNativeShared
+    - React
+  - appcenter-analytics (2.4.0):
+    - AppCenter/Analytics
+    - AppCenterReactNativeShared
+    - React
+  - appcenter-crashes (2.4.0):
+    - AppCenter/Crashes
+    - AppCenterReactNativeShared
+    - React
+  - appcenter-push (2.4.0):
+    - AppCenter/Push
+    - AppCenterReactNativeShared
+    - React
+  - AppCenter/Analytics (2.5.1):
+    - AppCenter/Core
+  - AppCenter/Core (2.5.1)
+  - AppCenter/Crashes (2.5.1):
+    - AppCenter/Core
+  - AppCenter/Push (2.5.1):
+    - AppCenter/Core
+  - AppCenterReactNativeShared (2.6.0):
+    - AppCenter/Core (= 2.5.1)
+  - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
+  - CodePush (5.7.0):
+    - Base64 (~> 1.1)
+    - JWT (~> 3.0.0-beta.7)
+    - React
+    - SSZipArchive (~> 2.1)
+  - Crashlytics (3.14.0):
+    - Fabric (~> 1.10.2)
   - DoubleConversion (1.1.6)
+  - Fabric (1.10.2)
   - FBLazyVector (0.61.2)
   - FBReactNativeSpec (0.61.2):
     - Folly (= 2018.10.22.00)
@@ -9,6 +42,36 @@ PODS:
     - React-Core (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/turbomodule/core (= 0.61.2)
+  - Firebase/Core (6.13.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 6.1.6)
+  - Firebase/CoreOnly (6.13.0):
+    - FirebaseCore (= 6.4.0)
+  - FirebaseAnalytics (6.1.6):
+    - FirebaseCore (~> 6.4)
+    - FirebaseInstanceID (~> 4.2)
+    - GoogleAppMeasurement (= 6.1.6)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (= 0.3.9011)
+  - FirebaseCore (6.4.0):
+    - FirebaseCoreDiagnostics (~> 1.0)
+    - FirebaseCoreDiagnosticsInterop (~> 1.0)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GoogleUtilities/Logger (~> 6.2)
+  - FirebaseCoreDiagnostics (1.1.2):
+    - FirebaseCoreDiagnosticsInterop (~> 1.0)
+    - GoogleDataTransportCCTSupport (~> 1.0)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GoogleUtilities/Logger (~> 6.2)
+    - nanopb (~> 0.3.901)
+  - FirebaseCoreDiagnosticsInterop (1.1.0)
+  - FirebaseInstanceID (4.2.7):
+    - FirebaseCore (~> 6.0)
+    - GoogleUtilities/Environment (~> 6.0)
+    - GoogleUtilities/UserDefaults (~> 6.0)
   - Folly (2018.10.22.00):
     - boost-for-react-native
     - DoubleConversion
@@ -19,6 +82,50 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - GoogleAppMeasurement (6.1.6):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (= 0.3.9011)
+  - GoogleDataTransport (3.2.0)
+  - GoogleDataTransportCCTSupport (1.2.2):
+    - GoogleDataTransport (~> 3.2)
+    - nanopb (~> 0.3.901)
+  - GoogleUtilities/AppDelegateSwizzler (6.3.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (6.3.2)
+  - GoogleUtilities/Logger (6.3.2):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (6.3.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (6.3.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (6.3.2)"
+  - GoogleUtilities/Reachability (6.3.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (6.3.2):
+    - GoogleUtilities/Logger
+  - JWT (3.0.0-beta.12):
+    - Base64 (~> 1.1.2)
+  - libwebp (1.0.3):
+    - libwebp/demux (= 1.0.3)
+    - libwebp/mux (= 1.0.3)
+    - libwebp/webp (= 1.0.3)
+  - libwebp/demux (1.0.3):
+    - libwebp/webp
+  - libwebp/mux (1.0.3):
+    - libwebp/demux
+  - libwebp/webp (1.0.3)
+  - nanopb (0.3.9011):
+    - nanopb/decode (= 0.3.9011)
+    - nanopb/encode (= 0.3.9011)
+  - nanopb/decode (0.3.9011)
+  - nanopb/encode (0.3.9011)
   - RCTRequired (0.61.2)
   - RCTTypeSafety (0.61.2):
     - FBLazyVector (= 0.61.2)
@@ -182,6 +289,12 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
   - React-jsinspector (0.61.2)
+  - react-native-sensitive-info (5.5.3):
+    - React
+  - react-native-splash-screen (3.2.0):
+    - React
+  - react-native-webview (7.4.2):
+    - React
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
   - React-RCTAnimation (0.61.2):
@@ -217,9 +330,52 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
+  - RNCAsyncStorage (1.6.2):
+    - React
+  - RNDeviceInfo (4.0.1):
+    - React
+  - RNFastImage (7.0.2):
+    - React
+    - SDWebImage (~> 5.0)
+    - SDWebImageWebPCoder (~> 0.2.3)
+  - RNFirebase (5.5.6):
+    - Firebase/Core
+    - React
+    - RNFirebase/Crashlytics (= 5.5.6)
+  - RNFirebase/Crashlytics (5.5.6):
+    - Crashlytics
+    - Fabric
+    - Firebase/Core
+    - React
+  - RNGestureHandler (1.4.1):
+    - React
+  - RNNetworkState (1.1.4):
+    - React
+  - RNPayTm (1.0.12):
+    - React
+  - RNReanimated (1.3.0):
+    - React
+  - RNScreens (1.0.0-alpha.23):
+    - React
+  - RNShare (2.0.0):
+    - React
+  - RNVectorIcons (6.6.0):
+    - React
+  - SDWebImage (5.3.1):
+    - SDWebImage/Core (= 5.3.1)
+  - SDWebImage/Core (5.3.1)
+  - SDWebImageWebPCoder (0.2.5):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.0)
+  - SSZipArchive (2.2.2)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
+  - appcenter (from `../node_modules/appcenter/ios`)
+  - appcenter-analytics (from `../node_modules/appcenter-analytics/ios`)
+  - appcenter-crashes (from `../node_modules/appcenter-crashes/ios`)
+  - appcenter-push (from `../node_modules/appcenter-push/ios`)
+  - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
@@ -236,6 +392,9 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
+  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -247,13 +406,55 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
+  - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFirebase (from `../node_modules/react-native-firebase/ios`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNNetworkState (from `../node_modules/react-native-network-state`)
+  - "RNPayTm (from `../node_modules/@philly25/react-native-paytm`)"
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
+    - AppCenter
+    - AppCenterReactNativeShared
+    - Base64
     - boost-for-react-native
+    - Crashlytics
+    - Fabric
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseCoreDiagnosticsInterop
+    - FirebaseInstanceID
+    - GoogleAppMeasurement
+    - GoogleDataTransport
+    - GoogleDataTransportCCTSupport
+    - GoogleUtilities
+    - JWT
+    - libwebp
+    - nanopb
+    - SDWebImage
+    - SDWebImageWebPCoder
+    - SSZipArchive
 
 EXTERNAL SOURCES:
+  appcenter:
+    :path: "../node_modules/appcenter/ios"
+  appcenter-analytics:
+    :path: "../node_modules/appcenter-analytics/ios"
+  appcenter-crashes:
+    :path: "../node_modules/appcenter-crashes/ios"
+  appcenter-push:
+    :path: "../node_modules/appcenter-push/ios"
+  CodePush:
+    :path: "../node_modules/react-native-code-push"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -282,6 +483,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-sensitive-info:
+    :path: "../node_modules/react-native-sensitive-info"
+  react-native-splash-screen:
+    :path: "../node_modules/react-native-splash-screen"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -302,16 +509,61 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-community/async-storage"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
+  RNFastImage:
+    :path: "../node_modules/react-native-fast-image"
+  RNFirebase:
+    :path: "../node_modules/react-native-firebase/ios"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
+  RNNetworkState:
+    :path: "../node_modules/react-native-network-state"
+  RNPayTm:
+    :path: "../node_modules/@philly25/react-native-paytm"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AppCenter: fddcbac6e4baae3d93a196ceb0bfe0e4ce407dec
+  appcenter: dc687dcf81280ccab1dc938b0b974d265144a802
+  appcenter-analytics: 94be52eca805d586207d710aac95e0ddca8b3ddb
+  appcenter-crashes: 30caece47856aee7c4c7449d4f4dae2d69795bd6
+  appcenter-push: f6c62e8e55cf09f53076674c185df72f68ea9dd7
+  AppCenterReactNativeShared: d5e360f8a4cb5126d29e31ab98051d2f070ba631
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  CodePush: d2e54ad42df82a8db65b2d23d8191b950ba945e1
+  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
+  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   FBLazyVector: 68b6a76960fbd8ecd9fb7ce0aadd3329c3340a99
   FBReactNativeSpec: 5a764c60abdc3336a213e5310c40b74741f32839
+  Firebase: 458d109512200d1aca2e1b9b6cf7d68a869a4a46
+  FirebaseAnalytics: 45f36d9c429fc91d206283900ab75390cd05ee8a
+  FirebaseCore: 307ea2508df730c5865334e41965bd9ea344b0e5
+  FirebaseCoreDiagnostics: 511f4f3ed7d440bb69127e8b97c2bc8befae639e
+  FirebaseCoreDiagnosticsInterop: e9b1b023157e3a2fc6418b5cb601e79b9af7b3a0
+  FirebaseInstanceID: ebd2ea79ee38db0cb5f5167b17a0d387e1cc7b6e
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  GoogleAppMeasurement: dfe55efa543e899d906309eaaac6ca26d249862f
+  GoogleDataTransport: 8e9b210c97d55fbff306cc5468ff91b9cb32dcf5
+  GoogleDataTransportCCTSupport: ef79a4728b864946a8aafdbab770d5294faf3b5f
+  GoogleUtilities: 547a86735c6f0ee30ad17e94df4fc21f616b71cb
+  JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
+  libwebp: 057912d6d0abfb6357d8bb05c0ea470301f5d61e
+  nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   RCTRequired: c639d59ed389cfb1f1203f65c2ea946d8ec586e2
   RCTTypeSafety: dc23fb655d6c77667c78e327bf661bc11e3b8aec
   React: 7e586e5d7bec12b91c1a096826b0fc9ab1da7865
@@ -321,6 +573,9 @@ SPEC CHECKSUMS:
   React-jsi: 32285a21b1b24c36060493ed3057a34677d58d09
   React-jsiexecutor: 8909917ff7d8f21a57e443a866fd8d4560e50c65
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
+  react-native-sensitive-info: c93d905f8d875daead38e5affc100390544584bd
+  react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
+  react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
@@ -331,8 +586,22 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
+  RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
+  RNDeviceInfo: 687c1b2ab6d86ff1ca1208783320cd144138c7f2
+  RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
+  RNFirebase: ac0de8b24c6f91ae9459575491ed6a77327619c6
+  RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
+  RNNetworkState: 7ba81894e6e2ec09d2f6eb8183f6ef6d96b30ddb
+  RNPayTm: aedcc918367f68bfb29eb3c8db4cb8ba4daeb611
+  RNReanimated: 6abbbae2e5e72609d85aabd92a982a94566885f1
+  RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
+  RNShare: 8b171d4b43c1d886917fdd303bf7a4b87167b05c
+  RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  SDWebImage: 7137d57385fb632129838c1e6ab9528a22c666cc
+  SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
+  SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: edb7ba494f8e9b21f11e841ab514655b952d0cc7
+PODFILE CHECKSUM: 393c36daba548de0eb9fa2244bbd9c1594c82295
 
-COCOAPODS: 1.6.2
+COCOAPODS: 1.8.4

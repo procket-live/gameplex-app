@@ -18,8 +18,9 @@ import {
   Linking
 } from 'react-native';
 import SplashScreen from 'react-native-splash-screen'
-import Paytm from '@philly25/react-native-paytm';
-import firebase from 'react-native-firebase';
+// import Paytm from '@philly25/react-native-paytm';
+// import firebase from 'react-native-firebase';
+import NetworkState, { Settings } from 'react-native-network-state'
 
 import {
   Header,
@@ -29,12 +30,13 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import TRUECALLER, {
-  TRUECALLER_EVENT,
-  TRUECALLER_CONSENT_MODE,
-  TRUECALLER_CONSENT_TITLE,
-  TRUECALLER_FOOTER_TYPE
-} from 'react-native-truecaller-sdk'
+// import TRUECALLER, {
+//   TRUECALLER_EVENT,
+//   TRUECALLER_CONSENT_MODE,
+//   TRUECALLER_CONSENT_TITLE,
+//   TRUECALLER_FOOTER_TYPE
+// } from 'react-native-truecaller-sdk'
+// import BottomSheet from 'reanimated-bottom-sheet'
 
 import Navigator from './src/navigation/index.navigation';
 
@@ -46,16 +48,20 @@ const paytmConfig = {
   CALLBACK_URL: 'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID='
 };
 class App extends PureComponent {
+  constructor(props) {
+    super(props);
+    // firebase.initializeApp();
+  }
   componentDidMount = () => {
-    TRUECALLER.initializeClient(
-      TRUECALLER_CONSENT_MODE.Popup,
-      TRUECALLER_CONSENT_TITLE.Login,
-      TRUECALLER_FOOTER_TYPE.Continue
-    )
+    // TRUECALLER.initializeClient(
+    //   TRUECALLER_CONSENT_MODE.Popup,
+    //   TRUECALLER_CONSENT_TITLE.Login,
+    //   TRUECALLER_FOOTER_TYPE.Continue
+    // )
 
     setTimeout(() => {
       SplashScreen.hide();
-      TRUECALLER.requestTrueProfile();
+      // TRUECALLER.requestTrueProfile();
 
 
       // this.runTransaction(100, '123', '1223132', '9731702355', 'hkxicor@gmail.com', '', '1223213');
@@ -65,25 +71,25 @@ class App extends PureComponent {
 
     Linking.addEventListener('url', this._handleOpenURL);
 
-    firebase.messaging().getToken().then((token) => {
-      console.log('TOKEN', token);
-    })
-    TRUECALLER.on(TRUECALLER_EVENT.TrueProfileResponse, profile => {
-      console.log('Truecaller profile data: ', profile)
-      // add other logic here related to login/sign-up as per your use-case.
-    });
+    // firebase.messaging().getToken().then((token) => {
+    //   console.log('TOKEN', token);
+    // })
+    // TRUECALLER.on(TRUECALLER_EVENT.TrueProfileResponse, profile => {
+    //   console.log('Truecaller profile data: ', profile)
+    //   // add other logic here related to login/sign-up as per your use-case.
+    // });
 
-    TRUECALLER.on(TRUECALLER_EVENT.TrueProfileResponseError, error => {
-      console.log('User rejected the truecaller consent request! ', error)
-    });
+    // TRUECALLER.on(TRUECALLER_EVENT.TrueProfileResponseError, error => {
+    //   console.log('User rejected the truecaller consent request! ', error)
+    // });
 
-    Paytm.addListener(Paytm.Events.PAYTM_RESPONSE, this.onPayTmResponse);
-    firebase.notifications().onNotificationOpened((open) => {
-      console.log('open', open);
-    })
+    // Paytm.addListener(Paytm.Events.PAYTM_RESPONSE, this.onPayTmResponse);
+    // firebase.notifications().onNotificationOpened((open) => {
+    //   console.log('open', open);
+    // })
 
-    const channel = new firebase.notifications.Android.Channel('insider', 'insider channel', firebase.notifications.Android.Importance.Max)
-    firebase.notifications().android.createChannel(channel);
+    // const channel = new firebase.notifications.Android.Channel('insider', 'insider channel', firebase.notifications.Android.Importance.Max)
+    // firebase.notifications().android.createChannel(channel);
     this.checkPermission();
     this.createNotificationListeners();
   }
@@ -91,30 +97,30 @@ class App extends PureComponent {
   _handleOpenURL = (event) => { console.log('evennnnt', event) }
 
   async checkPermission() {
-    const enabled = await firebase.messaging().hasPermission();
-    if (enabled) {
-    } else {
-      this.requestPermission();
-    }
+    // const enabled = await firebase.messaging().hasPermission();
+    // if (enabled) {
+    // } else {
+    //   this.requestPermission();
+    // }
   }
 
   async requestPermission() {
-    try {
-      await firebase.messaging().requestPermission();
-    } catch (error) {
-      console.log('permission rejected');
-    }
+    // try {
+    //   await firebase.messaging().requestPermission();
+    // } catch (error) {
+    //   console.log('permission rejected');
+    // }
   }
 
   async createNotificationListeners() {
-    const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {
-      console.log('notificationOpen', notificationOpen.notification.data);
-    }
+    // const notificationOpen = await firebase.notifications().getInitialNotification();
+    // if (notificationOpen) {
+    //   console.log('notificationOpen', notificationOpen.notification.data);
+    // }
   }
 
   componentWillUnmount() {
-    Paytm.removeListener(Paytm.Events.PAYTM_RESPONSE, this.onPayTmResponse);
+    // Paytm.removeListener(Paytm.Events.PAYTM_RESPONSE, this.onPayTmResponse);
   }
 
   onPayTmResponse = (resp) => {
@@ -154,14 +160,35 @@ class App extends PureComponent {
       MERC_UNQ_REF: mercUnqRef, // optional
     };
 
-    Paytm.startPayment(details);
+    // Paytm.startPayment(details);
+  }
+
+  renderInner = () => {
+    return (
+      <View style={{ height: 600, backgroundColor: '#fff', borderWidth: 1, borderRadius: 10 }} >
+
+      </View>
+    )
+  }
+
+  renderHeader = () => {
+    return (
+      <Text>Header</Text>
+    )
   }
 
   render() {
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <Navigator />
+        <SafeAreaView style={{ flex: 1 }} >
+          <Navigator />
+        </SafeAreaView>
+        <NetworkState
+          style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
+          onConnected={() => console.log('connected')}
+          onDisconnected={() => Settings.openWifi()}
+        />
       </>
     )
   }

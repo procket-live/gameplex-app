@@ -857,6 +857,11 @@
   resolved "https://registry.yarnpkg.com/@philly25/react-native-paytm/-/react-native-paytm-1.0.12.tgz#afa349f60c8ecbbbc202a5ba9a4e99ea91c61764"
   integrity sha512-pYYspd6Vtw+x481r74x+m+LEXCSFHLE+gdY9lMehYh3wEzP+CTEA7zOzp7bGAlk/vZMDsF91mMuxkJm/O+rDGw==
 
+"@react-native-community/async-storage@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.6.2.tgz#a19ca7149c4dfe8216f2330e6b1ebfe2d075ef92"
+  integrity sha512-EJGsbrHubK1mGxPjWB74AaHAd5m9I+Gg2RRPZzMK6org7QOU9WOBnIMFqoeVto3hKOaEPlk8NV74H6G34/2pZQ==
+
 "@react-native-community/cli-platform-android@^3.0.0-alpha.1", "@react-native-community/cli-platform-android@^3.0.0-alpha.2":
   version "3.0.0-alpha.2"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-android/-/cli-platform-android-3.0.0-alpha.2.tgz#63cb00060c58a87d04b46229ef7140e056551dfa"
@@ -1282,6 +1287,18 @@ appcenter-link-scripts@2.4.0:
     which "1.2.11"
     xcode "2.0.0"
 
+appcenter-link-scripts@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/appcenter-link-scripts/-/appcenter-link-scripts-2.6.0.tgz#becf08ac55b69b4d09f134e6b2d85b95100cabc2"
+  integrity sha512-lmlvy/prJWlzGSnrzuZTXI398El4+nx+SSLXjpGYhPkJv9aFbs+1nF0WP5qqcJeBkdc8XJIWhicWvNy5lkU1LQ==
+  dependencies:
+    debug "4.1.1"
+    glob "5.0.15"
+    mkdirp "0.5.1"
+    plist "3.0.1"
+    which "1.2.11"
+    xcode "2.0.0"
+
 appcenter-push@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/appcenter-push/-/appcenter-push-2.4.0.tgz#9eb5305647eec01692583902f555c864ff1743ee"
@@ -1289,12 +1306,19 @@ appcenter-push@^2.4.0:
   dependencies:
     appcenter "2.4.0"
 
-appcenter@2.4.0, appcenter@^2.4.0:
+appcenter@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-2.4.0.tgz#9e8737d2edbecbec139e20402bc85670900d84fa"
   integrity sha512-BV9/b9lH8mkg4O6NMXRFZ2PzTTt8GXnIWTSOZRTJBJxUOm4XgsguQ/yfdWckZeUTwsnA8u4aE0C/pKzNaw9d3A==
   dependencies:
     appcenter-link-scripts "2.4.0"
+
+appcenter@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-2.6.0.tgz#999137c85d84f9584f2fe2660ca57b52541f1dc0"
+  integrity sha512-Ud4lGIOKxgmACNJLE6Koie2Gl1BksgY/ZwxlaN/WEgpnOoDTGFORSt1yNcX79SCuPcZ9g2JE2djeeXBKMSh+5A==
+  dependencies:
+    appcenter-link-scripts "2.6.0"
 
 aproba@^1.0.3:
   version "1.2.0"
@@ -2150,17 +2174,17 @@ debug@3.1.0:
   dependencies:
     ms "2.0.0"
 
+debug@4.1.1, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
+  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
+  dependencies:
+    ms "^2.1.1"
+
 debug@^3.1.0, debug@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
-  dependencies:
-    ms "^2.1.1"
-
-debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
-  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
   dependencies:
     ms "^2.1.1"
 
@@ -2398,6 +2422,11 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
+
+escape-string-regexp@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
+  integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
 
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -3439,7 +3468,7 @@ inquirer@^6.4.1:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-invariant@^2.2.4:
+invariant@2.2.4, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -4356,6 +4385,11 @@ lodash.unescape@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
   integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
+
+lodash.wrap@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.wrap/-/lodash.wrap-4.1.1.tgz#9c3770947a821ec6978a93571e1a6179afcd7fc8"
+  integrity sha1-nDdwlHqCHsaXipNXHhphea/Nf8g=
 
 lodash@4.17.4:
   version "4.17.4"
@@ -5740,6 +5774,11 @@ react-native-device-info@^4.0.1:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-4.0.1.tgz#bade972e7a995ac187a82745a458cba98b72dea0"
   integrity sha512-a0Q/gwy1oQhu17CeMq9xMZ3Sl9foaj8hFwVuy9jieqkkoQwkHnPDI+R7bEW0MNMgUCPPrzzXvka+FLGOWVqacg==
 
+react-native-fast-image@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-7.0.2.tgz#e06b21f42f4a9786eaa86f3db35d919070fb8403"
+  integrity sha512-MfuzJbC0RjYobR2gFCdqe1I7jvNOCfDkjQ7VGOHXniqjohhULMkcWNBE9Umovi9Dx93lJ6t5utcE2wf/09zvlg==
+
 react-native-fetch-blob@0.10.8:
   version "0.10.8"
   resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.8.tgz#4fc256abae0cb5f10e7c41f28c11b3ff330d72a9"
@@ -5765,6 +5804,18 @@ react-native-gesture-handler@^1.4.1:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-global-font@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-global-font/-/react-native-global-font-1.0.2.tgz#acb6a56879e4a82673e44c91b91d3ccd6c386381"
+  integrity sha512-3wvczbcVIecLEvTYIjQ+A3t6TrHdJGYgchmKa9Br5+yrBiOuoWGif31zlUyYvVneBm2mpGIKDKZzMbM3BAOyuw==
+  dependencies:
+    lodash.wrap "^4.1.1"
+
+react-native-network-state@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/react-native-network-state/-/react-native-network-state-1.1.4.tgz#6582e1dcb1eded85d159afbc799c6d0264e90c57"
+  integrity sha512-NliY63vustUQwD27nwzVnNdcbtjVUVt9DJ7mlg29gP4c3bLptxcBhlogfDoRAdGbVceH6OK18U7NORmpXTydEw==
 
 react-native-otp-verify@^1.0.3:
   version "1.0.3"
@@ -5795,6 +5846,11 @@ react-native-sensitive-info@^5.5.3:
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-5.5.3.tgz#0e1d19b0cb290bf86e37b855f4272c641ebbeb0f"
   integrity sha512-Ezz6sEpBu4SiVqWjnt1Jk0d5V87MvdPD8xmVuUlhX3g+pL7RM4TuWR0c9hRJA9KDDYPmGH3FeRXgUyXqoVnZlw==
 
+react-native-share@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-2.0.0.tgz#4543a746013e0d8fa9f765fb8937007cfbcffcf7"
+  integrity sha512-J8Xl3mq0L9KDFtSYtKsQDAnZWw/niZIpAD1PRiNfZFHo44Rc+oS2bEIhskNnoQXKEgBNdPzCl/DenMXYAHXRYg==
+
 react-native-splash-screen@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
@@ -5818,6 +5874,14 @@ react-native-vector-icons@^6.6.0:
     lodash "^4.0.0"
     prop-types "^15.6.2"
     yargs "^13.2.2"
+
+react-native-webview@^7.4.2:
+  version "7.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-7.4.2.tgz#4206ef92c95bcb7207fdade608e5f5a1f62a3f83"
+  integrity sha512-B9cKZCiQniIXlhhDwvd/GUA7HSsSNbFVkRbnvhmGjOrkBPiaK7Omq6t3/KMGxChD3o1qCsohH0Zrm0A7QUvQOg==
+  dependencies:
+    escape-string-regexp "2.0.0"
+    invariant "2.2.4"
 
 react-native@0.61.2:
   version "0.61.2"
@@ -5975,6 +6039,11 @@ realpath-native@^1.1.0:
   integrity sha512-wlgPA6cCIIg9gKz0fgAPjnzh4yR/LnXovwuo9hvyGvx3h8nX4+/iLZplfUWasXpqD8BdnGnP5njOFjkUwPzvjA==
   dependencies:
     util.promisify "^1.0.0"
+
+reanimated-bottom-sheet@^1.0.0-alpha.14:
+  version "1.0.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/reanimated-bottom-sheet/-/reanimated-bottom-sheet-1.0.0-alpha.14.tgz#2df541b1cfd589cd8e48abab71510a1403aef9a7"
+  integrity sha512-ytoh/N8kU1Dd+r+N7uapRR7GfqJnn4dV3Oi7gqz4lyGmgjB1QGGL6eFOVRGuaKx5xPfb3r9s6JXltvO9XxBj2Q==
 
 recursive-fs@^1.1.2:
   version "1.1.2"
