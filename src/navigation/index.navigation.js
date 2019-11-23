@@ -7,21 +7,16 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { TabBar } from "react-native-animated-nav-tab-bar";
 import { createStackNavigator } from 'react-navigation-stack';
 
-import HomeScene from 'scene/home-scene/home.scene';
-import WalletScene from 'scene/wallet-scene/wallet.scene';
-import ProfileScene from 'scene/profile-scene/profile.scene';
-import NotificationScene from 'scene/notification-scene/notification.scene';
+import HomeScene from '../scene/home-scene/home.scene';
+import WalletScene from '../scene/wallet-scene/wallet.scene';
+import ProfileScene from '../scene/profile-scene/profile.scene';
+import NotificationScene from '../scene/notification-scene/notification.scene';
 import LoginScene from '../scene/login-scene/login.scene';
 
 const HomeStack = createStackNavigator({
     Home: {
         screen: () => <HomeScene />,
         navigationOptions: {
-            headerStyle: {
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomWidth: 0,
-            },
             header: null
         }
     }
@@ -37,11 +32,6 @@ const WalletStack = createStackNavigator({
     Wallet: {
         screen: () => <WalletScene />,
         navigationOptions: {
-            headerStyle: {
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomWidth: 0,
-            },
             title: "Wallet"
         }
     }
@@ -57,11 +47,6 @@ const ProfileStack = createStackNavigator({
     Profile: {
         screen: () => <ProfileScene />,
         navigationOptions: {
-            headerStyle: {
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomWidth: 0,
-            },
             title: "Profile"
         }
     }
@@ -77,11 +62,6 @@ const NotificationStack = createStackNavigator({
     Notification: {
         screen: () => <NotificationScene />,
         navigationOptions: {
-            headerStyle: {
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomWidth: 0,
-            },
             title: "Notification"
         }
     }
@@ -127,7 +107,12 @@ const TabsNavigator = createBottomTabNavigator(
 )
 
 const RootNavigator = createStackNavigator({
-    TabNavigator: TabsNavigator,
+    TabNavigator: {
+        screen: TabsNavigator,
+        navigationOptions: {
+            header: null
+        }
+    },
     Login: {
         screen: LoginScene,
         navigationOptions: {
