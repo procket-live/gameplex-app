@@ -45,12 +45,13 @@ const styles = StyleSheet.create({
         width: wp('75%'),
         fontSize: 23,
         color: TEXT_COLOR,
-        paddingLeft: 5
+        paddingLeft: 5,
+        height: 46
     },
     prefixContainer: {
         width: wp('15'),
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     prefixText: {
         fontSize: 23,

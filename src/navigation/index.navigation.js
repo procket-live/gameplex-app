@@ -2,7 +2,6 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
 import { createAppContainer } from 'react-navigation';
-import Icon from 'react-native-vector-icons/AntDesign';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { TabBar } from "react-native-animated-nav-tab-bar";
 import { createStackNavigator } from 'react-navigation-stack';
@@ -12,10 +11,30 @@ import WalletScene from '../scene/wallet-scene/wallet.scene';
 import ProfileScene from '../scene/profile-scene/profile.scene';
 import NotificationScene from '../scene/notification-scene/notification.scene';
 import LoginScene from '../scene/login-scene/login.scene';
+import IconComponent from '../component/icon/icon.component';
+import TransactionsScene from '../scene/transactions-scene/transactions.scene';
+import UserDetailInputScene from '../scene/user-detail-input-scene/user-detail-input.scene';
+import AddMoneyScene from '../scene/add-money-scene/add-money.scene';
+import MenuScene from '../scene/menu-scene/menu.scene';
+import TournamentList from '../scene/tournament-list-scene/tournament-list.scene';
+import DashboardScene from '../scene/dashboard-scene/dashboard.scene';
+import AddTournamentScene from '../scene/add-tournement/add-tournament.scene';
+import { GREY_BG } from '../constant/color.constant';
+import DashboardTournamentListScene from '../scene/dashboard-tournament-list/dashboard-tournament-list.scene';
+import ManageTournamentScene from '../scene/manage-tournament/manage-tournament.scene';
+import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-detail-scene/add-tournament-general-detail.scene';
+import AddTournamentPrizeDetailScene from '../scene/add-tournament-prize-detail-scene/add-tournament-prize-detail.scene';
+
+const headerStyle = {
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: GREY_BG
+}
 
 const HomeStack = createStackNavigator({
     Home: {
-        screen: () => <HomeScene />,
+        screen: HomeScene,
         navigationOptions: {
             header: null
         }
@@ -23,72 +42,63 @@ const HomeStack = createStackNavigator({
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <TabBarIcon focused={focused} tintColor={tintColor} name="home" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="home" />,
         }
     }
 );
 
 const WalletStack = createStackNavigator({
     Wallet: {
-        screen: () => <WalletScene />,
+        screen: WalletScene,
         navigationOptions: {
-            title: "Wallet"
+            header: null
         }
     }
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <TabBarIcon focused={focused} tintColor={tintColor} name="wallet" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="wallet" />,
         }
     }
 );
 
-const ProfileStack = createStackNavigator({
+const MenuStack = createStackNavigator({
     Profile: {
-        screen: () => <ProfileScene />,
+        screen: MenuScene,
         navigationOptions: {
-            title: "Profile"
+            header: null
         }
     }
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <TabBarIcon focused={focused} tintColor={tintColor} name="user" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="user" />,
         }
     }
 );
 
 const NotificationStack = createStackNavigator({
     Notification: {
-        screen: () => <NotificationScene />,
+        screen: () => NotificationScene,
         navigationOptions: {
-            title: "Notification"
+            header: null
         }
     }
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <TabBarIcon focused={focused} tintColor={tintColor} name="notification" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="notification" />,
         }
     }
 );
 
-const TabBarIcon = (props) => {
-    return (
-        <Icon
-            name={props.name}
-            size={props.size ? props.size : 24}
-            color={props.focused ? props.tintColor : "#222222"}
-        />
-    )
-}
 
 const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
         Wallet: WalletStack,
         Message: NotificationStack,
-        Profie: ProfileStack,
+        Menu: MenuStack,
     }, {
     tabBarOptions: {
         activeTintColor: "#2B7C85",
@@ -118,9 +128,100 @@ const RootNavigator = createStackNavigator({
         navigationOptions: {
             header: null
         }
+    },
+    UserDetailInput: {
+        screen: UserDetailInputScene,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Transactions: {
+        screen: TransactionsScene,
+        navigationOptions: {
+            title: "Transactions",
+            headerStyle
+        }
+    },
+    AddMoney: {
+        screen: AddMoneyScene,
+        navigationOptions: {
+            title: "Add money",
+            headerStyle
+        }
+    },
+    TournamentList: {
+        screen: TournamentList,
+        navigationOptions: {
+            title: "Tournament List",
+            headerStyle
+        }
+    },
+    Dashboard: {
+        screen: DashboardScene,
+        navigationOptions: {
+            title: "Dashborad",
+            headerStyle
+        }
+    },
+    AddTournament: {
+        screen: AddTournamentScene,
+        navigationOptions: {
+            title: "Add new tournament",
+            headerStyle,
+        }
+    },
+    DashboardTournamentList: {
+        screen: DashboardTournamentListScene,
+        navigationOptions: {
+            title: "Tournament list",
+            headerStyle,
+        }
+    },
+    ManageTournament: {
+        screen: ManageTournamentScene,
+        navigationOptions: {
+            title: "Manage Tournament",
+            headerStyle,
+        }
+    },
+    AddTournamentGeneralDetail: {
+        screen: AddTournamentGeneralDetailScene,
+        navigationOptions: {
+            title: "Set general detail",
+            headerStyle,
+        }
+    },
+    AddTournamentPrizeDetail: {
+        screen: AddTournamentPrizeDetailScene,
+        navigationOptions: {
+            title: "Set prize detail",
+            headerStyle,
+        }
     }
 }, {
-    initialRouteName: 'Login'
+    initialRouteName: 'Dashboard',
 })
 
 export default createAppContainer(RootNavigator);
+
+
+const persistenceKey = "to3eodddddol"
+const persistNavigationState = async (navState) => {
+    try {
+        await AsyncStorage.setItem(persistenceKey, JSON.stringify(navState))
+    } catch (err) {
+        // handle the error according to your needs
+    }
+}
+
+const loadNavigationState = async () => {
+    const jsonString = await AsyncStorage.getItem(persistenceKey)
+    return JSON.parse(jsonString)
+}
+
+export function getPersistenceFunctions() {
+    return __DEV__ ? {
+        persistNavigationState,
+        loadNavigationState,
+    } : undefined;
+}

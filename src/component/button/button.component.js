@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import { ON_PRIMARY, GREY_1, PRIMARY_COLOR } from '../../constant/color.constant';
+import { ON_PRIMARY, GREY_1, PRIMARY_COLOR, TEXT_COLOR } from '../../constant/color.constant';
 
 function Button({ text, onPress = () => { }, disabled, loading }) {
     return (
@@ -14,7 +14,7 @@ function Button({ text, onPress = () => { }, disabled, loading }) {
                     <ActivityIndicator
                         animating
                         size="small"
-                        color={ON_PRIMARY}
+                        color={TEXT_COLOR}
                     /> :
                     <Text style={styles.text} >
                         {text}

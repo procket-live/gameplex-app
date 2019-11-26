@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Keyboard } from 'react-native';
+import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { connect } from 'react-redux';
+
 import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 import TextInput from '../../component/text-input/text-input.component';
 import Button from '../../component/button/button.component';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import PublicApi from '../../api/public.api';
+import PrivateApi from '../../api/private.api';
+import { setUserAction } from '../../action/user.action';
+import { resetToScreen } from '../../service/navigation.service';
+import APP from '../../constant/app.constant';
+import { IsUserDetailsSet } from '../../utils/common.util';
 
 const STEPS = {
     MOBILE_NUMBER_INPUT: 1,
@@ -46,12 +55,48 @@ class LoginScene extends Component {
         this.setState({ step: 1 })
     }
 
-    resendOTP = () => {
-
+    resendOTP = async () => {
+        this.setState({ loading: true });
+        await PublicApi.ResendOTP(this.state.otpRef);
+        this.setState({ loading: false });
     }
 
     proceed = () => {
         this.setState({ loading: true, step: 2 })
+    }
+
+    generateOTP = async () => {
+        const { mobile } = this.state;
+        this.setState({ loading: true });
+        const result = await PublicApi.GenerateOTP(mobile);
+        this.setState({ loading: false });
+        if (result.success) {
+            const otpRef = result._id;
+            this.setState({ step: STEPS.OTP_INPUT, otpRef });
+        }
+    }
+
+    verifyOTP = async () => {
+        const { mobile, otp } = this.state;
+        this.setState({ loading: true });
+        const result = await PublicApi.VerifyOTP(mobile, otp);
+        if (result.success) {
+            const userObj = result.response;
+            const token = result.token;
+
+            const userRecord = Object.assign(userObj, { token });
+            this.props.setUserAction(userRecord)
+            APP.TOKEN = token;
+
+            const userDetailSet = IsUserDetailsSet(userRecord);
+            if (!userDetailSet.allStepDone) {
+                resetToScreen('UserDetailInput', { step: userDetailSet.step });
+            } else {
+                resetToScreen('TabNavigator');
+            }
+        } else {
+            this.setState({ loading: false });
+        }
     }
 
     RenderMobileNumberInputForm = () => {
@@ -70,8 +115,9 @@ class LoginScene extends Component {
                     <TextInput
                         label="Mobile Number"
                         prefix="+91"
-                        keyboardType="phone-pad"
+                        keyboardType="number-pad"
                         maxLength={10}
+                        value={this.state.mobile}
                         onChangeText={this.inputHandler}
                     />
                 </View>
@@ -80,7 +126,7 @@ class LoginScene extends Component {
                         loading={this.state.loading}
                         disabled={this.isButtonDisabled()}
                         text={'PROCEED'}
-                        onPress={this.proceed}
+                        onPress={this.generateOTP}
                     />
                 </View>
             </>
@@ -106,12 +152,14 @@ class LoginScene extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.inputTextContainer} >
-                    <TextInput
-                        label="OTP"
-                        prefix=""
-                        keyboardType="phone-pad"
-                        maxLength={6}
-                        onChangeText={this.inputOTPHandler}
+                    <OTPInputView
+                        pinCount={4}
+                        autoFocusOnLoad
+                        codeInputFieldStyle={styles.underlineStyleBase}
+                        codeInputHighlightStyle={styles.underlineStyleHighLighted}
+                        onCodeFilled={(code => {
+                            this.setState({ otp: code })
+                        })}
                     />
                 </View>
                 <View style={styles.otpButtonContainer} >
@@ -127,7 +175,7 @@ class LoginScene extends Component {
                             loading={this.state.loading}
                             disabled={this.isButtonDisabled()}
                             text={'PROCEED'}
-                            onPress={this.proceed}
+                            onPress={this.verifyOTP}
                         />
                     </View>
                 </View>
@@ -137,6 +185,7 @@ class LoginScene extends Component {
 
     render() {
         const { step } = this.state;
+
         return (
             <ScrollView
                 style={styles.container}
@@ -193,7 +242,20 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         paddingLeft: 10,
         paddingRight: 10
-    }
+    },
+    borderStyleHighLighted: {
+        borderColor: PRIMARY_COLOR,
+    },
+    underlineStyleBase: {
+        width: 30,
+        height: 45,
+        borderWidth: 0,
+        borderBottomWidth: 1,
+    },
+
+    underlineStyleHighLighted: {
+        borderColor: PRIMARY_COLOR,
+    },
 })
 
-export default LoginScene;
+export default connect(null, { setUserAction })(LoginScene);
