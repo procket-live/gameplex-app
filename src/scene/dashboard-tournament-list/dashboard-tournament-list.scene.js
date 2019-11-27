@@ -22,7 +22,7 @@ class DashboardTournamentListScene extends PureComponent {
     }
 
     fetchData = async () => {
-        const query = '?status=draft';
+        const query = this.props.navigation.getParam('query');
         this.setState({ loading: true });
         const result = await PrivateApi.GetDashboardTournaments(query)
         this.setState({ loading: false });

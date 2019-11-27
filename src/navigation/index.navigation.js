@@ -24,6 +24,8 @@ import DashboardTournamentListScene from '../scene/dashboard-tournament-list/das
 import ManageTournamentScene from '../scene/manage-tournament/manage-tournament.scene';
 import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-detail-scene/add-tournament-general-detail.scene';
 import AddTournamentPrizeDetailScene from '../scene/add-tournament-prize-detail-scene/add-tournament-prize-detail.scene';
+import AddTournamentRankDetailScene from '../scene/add-tournament-rank-detail-scene/add-tournament-rank-detal.scene';
+import AddTournamentRegistrationDetailScene from '../scene/add-tournament-registration-detail-scene/add-tournament-registration-detail.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -195,6 +197,20 @@ const RootNavigator = createStackNavigator({
         screen: AddTournamentPrizeDetailScene,
         navigationOptions: {
             title: "Set prize detail",
+            headerStyle,
+        }
+    },
+    AddTournamentRankDetail: {
+        screen: AddTournamentRankDetailScene,
+        navigationOptions: {
+            title: "Set rank rewards",
+            headerStyle,
+        }
+    },
+    AddTournamentRegistrationDetail: {
+        screen: AddTournamentRegistrationDetailScene,
+        navigationOptions: {
+            title: "Set registration detail",
             headerStyle,
         }
     }

@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Image, ScrollView, Platform } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { PRIMARY_COLOR, TEXT_COLOR, GREY_1, GREY_BG } from '../../constant/color.constant';
+import { PRIMARY_COLOR, TEXT_COLOR, GREY_1, GREY_BG, GREEN, ON_PRIMARY } from '../../constant/color.constant';
 import PrivateApi from '../../api/private.api';
-import { heightPercentageToDP } from 'react-native-responsive-screen';
+import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
 import { AccessNestedObject } from '../../utils/common.util';
 import IconComponent from '../../component/icon/icon.component';
 import { DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
@@ -15,13 +15,13 @@ import NotifyService from '../../service/notify.service';
 import MenuItem from '../../component/menu-item/menu-item.component';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { navigatePop } from '../../service/navigation.service';
-
+import BottomSheet from 'reanimated-bottom-sheet';
 class ManageTournamentScene extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
-            tournament: {}
+            tournament: {},
         }
     }
 
@@ -34,45 +34,45 @@ class ManageTournamentScene extends PureComponent {
         this.setState({ loading: true });
         const result = await PrivateApi.GetTournament(id);
         this.setState({ loading: false });
-        console.log('result', result)
         if (result.success) {
             this.setState({ tournament: result.response });
         }
     }
 
     publish = () => {
-        const { tournament } = this.state;
-
-        if (tournament.public) {
+        if (this.isGeneralDetailSet() && this.isPrizeDetailSet() && this.isRankDetailSet() && this.isRegistrationDetailSet()) {
+            this.makePublic();
+        } else {
             NotifyService.notify({
-                title: 'Published',
-                message: 'Already published',
-                type: 'success'
+                title: 'Unable to proceed',
+                message: 'Please complete all tournament detail to publish tournament',
+                type: 'error'
             })
-            return;
         }
+    }
 
-        NotifyService.notify({
-            title: 'Unable to proceed',
-            message: 'Please complete all tournament detail to publish tournament',
-            type: 'error'
-        })
+    makePublic = async () => {
+        const { tournament } = this.state;
+        this.setState({ loading: true });
+        const result = await PrivateApi.UpdateTournament(tournament._id, { status: 'active' });
+        this.setState({ loading: false });
+        if (result.success) {
+            this.setState({ tournament: result.response });
+        }
     }
 
     navigateToPrizeDetail = () => {
         const { tournament } = this.state;
-        const prizeMeta = AccessNestedObject(tournament, 'game.price_meta', {});
+        const prizeMeta = AccessNestedObject(tournament, 'game.price_meta', []);
+        const prizeSetMeta = AccessNestedObject(tournament, 'prize', []);
 
-        if (this.isPrizeDetailSet()) {
-            NotifyService.notify({
-                title: 'Prize details is set',
-                message: '',
-                type: 'success'
-            })
-            return;
-        }
-
-        this.props.navigation.push('AddTournamentPrizeDetail', { prizeMeta, callback: this.setPrizeDetail })
+        this.props.navigation.push('AddTournamentPrizeDetail', {
+            prizeMeta,
+            callback: this.setPrizeDetail,
+            isSet: this.isPrizeDetailSet(),
+            prizeSetMeta,
+            isInactive: tournament.status != 'draft'
+        })
     }
 
     setPrizeDetail = async (response) => {
@@ -94,18 +94,17 @@ class ManageTournamentScene extends PureComponent {
     navigateToGeneralDetailForm = () => {
         const { tournament } = this.state;
         const gameMeta = AccessNestedObject(tournament, 'game.game_meta', {});
+        const tournamentMeta = AccessNestedObject(tournament, 'tournament_meta', []);
 
-        if (this.isGeneralDetailSet()) {
-            NotifyService.notify({
-                title: 'General details is set',
-                message: '',
-                type: 'success'
-            })
-            return;
-        }
-
-        this.props.navigation.push('AddTournamentGeneralDetail', { gameMeta, callback: this.setGeneralDetail })
+        this.props.navigation.push('AddTournamentGeneralDetail', {
+            gameMeta,
+            callback: this.setGeneralDetail,
+            isSet: this.isGeneralDetailSet(),
+            tournamentMeta,
+            isInactive: tournament.status != 'draft'
+        });
     }
+
 
     setGeneralDetail = async (response) => {
         const { tournament } = this.state;
@@ -123,13 +122,92 @@ class ManageTournamentScene extends PureComponent {
         return tournamentMeta.length;
     }
 
+    isRankDetailSet = () => {
+        const { tournament } = this.state;
+        const tournamentMeta = AccessNestedObject(tournament, 'rank', []);
+        return tournamentMeta.length;
+    }
+
+    navigateToRankDetail = () => {
+        const { tournament } = this.state;
+        const size = AccessNestedObject(tournament, 'size', 0);
+        const rank = AccessNestedObject(tournament, 'rank', [])
+
+        this.props.navigation.push('AddTournamentRankDetail', {
+            size,
+            callback: this.setRankDetail,
+            isSet: this.isRankDetailSet(),
+            rank,
+            isInactive: tournament.status != 'draft'
+        })
+    }
+
+    setRankDetail = async (response) => {
+        const { tournament } = this.state;
+        navigatePop();
+        this.setState({ loading: true });
+        const result = await PrivateApi.UpdateTournament(tournament._id, { rank: response });
+        this.setState({ loading: false });
+        if (result.success) {
+            this.setState({ tournament: result.response });
+        }
+    }
+
+    isRegistrationDetailSet = () => {
+        const { tournament } = this.state;
+        const { registration_opening, registration_closing, tournament_start_time, form_message, validation_message } = tournament;
+        return !!(registration_opening && registration_closing && tournament_start_time && form_message && validation_message);
+    }
+
+    navigateToRegistrationDetailForm = () => {
+        const { tournament } = this.state;
+        const { registration_opening, registration_closing, tournament_start_time, form_message, validation_message, tnc_link } = tournament;
+
+        this.props.navigation.push('AddTournamentRegistrationDetail', {
+            callback: this.setRegistrationDetail,
+            isSet: this.isRegistrationDetailSet(),
+            regisrationDetails: {
+                registration_opening,
+                registration_closing,
+                tournament_start_time,
+                form_message,
+                validation_message,
+                tnc_link
+            },
+            isInactive: tournament.status != 'draft'
+        })
+    }
+
+    setRegistrationDetail = async (response) => {
+        const { tournament } = this.state;
+        this.setState({ loading: true });
+        const result = await PrivateApi.UpdateTournament(tournament._id, response);
+        this.setState({ loading: false });
+        if (result.success) {
+            this.setState({ tournament: result.response });
+        }
+    }
+
+    isTournamentCredentialsOptionInactive = () => {
+        return true
+    }
+
+    isParticiepentMenuInactive = () => {
+        return !AccessNestedObject(this.state, 'tournament.status') == 'active'
+    }
+
+    navigateToParticipents = () => {
+
+    }
+
+
     RenderTournamentSetDetail = () => {
         return (
             <View style={{ flex: 1 }} >
                 <MenuItem
                     iconName="gamepad"
                     font="fontawesome"
-                    name="General detail"
+                    name="Tournament related detail"
                     detail="Set general tournament details"
                     onPress={this.navigateToGeneralDetailForm}
                     complete={this.isGeneralDetailSet()}
@@ -137,18 +215,26 @@ class ManageTournamentScene extends PureComponent {
                 <MenuItem
                     iconName="credit-card"
                     font="fontawesome"
-                    name="Prize detail"
+                    name="Prizepool and winning amount detail"
                     detail="Set prizepool, entry fee and winning amount"
                     onPress={this.navigateToPrizeDetail}
                     complete={this.isPrizeDetailSet()}
+                />
+                <MenuItem
+                    iconName="list"
+                    font="fontawesome"
+                    name="Rankwise reward details"
+                    detail="Set rank wise rewards"
+                    onPress={this.navigateToRankDetail}
+                    complete={this.isRankDetailSet()}
                 />
                 <MenuItem
                     iconName="address-book"
                     font="fontawesome"
                     name="Registration detail"
                     detail="set registration start date and time"
-                    onPress={this.navigateToGeneralDetailForm}
-                    complete={false}
+                    onPress={this.navigateToRegistrationDetailForm}
+                    complete={this.isRegistrationDetailSet()}
                 />
             </View>
         )
@@ -162,9 +248,9 @@ class ManageTournamentScene extends PureComponent {
                     font="fontawesome"
                     name="Set tournament credentials"
                     detail="Set private room username and password"
-                    onPress={this.navigateToGeneralDetailForm}
+                    onPress={this.navigateToParticipents}
                     complete={false}
-                    inactive
+                    inactive={this.isTournamentCredentialsOptionInactive()}
                 />
                 <MenuItem
                     iconName="users"
@@ -172,7 +258,7 @@ class ManageTournamentScene extends PureComponent {
                     name="Paricipents"
                     detail="Manage participents"
                     onPress={this.navigateToGeneralDetailForm}
-                    inactive
+                    inactive={this.isParticiepentMenuInactive()}
                 />
             </View>
         )
@@ -211,11 +297,11 @@ class ManageTournamentScene extends PureComponent {
         const platform = AccessNestedObject(tournament, 'game.platform.name');
         const createAt = moment(AccessNestedObject(tournament, 'created_at')).format(DISPLAY_DATE_TIME_FORMAT)
         const status = AccessNestedObject(tournament, 'status');
-        console.log('tournamentName', tournamentName)
 
         return (
-            <View
+            <ScrollView
                 style={styles.container}
+                contentContainerStyle={{ flex: 1 }}
             >
                 <>
                     <View style={styles.detailContainer} >
@@ -260,26 +346,53 @@ class ManageTournamentScene extends PureComponent {
                                 </Text>
                             </View>
                             <View style={[styles.padding, { marginTop: 10, marginBottom: 10 }]} >
-                                <Button
-                                    onPress={this.publish}
-                                    text={tournament.public ? "PUBLISHED" : "PUBLISH"}
-                                />
+                                {
+                                    tournament.status == 'draft' ?
+                                        <Button
+                                            onPress={this.publish}
+                                            text={"PUBLISH"}
+                                        /> :
+                                        null
+                                }
+                                {
+                                    tournament.status == 'active' ?
+                                        <Text style={{ color: GREEN, padding: 10, fontWeight: '500' }} >PUBLIC/ONLINE</Text>
+                                        : null
+                                }
                             </View>
                         </View>
                     </View>
-
-                    <Tabs>
-                        <this.RenderTournamentSetDetail tabLabel="Set Detail" />
-                        <this.RenderTournamentManage tabLabel="Manage" />
-                        <this.RenderTournamentPost tabLabel="Post Tournament" />
-                    </Tabs>
+                    {
+                        status == 'draft' ?
+                            <Tabs>
+                                <this.RenderTournamentSetDetail tabLabel="Set Detail" />
+                                <this.RenderTournamentManage tabLabel="Manage" />
+                                <this.RenderTournamentPost tabLabel="Post Tournament" />
+                            </Tabs> : null
+                    }
+                    {
+                        status == 'active' ?
+                            <Tabs>
+                                <this.RenderTournamentManage tabLabel="Manage" />
+                                <this.RenderTournamentPost tabLabel="Post Tournament" />
+                                <this.RenderTournamentSetDetail tabLabel="Set Detail" />
+                            </Tabs> : null
+                    }
+                    {
+                        status == 'completed' ?
+                            <Tabs>
+                                <this.RenderTournamentPost tabLabel="Post Tournament" />
+                                <this.RenderTournamentManage tabLabel="Manage" />
+                                <this.RenderTournamentSetDetail tabLabel="Set Detail" />
+                            </Tabs> : null
+                    }
                 </>
                 <Spinner
                     visible={loading}
                     textContent={'Loading...'}
                     textStyle={styles.spinnerTextStyle}
                 />
-            </View>
+            </ScrollView>
         )
     }
 }

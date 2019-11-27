@@ -1,19 +1,50 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
 import Form4u from 'react-native-form4u';
 import PrivateApi from '../../api/private.api';
 import { navigatePop } from '../../service/navigation.service';
 import { Camelize, AccessNestedObject, ConvertToWord } from '../../utils/common.util';
 
 class AddTournamentPrizeDetailScene extends PureComponent {
+    static navigationOptions = ({ navigation }) => {
+        const { params = {} } = navigation.state;
+        return {
+            headerTitleStyle: { color: '#fff' },
+            headerStyle: { backgroundColor: '#3c3c3c' },
+            headerRight: params.isSet ? (
+                <View style={{ marginRight: 15 }} >
+                    <Button
+                        disabled={params.isInactive}
+                        title="Edit"
+                        onPress={params.edit}
+                    />
+                </View>
+            ) : null
+        };
+    };
+
     constructor(props) {
         super(props);
         this.state = {
-            formData: {}
+            formData: {},
+            isSet: props.navigation.getParam('isSet'),
         }
     }
 
+    componentDidMount = () => {
+        this.props.navigation.setParams({ edit: this.edit });
+    }
+
+    edit = () => {
+        this.setState({ isSet: false })
+    }
+
     form = () => {
+        const { isSet } = this.state;
+        return isSet ? this.displayForm() : this.inputForm();
+    }
+
+    inputForm = () => {
         const prizeMeta = this.props.navigation.getParam('prizeMeta') || [];
 
         const form = prizeMeta.map((meta) => {
@@ -35,6 +66,24 @@ class AddTournamentPrizeDetailScene extends PureComponent {
                 type: 'button',
             },
         ])
+
+        return form;
+    }
+
+    displayForm = () => {
+        const prizeSetMeta = this.props.navigation.getParam('prizeSetMeta') || [];
+
+        const form = prizeSetMeta.map((meta) => {
+            return [{
+                name: Camelize(meta.key),
+                label: meta.key,
+                type: 'text',
+                defaultValue: meta.value,
+                fieldProps: {
+                    disabled: true
+                }
+            }]
+        });
 
         return form;
     }
