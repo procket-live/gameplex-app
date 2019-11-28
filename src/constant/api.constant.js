@@ -6,3 +6,5 @@ export const GENERATE_EMAIL_OTP = 'user/ganerate-email-otp';
 export const VERIFY_EMAIL_OTP = 'user/verify-email-otp';
 export const DASHBOARD = 'dashboard';
 export const TOURNAMENT = 'tournament';
+export const UPCOMING_TOURNAMENT = `${TOURNAMENT}/upcoming`;
+export const GAME = 'game';

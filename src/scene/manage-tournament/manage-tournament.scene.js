@@ -1,21 +1,19 @@
 import React, { PureComponent } from 'react';
-import { Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Image, ScrollView, Platform } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView, Button, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { PRIMARY_COLOR, TEXT_COLOR, GREY_1, GREY_BG, GREEN, ON_PRIMARY } from '../../constant/color.constant';
+import { PRIMARY_COLOR, TEXT_COLOR, GREY_1, GREY_BG, GREEN, RED, ON_PRIMARY } from '../../constant/color.constant';
 import PrivateApi from '../../api/private.api';
-import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
 import { AccessNestedObject } from '../../utils/common.util';
 import IconComponent from '../../component/icon/icon.component';
 import { DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
 import moment from 'moment';
-import Button from '../../component/button/button.component';
+import ButtonComponent from '../../component/button/button.component';
 import Tabs from '../../component/tabs/tabs.component';
 import NotifyService from '../../service/notify.service';
 import MenuItem from '../../component/menu-item/menu-item.component';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { navigatePop } from '../../service/navigation.service';
-import BottomSheet from 'reanimated-bottom-sheet';
+
 class ManageTournamentScene extends PureComponent {
     constructor(props) {
         super(props);
@@ -200,6 +198,31 @@ class ManageTournamentScene extends PureComponent {
 
     }
 
+    deleteTournament = () => {
+        const { tournament } = this.state;
+        const callback = this.props.navigation.getParam('callback');
+
+        Alert.alert('Remove Tournament?', 'Are you sure you want to remove this tournament', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'OK',
+                onPress: async () => {
+                    this.setState({ loading: true });
+                    const result = await PrivateApi.UpdateTournament(tournament._id, { deleted_at: Date.now() });
+                    this.setState({ loading: false });
+
+                    if (result.success) {
+                        navigatePop();
+                        callback();
+                    }
+                }
+            },
+        ], { cancelable: false })
+    }
+
 
     RenderTournamentSetDetail = () => {
         return (
@@ -315,20 +338,19 @@ class ManageTournamentScene extends PureComponent {
                                 </Text>
                             </View>
 
-                            <View style={styles.padding} >
+                            {/* <View style={styles.padding} >
                                 <Text style={styles.light} >
                                     {tournamentDescription}
                                 </Text>
-                            </View>
-                            <View style={[styles.padding, { flexDirection: 'row', alignItems: 'center' }]} >
+                            </View> */}
+                            {/* <View style={[styles.padding, { flexDirection: 'row', alignItems: 'center' }]} >
                                 <Text style={[styles.light, { marginRight: 10 }]} >
                                     Platform:
                             </Text>
                                 <Text style={[styles.normal, { marginRight: 10 }]} >
                                     {platform}
                                 </Text>
-                                <IconComponent name="mobile" font="fontawesome" />
-                            </View>
+                            </View> */}
                             <View style={[styles.padding, { flexDirection: 'row', alignItems: 'center' }]} >
                                 <Text style={[styles.light, { marginRight: 10 }]} >
                                     Create at:
@@ -345,12 +367,12 @@ class ManageTournamentScene extends PureComponent {
                                     {status}
                                 </Text>
                             </View>
-                            <View style={[styles.padding, { marginTop: 10, marginBottom: 10 }]} >
+                            <View style={[styles.padding, { marginTop: 10, marginBottom: 10, flexDirection: 'row' }]} >
                                 {
                                     tournament.status == 'draft' ?
                                         <Button
                                             onPress={this.publish}
-                                            text={"PUBLISH"}
+                                            title={"PUBLISH"}
                                         /> :
                                         null
                                 }
@@ -358,6 +380,16 @@ class ManageTournamentScene extends PureComponent {
                                     tournament.status == 'active' ?
                                         <Text style={{ color: GREEN, padding: 10, fontWeight: '500' }} >PUBLIC/ONLINE</Text>
                                         : null
+                                }
+                                {
+                                    tournament.status == 'draft' ?
+                                        <View style={{ marginLeft: 10 }} >
+                                            <Button
+                                                title="DELETE"
+                                                onPress={this.deleteTournament}
+                                                color={RED}
+                                            />
+                                        </View> : null
                                 }
                             </View>
                         </View>
@@ -430,7 +462,7 @@ const styles = StyleSheet.create({
         color: TEXT_COLOR,
     },
     spinnerTextStyle: {
-        color: '#FFF'
+        color: ON_PRIMARY
     }
 })
 

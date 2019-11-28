@@ -199,8 +199,8 @@ class AddTournamentRegistrationDetailScene extends PureComponent {
             tnc_link: state.tnc.value
         };
 
-        callback(response);
         navigatePop()
+        callback(response);
     }
 
     handleValidation = (state) => {

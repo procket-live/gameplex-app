@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
-import { IsUserDetailsSet } from '../../utils/common.util';
+import { IsUserDetailsSet, AccessNestedObject } from '../../utils/common.util';
+import PrivateApi from '../../api/private.api';
+import { setUserAction } from '../../action/user.action';
+import { fetchGames } from '../../action/game.action';
+import { fetchTournaments } from '../../action/tournament.action';
 
 class AppResolve extends PureComponent {
     componentDidMount = () => {
@@ -11,7 +15,7 @@ class AppResolve extends PureComponent {
     }
 
     init = () => {
-        const { user } = this.props;
+        const { user, mode } = this.props;
 
         if (user == null) {
             resetToScreen('Login')
@@ -19,14 +23,31 @@ class AppResolve extends PureComponent {
         } else {
             const token = user.token;
             APP.TOKEN = token;
+            this.updateUser(token);
 
             const result = IsUserDetailsSet(user, true);
-            console.log('result',result)
             if (!result.allStepDone) {
                 resetToScreen('UserDetailInput', { step: result.step });
+            } else {
+                if (mode == 'user') {
+                    this.props.fetchGames();
+                    this.props.fetchTournaments();
+                    resetToScreen('TabNavigator');
+                } else {
+                    resetToScreen('Dashboard');
+                }
             }
 
             SplashScreen.hide();
+        }
+    }
+
+    updateUser = async (token) => {
+        const result = await PrivateApi.GetUser();
+        if (result.success) {
+            const user = AccessNestedObject(result, 'response');
+            const newUser = Object.assign(user, { token });
+            this.props.setUserAction(newUser);
         }
     }
 
@@ -36,7 +57,8 @@ class AppResolve extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-    user: state.user
+    user: state.user,
+    mode: state.mode
 })
 
-export default connect(mapStateToProps)(AppResolve);
+export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments })(AppResolve);

@@ -1,14 +1,18 @@
 import React, { PureComponent } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Form4u from 'react-native-form4u';
+
 import PrivateApi from '../../api/private.api';
 import { navigatePop } from '../../service/navigation.service';
+import { ON_PRIMARY } from '../../constant/color.constant';
 
 class AddTournamentScene extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            formData: {}
+            formData: {},
+            loading: false
         }
     }
 
@@ -88,8 +92,9 @@ class AddTournamentScene extends PureComponent {
 
     makeApiCall = async (params) => {
         const callback = this.props.navigation.getParam('callback');
-
+        this.setState({ loading: true })
         const result = await PrivateApi.CreateTournament(params);
+        this.setState({ loading: false });
         if (result.success) {
             navigatePop();
             if (callback && typeof callback == 'function') {
@@ -121,15 +126,24 @@ class AddTournamentScene extends PureComponent {
     }
 
     render() {
+        const { loading } = this.state;
+
         return (
-            <ScrollView style={styles.container}>
-                <Form4u
-                    formFields={this.form()}
-                    handleSubmit={this.handleSubmit}
-                    validation={this.handleValidation}
-                    submitOnDirty
+            <>
+                <ScrollView style={styles.container}>
+                    <Form4u
+                        formFields={this.form()}
+                        handleSubmit={this.handleSubmit}
+                        validation={this.handleValidation}
+                        submitOnDirty
+                    />
+                </ScrollView>
+                <Spinner
+                    visible={loading}
+                    textContent={'Loading...'}
+                    textStyle={styles.spinnerTextStyle}
                 />
-            </ScrollView>
+            </>
         )
     }
 }
@@ -141,6 +155,9 @@ const styles = StyleSheet.create({
     submitButton: {
         paddingHorizontal: 10,
         paddingTop: 20,
+    },
+    spinnerTextStyle: {
+        color: ON_PRIMARY
     }
 })
 

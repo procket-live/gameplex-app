@@ -21,18 +21,23 @@ class DashboardTournamentListScene extends PureComponent {
         this.fetchData();
     }
 
-    fetchData = async () => {
+    fetchData = async (allowCallback = false) => {
         const query = this.props.navigation.getParam('query');
+        const callback = this.props.navigation.getParam('callback');
+
         this.setState({ loading: true });
         const result = await PrivateApi.GetDashboardTournaments(query)
         this.setState({ loading: false });
         if (result.success) {
             this.setState({ list: result.response });
+            if (allowCallback && callback && typeof callback == 'function') {
+                callback();
+            }
         }
     }
 
     navigateToManagePage = (id) => {
-        this.props.navigation.push('ManageTournament', { id });
+        this.props.navigation.push('ManageTournament', { id, callback: () => this.fetchData(true) });
     }
 
     RenderListItem = ({ item }) => {
@@ -41,6 +46,7 @@ class DashboardTournamentListScene extends PureComponent {
         const gameName = AccessNestedObject(item, 'game.name');
         const createdAt = AccessNestedObject(item, 'create_at');
         const status = AccessNestedObject(item, 'status');
+
         return (
             <TouchableOpacity
                 onPress={() => this.navigateToManagePage(item._id)}

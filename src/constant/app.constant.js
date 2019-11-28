@@ -10,4 +10,5 @@ module.exports = {
     REDIRECT_TO: {
         route: '', tab: '', payload: {}
     },
+    CURRENCY: '₹'
 }

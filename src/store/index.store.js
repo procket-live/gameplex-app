@@ -10,7 +10,7 @@ import reducer from '../reducer/index.reducer';
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['user'],
+    whitelist: ['user', 'mode', 'game', 'tournament'],
     blacklist: [],
 };
 const persistedReducer = persistReducer(persistConfig, reducer);

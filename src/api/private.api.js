@@ -1,5 +1,5 @@
 import { Post, Get, Put } from "../service/http.service"
-import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT } from "../constant/api.constant"
+import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT } from "../constant/api.constant"
 
 class PrivateApi {
     static GetUser = () => {
@@ -36,6 +36,10 @@ class PrivateApi {
 
     static UpdateTournament = (id, params) => {
         return Put({ url: `${TOURNAMENT}/${id}`, body: params });
+    }
+
+    static UpcomingTournament = () => {
+        return Get({ url: UPCOMING_TOURNAMENT });
     }
 }
 

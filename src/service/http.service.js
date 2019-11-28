@@ -1,6 +1,7 @@
 import axios from 'axios';
 import NotifyService from './notify.service';
 import APP, { BASE_URL } from '../constant/app.constant';
+import { resetToScreen } from './navigation.service';
 
 export const defautlHeaders = {
     'Content-Type': 'application/json;charset=UTF-8',
@@ -89,7 +90,7 @@ async function createHeader(obj) {
     const headers = defautlHeaders;
     const token = getToken();
     headers['Authorization'] = `Bearer ${token}`;
-
+    console.log('headers', headers);
     // if headers are not passed
     if (!obj.headers) {
         return headers;
@@ -111,6 +112,17 @@ function defaultResolve(result, { callback, hideMessage }) {
             type: result.success ? 'success' : 'error',
             duration: 1200
         })
+    }
+
+    if (result.error_code == 1) { //auth failed
+        NotifyService.notify({
+            title: 'Session expired',
+            message: 'please login again to continue',
+            type: 'error',
+            duration: 2200
+        })
+
+        resetToScreen('Login');
     }
 
     return result;

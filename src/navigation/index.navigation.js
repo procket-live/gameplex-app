@@ -119,6 +119,12 @@ const TabsNavigator = createBottomTabNavigator(
 )
 
 const RootNavigator = createStackNavigator({
+    Empty: {
+        screen: () => null,
+        navigationOptions: {
+            header: null
+        }
+    },
     TabNavigator: {
         screen: TabsNavigator,
         navigationOptions: {
@@ -215,7 +221,7 @@ const RootNavigator = createStackNavigator({
         }
     }
 }, {
-    initialRouteName: 'Dashboard',
+    initialRouteName: 'Empty',
 })
 
 export default createAppContainer(RootNavigator);

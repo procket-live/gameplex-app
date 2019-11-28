@@ -1,10 +1,14 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { connect } from 'react-redux';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
+
 import { GREY_BG, TEXT_COLOR, GREEN, ON_PRIMARY, PRIMARY_COLOR } from '../../constant/color.constant';
 import IconComponent from '../../component/icon/icon.component';
 import MenuItem from '../../component/menu-item/menu-item.component';
 import PrivateApi from '../../api/private.api';
+import { setMode } from '../../action/mode.action';
+import { resetToScreen } from '../../service/navigation.service';
 
 class DashboardScene extends PureComponent {
     constructor(props) {
@@ -19,7 +23,6 @@ class DashboardScene extends PureComponent {
         this.setState({ loading: true })
         const result = await PrivateApi.DashboardMeta();
         this.setState({ loading: false })
-        console.log('result', result);
         if (result.success) {
             this.setState({ dashbordMeta: result.response });
         }
@@ -33,27 +36,43 @@ class DashboardScene extends PureComponent {
             return;
         }
 
-        this.props.navigation.push('AddTournament', { game });
+        this.props.navigation.push('AddTournament', { game, callback: this.componentDidMount });
     }
 
     navigateToDraftList = () => {
-        this.props.navigation.push('DashboardTournamentList', { query: '?status=draft' })
+        this.props.navigation.push('DashboardTournamentList', { query: '?status=draft', callback: this.componentDidMount })
     }
 
     navigateToActiveList = () => {
-        this.props.navigation.push('DashboardTournamentList', { query: '?status=active' })
+        this.props.navigation.push('DashboardTournamentList', { query: '?status=active', callback: this.componentDidMount })
     }
 
     navigateToCompletedList = () => {
-        this.props.navigation.push('DashboardTournamentList', { query: '?status=completed' })
+        this.props.navigation.push('DashboardTournamentList', { query: '?status=completed', callback: this.componentDidMount })
+    }
+
+    switch = () => {
+        const { mode } = this.props;
+
+        if (mode == 'user') {
+            this.props.setMode('organizer');
+            resetToScreen('Dashboard');
+        } else {
+            this.props.setMode('user');
+            resetToScreen('TabNavigator');
+        }
     }
 
     render() {
+        const { mode } = this.props;
         const { dashbordMeta } = this.state;
 
         return (
             <ScrollView
                 style={styles.container}
+                refreshControl={
+                    <RefreshControl refreshing={this.state.loading} onRefresh={this.componentDidMount} />
+                }
             >
                 <View style={styles.statsContainer} >
                     <View style={{ flex: 1, flexDirection: 'row', padding: 5 }} >
@@ -100,6 +119,12 @@ class DashboardScene extends PureComponent {
                     </View>
                 </View>
                 <MenuItem
+                    iconName="swap"
+                    name={mode == 'user' ? "Switch to organizer mode" : "Switch to user mode"}
+                    detail={"switch mode"}
+                    onPress={this.switch}
+                />
+                <MenuItem
                     iconName="setting"
                     name="Manage Organizer Profile"
                     detail="Update organizer profile"
@@ -128,7 +153,6 @@ class DashboardScene extends PureComponent {
                     name="Help"
                     detail="Frequently asked questions and their answers"
                 />
-
             </ScrollView>
         )
     }
@@ -164,4 +188,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default DashboardScene;
+const mapStateToProps = state => ({
+    mode: state.mode
+})
+
+export default connect(mapStateToProps, { setMode })(DashboardScene);
