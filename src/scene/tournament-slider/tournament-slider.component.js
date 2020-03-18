@@ -32,7 +32,7 @@ const TournamentSlider = props => {
                 horizontal
                 data={tournaments}
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item, key }) => <TournamentCard tournament={item} loading={loading} key={key} />}
+                renderItem={({ item, key }) => <TournamentCard user={props.user} tournament={item} loading={loading} key={key} />}
             />
         </>
     )

@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { GREY_1, GREY_BG, PRIMARY_COLOR, TEXT_COLOR, GREEN, YELLOW, ON_PRIMARY } from '../../constant/color.constant';
 import IconComponent from '../icon/icon.component';
 
 const MenuItem = props => {
-    const { iconName, font, complete, inactive } = props;
+    const { iconName, font, complete, inactive, onPress } = props;
 
     return (
         <TouchableOpacity
-            onPress={inactive ? () => { } : props.onPress}
+            activeOpacity={inactive ? 1 : undefined}
+            onPress={inactive ? () => { } : onPress}
             style={{ borderBottomWidth: 1, borderColor: GREY_BG, height: 70, flexDirection: 'row', backgroundColor: inactive ? GREY_BG : ON_PRIMARY }} >
             {
                 iconName ?

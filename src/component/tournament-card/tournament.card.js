@@ -1,23 +1,22 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { GREY_BG, TEXT_COLOR, GREY_3, ON_PRIMARY, PRIMARY_COLOR } from '../../constant/color.constant';
+import { GREY_BG, TEXT_COLOR, GREY_3, ON_PRIMARY, PRIMARY_COLOR, YELLOW, RED, GREEN } from '../../constant/color.constant';
 import IconComponent from '../icon/icon.component';
 import TournamentCardPlaceholder from './tournament.card.placeholder';
 import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
 import moment from 'moment';
-console.yellowbox = false;
-const IMAGE = 'https://preview.redd.it/h2iz05k9xsm11.jpg?width=960&crop=smart&auto=webp&s=b2ba90222ff111aab4a8b0effecdb1517c5c679c';
+import { navigate } from '../../service/navigation.service';
+import ParticipentsCircle from '../participents-circle/participents-circle.component';
+import { GetTournamentStatus, IsJoined } from '../../utils/tournament.utils';
+console.disableYellowBox = true;
 
 const TournamentCard = props => {
-
     if (props.loading) {
         return <TournamentCardPlaceholder />
     }
 
-    console.log('tournament', props.tournament)
     const tournament = props.tournament || {};
-
     const imageUrl = AccessNestedObject(tournament, 'game.thumbnail');
     const date = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('MMM DD');
     const time = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('hh:mm A');
@@ -27,9 +26,23 @@ const TournamentCard = props => {
     const positions = ['flex-start', 'center', 'flex-end'];
     const registrationStartDate = moment(AccessNestedObject(tournament, 'registration_opening')).format('MMM DD');
     const registrationStartTime = moment(AccessNestedObject(tournament, 'registration_opening')).format('hh:mm A');
+    const tournamentStatus = GetTournamentStatus(tournament);
+    const size = AccessNestedObject(tournament, 'size');
+    const isJoined = IsJoined(participents, AccessNestedObject(props, 'user._id'));
 
     return (
-        <View style={styles.container}>
+        <TouchableOpacity
+            style={styles.container}
+            onPress={() => navigate('Tournament', { tournament: tournament })}
+        >
+            {
+                isJoined ?
+                    <View style={{ height: 20, backgroundColor: GREEN, position: 'absolute', top: 0, right: -2, zIndex: 1, borderTopRightRadius: 10, paddingLeft: 10, paddingRight: 10 }} >
+                        <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
+                            Joined
+                        </Text>
+                    </View> : null
+            }
             <View style={styles.imageContainer} >
                 <Image
                     style={styles.image}
@@ -72,37 +85,27 @@ const TournamentCard = props => {
                 </View>
             </View>
             {
-                (Array.isArray(participents) && participents.length) ?
-                    <View style={styles.bottomContainer} >
-                        <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
-                            <View style={styles.circleContainer} >
-                                <Image
-                                    style={styles.circle}
-                                    source={{ uri: 'https://sguru.org/wp-content/uploads/2017/06/cool-anime-profile-pictures-50422.jpg' }}
-                                />
-                            </View>
-                            <View style={[styles.circleContainer, styles.moveLeft]} >
-                                <Image
-                                    style={[styles.circle]}
-                                    source={{ uri: 'https://sguru.org/wp-content/uploads/2017/06/cool-anime-profile-pictures-50422.jpg' }}
-                                />
-                            </View>
-                            <View style={[styles.circleContainer, styles.moveLeft]} >
-                                <Image
-                                    style={[styles.circle]}
-                                    source={{ uri: 'https://sguru.org/wp-content/uploads/2017/06/cool-anime-profile-pictures-50422.jpg' }}
-                                />
-                            </View>
-                            <View style={[styles.countCircleContainer, styles.moveLeft]} >
-                                <Text style={{ fontWeight: '300', fontSize: 8, color: ON_PRIMARY }} >+50</Text>
-                            </View>
+                tournamentStatus == "pending" ?
+                    <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
+                            <Text style={{ fontSize: 14, color: YELLOW }} >
+                                PENDING
+                            </Text>
                         </View>
-                        <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
-                            <Text style={{ fontSize: 10, fontWeight: '500', color: PRIMARY_COLOR }} >
-                                53/53 Signed
-                        </Text>
+                    </View> : null
+            }
+            {
+                tournamentStatus == "registration_closed" ?
+                    <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
+                            <Text style={{ fontSize: 14, color: YELLOW }} >
+                                REGISTRATION CLOSED
+                            </Text>
                         </View>
-                    </View> :
+                    </View> : null
+            }
+            {
+                tournamentStatus == "registration_will_start" ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 10, color: TEXT_COLOR }} >
@@ -114,9 +117,31 @@ const TournamentCard = props => {
                                 {`${registrationStartDate} AT ${registrationStartTime}`}
                             </Text>
                         </View>
-                    </View>
+                    </View> : null
             }
-        </View>
+            {
+                tournamentStatus == "registration_open" ?
+                    <View style={styles.bottomContainer} >
+                        <ParticipentsCircle participents={participents} />
+                        <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
+                            <Text style={{ fontSize: 10, fontWeight: '500', color: PRIMARY_COLOR }} >
+                                {participents.length}/{size} Signed
+                            </Text>
+                        </View>
+                    </View> : null
+            }
+            {
+                tournamentStatus == "slot_full" ?
+                    <View style={styles.bottomContainer} >
+                        <ParticipentsCircle participents={participents} />
+                        <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
+                            <Text style={{ fontSize: 14, fontWeight: '500', color: RED }} >
+                                SLOT FULL
+                            </Text>
+                        </View>
+                    </View> : null
+            }
+        </TouchableOpacity>
     )
 }
 
@@ -142,7 +167,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderTopRightRadius: 10,
-        borderTopLeftRadius: 10
+        borderTopLeftRadius: 10,
     },
     image: {
         width: widthPercentageToDP(93),
@@ -160,33 +185,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         flexDirection: 'row',
         justifyContent: 'center',
-    },
-    circleContainer: {
-        width: 30,
-        height: 30,
-        overflow: 'hidden',
-        borderWidth: 3,
-        borderColor: ON_PRIMARY,
-        borderRadius: 30,
-    },
-    circle: {
-        width: 30,
-        height: 30,
-        resizeMode: 'contain',
-
-    },
-    moveLeft: {
-        marginLeft: -10
-    },
-    countCircleContainer: {
-        width: 30,
-        height: 30,
-        borderWidth: 3,
-        borderColor: ON_PRIMARY,
-        borderRadius: 30,
-        backgroundColor: PRIMARY_COLOR,
-        alignItems: 'center',
-        justifyContent: 'center'
+        height: 30
     }
 })
 

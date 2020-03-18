@@ -2,11 +2,11 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { ON_PRIMARY, GREY_1, PRIMARY_COLOR, TEXT_COLOR } from '../../constant/color.constant';
 
-function Button({ text, onPress = () => { }, disabled, loading }) {
+function Button({ text, onPress = () => { }, disabled, loading, style }) {
     return (
         <TouchableOpacity
             disabled={disabled}
-            style={[styles.container, disabled ? styles.disabled : styles.active]}
+            style={[styles.container, disabled ? styles.disabled : styles.active, style]}
             onPress={onPress}
         >
             {

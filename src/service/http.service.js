@@ -1,6 +1,7 @@
 import axios from 'axios';
 import NotifyService from './notify.service';
-import APP, { BASE_URL } from '../constant/app.constant';
+import APP from '../constant/app.constant';
+import { BASE_URL } from '../config/app.config';
 import { resetToScreen } from './navigation.service';
 
 export const defautlHeaders = {
@@ -35,6 +36,7 @@ export async function Delete(obj) {
 }
 
 function getToken() {
+    console.log('APP.TOKEN', APP.TOKEN)
     return APP.TOKEN;
 }
 
@@ -90,7 +92,6 @@ async function createHeader(obj) {
     const headers = defautlHeaders;
     const token = getToken();
     headers['Authorization'] = `Bearer ${token}`;
-    console.log('headers', headers);
     // if headers are not passed
     if (!obj.headers) {
         return headers;

@@ -6,6 +6,7 @@ import Button from '../../component/button/button.component';
 import IconComponent from '../../component/icon/icon.component';
 import WalletDetail from '../../component/wallet-detail/wallet-detail.component';
 import MenuItem from '../../component/menu-item/menu-item.component';
+import { navigate } from '../../service/navigation.service';
 
 class WalletScene extends Component {
     navigateToAddMoney = () => {
@@ -13,19 +14,22 @@ class WalletScene extends Component {
     }
 
     navigateToTransactions = () => {
-        this.props.navigation.push('Transactions')
+        navigate('Transactions');
+    }
+
+    navigateToJoinedTournaments = () => {
+        navigate('JoinedTournament');
     }
 
     render() {
-        console.log('wallet', this.props);
         return (
             <ScrollView
                 style={styles.container}
             >
                 <View style={styles.walletDetailContainer} >
-                    <WalletDetail
+                    {/* <WalletDetail
                         navigateToAddMoney={this.navigateToAddMoney}
-                    />
+                    /> */}
                 </View>
                 <View style={styles.menuContainer} >
                     <MenuItem
@@ -33,12 +37,16 @@ class WalletScene extends Component {
                         detail="Your past wallet transactions"
                         onPress={this.navigateToTransactions}
                     />
-                    <MenuItem
+                    {/* <MenuItem
                         name="Add Money"
                         detail="Using netbanking, UPI, debit card and more"
                         onPress={this.navigateToAddMoney}
+                    /> */}
+                    <MenuItem
+                        name="Joined Tournaments"
+                        detail="List of all joined tournaments"
+                        onPress={this.navigateToJoinedTournaments}
                     />
-                    <MenuItem name="Withdraw Money" detail="Instant cash, Widthdraw your winning amount" />
                     <MenuItem name="Contact Us" detail="We love to hear from you" />
                 </View>
             </ScrollView>

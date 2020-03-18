@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView } from 'react-native';
 import { connect } from 'react-redux';
+import { Freshchat, ConversationOptions } from 'react-native-freshchat-sdk';
 
 import MenuItem from '../../component/menu-item/menu-item.component';
 import { logoutUserAction } from '../../action/user.action';
@@ -21,9 +22,20 @@ class MenuScene extends Component {
         }
     }
 
+    showFAQ = () => {
+        Freshchat.showFAQs();
+    }
+
+    showConversations = () => {
+        const conversationOptions = new ConversationOptions();
+        conversationOptions.tags = ["normal"];
+        conversationOptions.filteredViewTitle = "Contact us";
+        Freshchat.showConversations(conversationOptions);
+    }
+
     render() {
         const { user } = this.props;
-        
+
         return (
             <ScrollView style={{ flex: 1, }}>
                 <MenuItem
@@ -40,6 +52,7 @@ class MenuScene extends Component {
                     iconName="question"
                     name="FAQ"
                     detail="Commonly asked questions"
+                    onPress={this.showFAQ}
                 />
                 <MenuItem
                     iconName="star"
@@ -50,6 +63,7 @@ class MenuScene extends Component {
                     iconName="wifi"
                     name="Contact us"
                     detail="We would love to hear from you"
+                    onPress={this.showConversations}
                 />
                 {
                     (HasRole(user, 'Organizer') || HasRole(user, 'Admin')) ?

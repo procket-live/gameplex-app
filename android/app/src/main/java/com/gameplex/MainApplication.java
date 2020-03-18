@@ -14,6 +14,8 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.links.RNFirebaseLinksPackage;
 import io.invertase.firebase.config.RNFirebaseRemoteConfigPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import io.invertase.firebase.perf.RNFirebasePerformancePackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -34,6 +36,8 @@ public class MainApplication extends Application implements ReactApplication {
           packages.add(new RNFirebaseLinksPackage());
           packages.add(new RNFirebaseRemoteConfigPackage());
           packages.add(new RNFirebaseNotificationsPackage());
+          packages.add(new RNFirebasePerformancePackage());
+          packages.add(new RNFirebaseAnalyticsPackage());
           return packages;
         }
 

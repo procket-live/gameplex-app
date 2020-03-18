@@ -83,8 +83,9 @@ export function DisplayPrice(price) {
         price = Math.abs(price);
     }
     if (price == 0) {
-        return `${GLOBAL.CURRENCY} 0`;
+        return `${CURRENCY} 0`;
     }
+
     let number = price;
     if (IsUndefined(price)) {
         return price;

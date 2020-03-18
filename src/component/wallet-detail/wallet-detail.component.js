@@ -1,10 +1,16 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
+import { connect } from 'react-redux';
+
 import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import IconComponent from '../icon/icon.component';
+import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
 
 const WalletDetail = props => {
+    const cashBalance = AccessNestedObject(props, 'user.wallet_cash_balance', 0);
+    const bonousBalance = AccessNestedObject(props, 'user.wallet_bonous_balance', 0);
+
     return (
         <View style={styles.container} >
             <View style={{ flex: 1, flexDirection: 'row' }} >
@@ -16,8 +22,8 @@ const WalletDetail = props => {
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: '500' }} >
-                            ₹51
-                    </Text>
+                            {DisplayPrice(cashBalance + bonousBalance)}
+                        </Text>
                     </View>
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center', padding: 5 }} >
@@ -34,36 +40,36 @@ const WalletDetail = props => {
                 <View style={{ flex: 1 }} >
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 14, color: ON_PRIMARY }} >
-                            ₹51
-                    </Text>
+                            {DisplayPrice(cashBalance)}
+                        </Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 10, color: ON_PRIMARY }} >
-                            Untilized
+                            Cash Balance
                     </Text>
                     </View>
                 </View>
                 <View style={{ flex: 1 }} >
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 14, color: ON_PRIMARY }} >
-                            ₹0
+                            {Dis}
                     </Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 10, color: ON_PRIMARY, fontWeight: '500' }} >
                             Wining
                     </Text>
-                    </View>
+                    </View> */}
                 </View>
                 <View style={{ flex: 1 }} >
                     <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 14, color: ON_PRIMARY }} >
-                            ₹51
-                    </Text>
+                            {DisplayPrice(bonousBalance)}
+                        </Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 10, color: ON_PRIMARY, fontWeight: '500' }} >
-                            Cash Bonus
+                            Bonus
                     </Text>
                     </View>
                 </View>
@@ -80,6 +86,10 @@ const styles = StyleSheet.create({
         backgroundColor: PRIMARY_COLOR,
         borderRadius: 10,
     }
-})
+});
 
-export default WalletDetail;
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps)(WalletDetail);

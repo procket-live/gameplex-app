@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Image, FlatList } from 'react-native';
 import PrivateApi from '../../api/private.api';
-import { FlatList } from 'react-native-gesture-handler';
 import { PRIMARY_COLOR, GREY_BG, TEXT_COLOR, GREY_3, GREY_2, GREY_1 } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { AccessNestedObject } from '../../utils/common.util';

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { connect } from 'react-redux';
 
@@ -7,13 +7,13 @@ import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 import TextInput from '../../component/text-input/text-input.component';
 import Button from '../../component/button/button.component';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import PublicApi from '../../api/public.api';
-import PrivateApi from '../../api/private.api';
 import { setUserAction } from '../../action/user.action';
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
 import { IsUserDetailsSet } from '../../utils/common.util';
+import { fetchGames } from '../../action/game.action';
+import { fetchTournaments } from '../../action/tournament.action';
 
 const STEPS = {
     MOBILE_NUMBER_INPUT: 1,
@@ -80,6 +80,7 @@ class LoginScene extends Component {
         const { mobile, otp } = this.state;
         this.setState({ loading: true });
         const result = await PublicApi.VerifyOTP(mobile, otp);
+        console.log('result', result)
         if (result.success) {
             const userObj = result.response;
             const token = result.token;
@@ -93,6 +94,8 @@ class LoginScene extends Component {
                 resetToScreen('UserDetailInput', { step: userDetailSet.step });
             } else {
                 resetToScreen('TabNavigator');
+                this.props.fetchGames();
+                this.props.fetchTournaments();
             }
         } else {
             this.setState({ loading: false });
@@ -258,4 +261,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(null, { setUserAction })(LoginScene);
+export default connect(null, { setUserAction, fetchGames, fetchTournaments })(LoginScene);

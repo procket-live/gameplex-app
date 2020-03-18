@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -8,7 +8,6 @@ import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 import TextInput from '../../component/text-input/text-input.component';
 import Button from '../../component/button/button.component';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import DateTimePickerComponent from '../../component/date-time-input/date-time-input.component';
 import { DISPLAY_DATE_FORMAT } from '../../constant/app.constant';
 import PrivateApi from '../../api/private.api';

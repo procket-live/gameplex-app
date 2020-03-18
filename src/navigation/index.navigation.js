@@ -26,6 +26,18 @@ import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-det
 import AddTournamentPrizeDetailScene from '../scene/add-tournament-prize-detail-scene/add-tournament-prize-detail.scene';
 import AddTournamentRankDetailScene from '../scene/add-tournament-rank-detail-scene/add-tournament-rank-detal.scene';
 import AddTournamentRegistrationDetailScene from '../scene/add-tournament-registration-detail-scene/add-tournament-registration-detail.scene';
+import TournamentScene from '../scene/tournament-scene/tournament.scene';
+import TournamentHowToPlayScene from '../scene/tournament-how-to-play-scene/tournament-how-to-play.scene';
+import HowToGetUserId from '../scene/how-to-get-user-id-scene/how-to-get-user-id.scene';
+import addGameUserIdComponent from '../component/add-game-user-id/add-game-user-id.component';
+import CheckoutScene from '../scene/checkout-scene/checkout.scene';
+import ManageParticipents from '../scene/manage-participents/manage-participents.scene';
+import SetTournamentCredentials from '../scene/set-tournament-credentials-scene/set-tournament-credentials.scene';
+import SetRankingScene from '../scene/set-ranking-scene/set-ranking.scene';
+import ManageOrganizerProfile from '../scene/manage-organizer-profile-scene/manage-organizer-profile.scene';
+import JoinedTournamentScene from '../scene/joined-tournament-scene/joined-tournament.scene';
+import SelectParticipentScene from '../scene/select-participent-scene/select-participent.scene';
+
 
 const headerStyle = {
     elevation: 0,
@@ -59,7 +71,7 @@ const WalletStack = createStackNavigator({
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="wallet" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="list" />,
         }
     }
 );
@@ -81,7 +93,7 @@ const MenuStack = createStackNavigator({
 
 const NotificationStack = createStackNavigator({
     Notification: {
-        screen: () => NotificationScene,
+        screen: NotificationScene,
         navigationOptions: {
             header: null
         }
@@ -98,8 +110,8 @@ const NotificationStack = createStackNavigator({
 const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
-        Wallet: WalletStack,
         Message: NotificationStack,
+        Manage: WalletStack,
         Menu: MenuStack,
     }, {
     tabBarOptions: {
@@ -219,6 +231,83 @@ const RootNavigator = createStackNavigator({
             title: "Set registration detail",
             headerStyle,
         }
+    },
+    Tournament: {
+        screen: TournamentScene,
+        navigationOptions: {
+            title: "Tournament",
+            headerStyle
+        }
+    },
+    TournamentHowToPlay: {
+        screen: TournamentHowToPlayScene,
+        navigationOptions: {
+            title: "How to play?",
+            headerStyle,
+        }
+    },
+    HowToGetUserId: {
+        screen: HowToGetUserId,
+        navigationOptions: {
+            title: "How to get User ID?",
+            headerStyle,
+        }
+    },
+    AddGameUserId: {
+        screen: addGameUserIdComponent,
+        navigationOptions: {
+            title: "Add user id?",
+            headerStyle,
+        }
+    },
+    Checkout: {
+        screen: CheckoutScene,
+        navigationOptions: {
+            title: "Confirm Entry",
+            headerStyle,
+        }
+    },
+    ManageParticipents: {
+        screen: ManageParticipents,
+        navigationOptions: {
+            title: "Participents",
+            headerStyle,
+        }
+    },
+    SetTournamentCredentials: {
+        screen: SetTournamentCredentials,
+        navigationOptions: {
+            title: "Set room id & password",
+            headerStyle,
+        }
+    },
+    SetRanking: {
+        screen: SetRankingScene,
+        navigationOptions: {
+            title: "Set ranking",
+            headerStyle,
+        }
+    },
+    ManageOrganizerProfile: {
+        screen: ManageOrganizerProfile,
+        navigationOptions: {
+            title: "Manage profile",
+            headerStyle,
+        }
+    },
+    JoinedTournament: {
+        screen: JoinedTournamentScene,
+        navigationOptions: {
+            title: "My Tournaments",
+            headerStyle,
+        }
+    },
+    SelectParticipent: {
+        screen: SelectParticipentScene,
+        navigationOptions: {
+            title: "Select participent",
+            headerStyle,
+        }
     }
 }, {
     initialRouteName: 'Empty',
@@ -227,7 +316,7 @@ const RootNavigator = createStackNavigator({
 export default createAppContainer(RootNavigator);
 
 
-const persistenceKey = "to3eodddddol"
+const persistenceKey = "to3edddodddddol"
 const persistNavigationState = async (navState) => {
     try {
         await AsyncStorage.setItem(persistenceKey, JSON.stringify(navState))

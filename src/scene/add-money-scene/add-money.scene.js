@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+
 import { GREY_BG, TEXT_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import { widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
 import IconComponent from '../../component/icon/icon.component';
 import BottomStickButton from '../../component/bottom-stick-button/bottom-stick-button.component';
+import { AddAmountToWallet } from '../../utils/paytm.utils';
+import { setUserAction } from '../../action/user.action';
+import NotifyService from '../../service/notify.service';
+import { navigatePop } from '../../service/navigation.service';
 
 class AddMoneyScene extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            amount: '0',
+            amount: props.navigation.getParam('amount') || 0,
         }
     }
 
@@ -60,6 +66,30 @@ class AddMoneyScene extends Component {
         }
 
         this.setState({ amount: this.state.amount.slice(0, -1) })
+    }
+
+    initiatePayment = () => {
+        AddAmountToWallet(this.state.amount, this.props.user, this.paymentResponse)
+    }
+
+    paymentResponse = ({ success, user }) => {
+        console.log('useruser', user);
+        if (success) {
+            this.props.setUserAction(user);
+            NotifyService.notify({
+                title: "success",
+                message: "wallet updated",
+                type: "success"
+            });
+        } else {
+            NotifyService.notify({
+                title: "failed",
+                message: "something went wrong",
+                type: "error"
+            })
+        }
+
+        navigatePop();
     }
 
     render() {
@@ -124,6 +154,7 @@ class AddMoneyScene extends Component {
                 </View>
 
                 <BottomStickButton
+                    onPress={this.initiatePayment}
                     text="ADD MONEY"
                 />
             </View>
@@ -169,4 +200,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddMoneyScene;
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps, { setUserAction })(AddMoneyScene);

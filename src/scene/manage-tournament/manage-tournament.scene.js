@@ -12,7 +12,7 @@ import ButtonComponent from '../../component/button/button.component';
 import Tabs from '../../component/tabs/tabs.component';
 import NotifyService from '../../service/notify.service';
 import MenuItem from '../../component/menu-item/menu-item.component';
-import { navigatePop } from '../../service/navigation.service';
+import { navigatePop, navigate } from '../../service/navigation.service';
 
 class ManageTournamentScene extends PureComponent {
     constructor(props) {
@@ -49,6 +49,30 @@ class ManageTournamentScene extends PureComponent {
         }
     }
 
+    finish = () => {
+        const { tournament } = this.state;
+        const callback = this.props.navigation.getParam('callback');
+
+        Alert.alert("Complete tournament?", "Are you sure you want to finish tournament.", [
+            { text: "Calcel", style: "cancel" },
+            {
+                text: "Proceed",
+                onPress: async () => {
+                    this.setState({ loading: true });
+                    const result = await PrivateApi.UpdateTournament(tournament._id, { status: 'completed' });
+                    this.setState({ loading: false });
+                    if (result.success) {
+                        callback();
+                        navigatePop();
+                        navigatePop();
+                    }
+                }
+            }
+        ])
+
+
+    }
+
     makePublic = async () => {
         const { tournament } = this.state;
         this.setState({ loading: true });
@@ -64,7 +88,7 @@ class ManageTournamentScene extends PureComponent {
         const prizeMeta = AccessNestedObject(tournament, 'game.price_meta', []);
         const prizeSetMeta = AccessNestedObject(tournament, 'prize', []);
 
-        this.props.navigation.push('AddTournamentPrizeDetail', {
+        navigate('AddTournamentPrizeDetail', {
             prizeMeta,
             callback: this.setPrizeDetail,
             isSet: this.isPrizeDetailSet(),
@@ -94,13 +118,13 @@ class ManageTournamentScene extends PureComponent {
         const gameMeta = AccessNestedObject(tournament, 'game.game_meta', {});
         const tournamentMeta = AccessNestedObject(tournament, 'tournament_meta', []);
 
-        this.props.navigation.push('AddTournamentGeneralDetail', {
+        navigate('AddTournamentGeneralDetail', {
             gameMeta,
             callback: this.setGeneralDetail,
             isSet: this.isGeneralDetailSet(),
             tournamentMeta,
             isInactive: tournament.status != 'draft'
-        });
+        })
     }
 
 
@@ -131,7 +155,7 @@ class ManageTournamentScene extends PureComponent {
         const size = AccessNestedObject(tournament, 'size', 0);
         const rank = AccessNestedObject(tournament, 'rank', [])
 
-        this.props.navigation.push('AddTournamentRankDetail', {
+        navigate('AddTournamentRankDetail', {
             size,
             callback: this.setRankDetail,
             isSet: this.isRankDetailSet(),
@@ -161,7 +185,7 @@ class ManageTournamentScene extends PureComponent {
         const { tournament } = this.state;
         const { registration_opening, registration_closing, tournament_start_time, form_message, validation_message, tnc_link } = tournament;
 
-        this.props.navigation.push('AddTournamentRegistrationDetail', {
+        navigate('AddTournamentRegistrationDetail', {
             callback: this.setRegistrationDetail,
             isSet: this.isRegistrationDetailSet(),
             regisrationDetails: {
@@ -176,6 +200,57 @@ class ManageTournamentScene extends PureComponent {
         })
     }
 
+    isCompleted = () => {
+        const { tournament } = this.state;
+        return tournament.status == "completed"
+    }
+
+    isSetRankingInactive = () => {
+        const { tournament } = this.state;
+
+        if (tournament.ranking_set) {
+            return true;
+        }
+
+        return this.isCompleted();
+    }
+
+    isRolloutInactive = () => {
+        const { tournament } = this.state;
+        if (tournament.ranking_set) {
+            return false;
+        }
+
+        return true
+    }
+
+    navigateToCredentials = () => {
+        const { tournament } = this.state;
+        const { room_detail } = tournament;
+
+        navigate('SetTournamentCredentials', {
+            isSet: this.isCredentialsSet(),
+            roomDetail: room_detail,
+            callback: this.setCredentaials
+        })
+    }
+
+    setCredentaials = async (response) => {
+        const { tournament } = this.state;
+        this.setState({ loading: true });
+        const result = await PrivateApi.UpdateTournament(tournament._id, { room_detail: response });
+        this.setState({ loading: false });
+        if (result.success) {
+            this.setState({ tournament: result.response });
+        }
+    }
+
+    isCredentialsSet = () => {
+        const { tournament } = this.state;
+        const { room_detail } = tournament;
+        return !!(AccessNestedObject(room_detail, 'room_id') && AccessNestedObject(room_detail, 'room_password'));
+    }
+
     setRegistrationDetail = async (response) => {
         const { tournament } = this.state;
         this.setState({ loading: true });
@@ -187,7 +262,18 @@ class ManageTournamentScene extends PureComponent {
     }
 
     isTournamentCredentialsOptionInactive = () => {
-        return true
+        const { tournament } = this.state;
+        const tournamentStartTime = AccessNestedObject(tournament, 'tournament_start_time');
+
+        return moment().isBetween(moment(tournamentStartTime).add(1, 'hour'), moment(tournamentStartTime));
+    }
+
+    isTournamentCredentialSet = () => {
+        const { tournament } = this.state;
+        const roomId = AccessNestedObject(tournament, 'room_detail.room_id', '');
+        const roomPassword = AccessNestedObject(tournament, 'room_detail.room_password', '');
+
+        return roomPassword && roomId
     }
 
     isParticiepentMenuInactive = () => {
@@ -195,7 +281,30 @@ class ManageTournamentScene extends PureComponent {
     }
 
     navigateToParticipents = () => {
+        const { tournament } = this.state;
+        navigate('ManageParticipents', { tournament });
+    }
 
+    navigateToSetRanking = () => {
+        const { tournament } = this.state;
+        navigate('SetRanking', { tournament, callback: this.setRanking })
+    }
+
+    setRanking = async (record) => {
+        const { tournament } = this.state;
+        this.setState({ loading: true });
+        const id = AccessNestedObject(tournament, '_id');
+        const result = await PrivateApi.SetRanking(id, { record: record });
+        this.setState({ loading: false });
+        if (result.success) {
+            navigatePop();
+            this.setState({ tournament: result.response });
+        }
+    }
+
+    isSetRankingDone = () => {
+        const { tournament } = this.state;
+        return AccessNestedObject(tournament, 'ranking_set');
     }
 
     deleteTournament = () => {
@@ -271,16 +380,16 @@ class ManageTournamentScene extends PureComponent {
                     font="fontawesome"
                     name="Set tournament credentials"
                     detail="Set private room username and password"
-                    onPress={this.navigateToParticipents}
-                    complete={false}
+                    onPress={this.navigateToCredentials}
+                    complete={this.isCredentialsSet()}
                     inactive={this.isTournamentCredentialsOptionInactive()}
                 />
                 <MenuItem
                     iconName="users"
                     font="fontawesome"
-                    name="Paricipents"
+                    name="Participents"
                     detail="Manage participents"
-                    onPress={this.navigateToGeneralDetailForm}
+                    onPress={this.navigateToParticipents}
                     inactive={this.isParticiepentMenuInactive()}
                 />
             </View>
@@ -295,9 +404,9 @@ class ManageTournamentScene extends PureComponent {
                     font="fontawesome"
                     name="Set Ranking"
                     detail="Set ranking of participents"
-                    onPress={this.navigateToGeneralDetailForm}
-                    complete={false}
-                    inactive
+                    onPress={this.navigateToSetRanking}
+                    complete={this.isSetRankingDone()}
+                    inactive={false}
                 />
                 <MenuItem
                     iconName="check"
@@ -305,7 +414,7 @@ class ManageTournamentScene extends PureComponent {
                     name="Rollout Payment"
                     detail="Finish tournament and rollout payments"
                     onPress={this.navigateToGeneralDetailForm}
-                    inactive
+                    inactive={this.isRolloutInactive()}
                 />
             </View>
         )
@@ -320,6 +429,7 @@ class ManageTournamentScene extends PureComponent {
         const platform = AccessNestedObject(tournament, 'game.platform.name');
         const createAt = moment(AccessNestedObject(tournament, 'created_at')).format(DISPLAY_DATE_TIME_FORMAT)
         const status = AccessNestedObject(tournament, 'status');
+        const tournamentStartTime = AccessNestedObject(tournament, 'tournament_start_time');
 
         return (
             <ScrollView
@@ -338,19 +448,6 @@ class ManageTournamentScene extends PureComponent {
                                 </Text>
                             </View>
 
-                            {/* <View style={styles.padding} >
-                                <Text style={styles.light} >
-                                    {tournamentDescription}
-                                </Text>
-                            </View> */}
-                            {/* <View style={[styles.padding, { flexDirection: 'row', alignItems: 'center' }]} >
-                                <Text style={[styles.light, { marginRight: 10 }]} >
-                                    Platform:
-                            </Text>
-                                <Text style={[styles.normal, { marginRight: 10 }]} >
-                                    {platform}
-                                </Text>
-                            </View> */}
                             <View style={[styles.padding, { flexDirection: 'row', alignItems: 'center' }]} >
                                 <Text style={[styles.light, { marginRight: 10 }]} >
                                     Create at:
@@ -391,7 +488,15 @@ class ManageTournamentScene extends PureComponent {
                                             />
                                         </View> : null
                                 }
+
                             </View>
+                            {
+                                status == "active" && !moment().isAfter(moment(tournamentStartTime).add(1, 'hour')) ?
+                                    <Button
+                                        onPress={this.finish}
+                                        title={"FINISH TOURNAMENT"}
+                                    /> : null
+                            }
                         </View>
                     </View>
                     {

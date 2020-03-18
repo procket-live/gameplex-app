@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
+import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
+
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
 import { IsUserDetailsSet, AccessNestedObject } from '../../utils/common.util';
@@ -38,8 +40,22 @@ class AppResolve extends PureComponent {
                 }
             }
 
+            this.setFreshchatUser(user);
+
             SplashScreen.hide();
         }
+    }
+
+    setFreshchatUser = (user) => {
+        const freshchatUser = new FreshchatUser();
+        freshchatUser.firstName = user.name;
+        freshchatUser.lastName = "";
+        freshchatUser.email = user.email;
+        freshchatUser.phoneCountryCode = "+91";
+        freshchatUser.phone = user.mobile;
+        Freshchat.setUser(freshchatUser, (error) => {
+            console.log(error);
+        });
     }
 
     updateUser = async (token) => {

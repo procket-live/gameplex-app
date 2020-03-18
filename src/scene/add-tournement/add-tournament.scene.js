@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Form4u from 'react-native-form4u';
 
 import PrivateApi from '../../api/private.api';
 import { navigatePop } from '../../service/navigation.service';
 import { ON_PRIMARY } from '../../constant/color.constant';
+import { connect } from 'react-redux';
+import { AccessNestedObject } from '../../utils/common.util';
 
 class AddTournamentScene extends PureComponent {
     constructor(props) {
@@ -18,12 +20,11 @@ class AddTournamentScene extends PureComponent {
 
     getGames = () => {
         const game = this.props.navigation.getParam('game') || [];
-
         return game.map((item) => ({ label: item.name, value: item._id }));
     }
 
     form = () => {
-        return [
+        const form = [
             [
                 {
                     name: 'tournamentName',
@@ -50,6 +51,7 @@ class AddTournamentScene extends PureComponent {
                     placeholder: 'Select game',
                     pickerItems: this.getGames(),
                     type: 'picker',
+                    defaultValue: AccessNestedObject(this.getGames(), `0.value`)
                 },
             ],
             [
@@ -70,9 +72,14 @@ class AddTournamentScene extends PureComponent {
                 },
             ]
         ];
+
+        console.log('form', form)
+
+        return form;
     }
 
     handleSubmit = (state) => {
+        const { organizer } = this.props;
         const {
             tournamentName,
             tournamentDescription,
@@ -85,6 +92,7 @@ class AddTournamentScene extends PureComponent {
             description: tournamentDescription.value,
             game: game.value,
             size: teamSize.value,
+            organizer_id: AccessNestedObject(organizer, '_id')
         }
 
         this.makeApiCall(params);
@@ -103,9 +111,10 @@ class AddTournamentScene extends PureComponent {
         }
     }
 
-    handleValidation = ({ tournamentName, tournamentDescription, game, teamSize }) => {
+    handleValidation = (props) => {
         const errors = {};
-
+        console.log('props', props)
+        const { tournamentName, tournamentDescription, game, teamSize } = props;
         if (!tournamentName.value) {
             errors.tournamentName = 'Tournament name required';
         }
@@ -113,7 +122,7 @@ class AddTournamentScene extends PureComponent {
         if (!tournamentDescription.value) {
             errors.tournamentDescription = 'Please add tournament description';
         }
-
+        console.log('game', game)
         if (!game.value) {
             errors.game = 'Please select game';
         }
@@ -161,4 +170,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddTournamentScene;
+const mapStateToProps = state => ({
+    organizer: state.organizer
+})
+
+export default connect(mapStateToProps)(AddTournamentScene);

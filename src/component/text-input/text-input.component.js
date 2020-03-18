@@ -5,7 +5,7 @@ import { PRIMARY_COLOR, FONT_FAMILY, TEXT_COLOR, GREY_1 } from '../../constant/c
 
 class TextInputComponent extends PureComponent {
     render() {
-        const { label, prefix } = this.props;
+        const { label, prefix, RenderRight } = this.props;
 
         return (
             <View>
@@ -27,6 +27,12 @@ class TextInputComponent extends PureComponent {
                         placeholderTextColor={GREY_1}
                         {...this.props}
                     />
+                    {
+                        RenderRight ?
+                            <View style={{ alignItems: 'center', justifyContent: 'center', width: wp(25) }} >
+                                <RenderRight />
+                            </View> : null
+                    }
                 </View>
             </View >
         )
@@ -35,18 +41,18 @@ class TextInputComponent extends PureComponent {
 
 const styles = StyleSheet.create({
     container: {
-        width: wp('90%'),
+        width: wp('95%'),
         height: 45,
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: PRIMARY_COLOR,
     },
     common: {
-        width: wp('75%'),
+        width: wp('70%'),
         fontSize: 23,
         color: TEXT_COLOR,
         paddingLeft: 5,
-        height: 46
+        height: 46,
     },
     prefixContainer: {
         width: wp('15'),
