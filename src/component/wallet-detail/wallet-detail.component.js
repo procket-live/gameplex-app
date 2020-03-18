@@ -28,7 +28,7 @@ const WalletDetail = props => {
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center', padding: 5 }} >
                     <TouchableOpacity
-                        onPress={props.navigateToAddMoney}
+                        // onPress={props.navigateToAddMoney}
                         style={{ width: 30, height: 30, borderWidth: 1, borderColor: ON_PRIMARY, alignItems: 'center', justifyContent: 'center' }}
                     >
                         <IconComponent name="plus" size={20} focused tintColor={ON_PRIMARY} />

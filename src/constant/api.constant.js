@@ -20,3 +20,5 @@ export const WALLET_TANSACTIONS = `${USER}/wallet/transactions`;
 export const ORGANIZER = 'organizer';
 export const NOTIFICATION = 'notification';
 export const RANKING = `${TOURNAMENT}/ranking`;
+export const OFFER = 'offer';
+export const MY_TOURNAMENT = `${TOURNAMENT}/my`;

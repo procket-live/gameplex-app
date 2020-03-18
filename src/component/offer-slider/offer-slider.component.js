@@ -1,36 +1,51 @@
 import React from 'react';
 import { StyleSheet, ImageBackground } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import {
+    Placeholder,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
+
 
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { GradientBackground } from '../../config/image.config';
 
-const OfferSlider = props => {
+const OfferSlider = ({ offers = [] }) => {
     return (
         <Carousel
             autoplay
             loop
-            data={props.entries}
-            renderItem={(item, key) => {
+            data={offers}
+            renderItem={({ item, key }) => {
+                if (item.loading) {
+                    return (
+                        <Placeholder
+                            Animation={Fade}
+                        >
+                            <PlaceholderLine style={styles.slide} />
+                        </Placeholder>
+                    )
+                }
+
                 return (
                     <ImageBackground
                         key={key}
-                        source={GradientBackground()}
+                        source={{ uri: item.image }}
                         style={styles.slide}
                     >
                     </ImageBackground>
                 )
             }}
             sliderWidth={widthPercentageToDP(100)}
-            itemWidth={widthPercentageToDP(90)}
+            itemWidth={widthPercentageToDP(85)}
         />
     )
 }
 
 const styles = StyleSheet.create({
     slide: {
-        width: widthPercentageToDP(90),
-        height: 100,
+        width: widthPercentageToDP(85),
+        height: 180,
         borderRadius: 10,
         overflow: 'hidden',
         resizeMode: 'contain'

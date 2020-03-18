@@ -1,32 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { navigate } from '../../service/navigation.service';
+import { View, Text, FlatList } from 'react-native';
 import GameCard from '../game-card/game-card.component';
 import { AccessNestedObject } from '../../utils/common.util';
-import { TEXT_COLOR, PRIMARY_COLOR } from '../../constant/color.constant';
+import { TEXT_COLOR, ON_PRIMARY, PRIMARY_COLOR } from '../../constant/color.constant';
 
 const GameSlider = props => {
-    console.log('props', props);
     const games = AccessNestedObject(props, 'game.list', []);
     const loading = AccessNestedObject(props, 'game.loading', false);
 
     return (
         <>
-            <View style={{ flexDirection: 'row', margin: 15 }}>
-                <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }} >
-                    <Text style={{ fontWeight: '500', color: TEXT_COLOR, fontSize: 14 }} >
-                        Games
+            <View style={{ flexDirection: 'row', backgroundColor: PRIMARY_COLOR, paddingLeft: 15, paddingRight: 15, marginBottom: 10, marginTop: 10 }}>
+                <View style={{ height: 50, flex: 2, alignItems: 'flex-start', justifyContent: 'center', }} >
+                    <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14 }} >
+                        GAMES
                     </Text>
-                </View>
-                <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
-                    {/* <TouchableOpacity
-                        onPress={() => {
-                            navigate('TournamentList')
-                        }}
-                    >
-                        <Text style={{ fontWeight: '500', color: PRIMARY_COLOR, fontSize: 12 }} >View All</Text>
-                    </TouchableOpacity> */}
                 </View>
             </View>
             <FlatList

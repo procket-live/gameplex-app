@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, FlatList, RefreshControl } from 'react-native';
 import NotificationIcon from '../../assets/svg/notification';
 import { PRIMARY_COLOR, ON_PRIMARY, GREY_BG, TEXT_COLOR, GREY_1, RED } from '../../constant/color.constant';
 import PrivateApi from '../../api/private.api';
@@ -12,16 +12,22 @@ import {
 function NotificationScene() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = React.useState(false);
 
     useEffect(() => {
         fetchData();
     }, [])
 
-    async function fetchData() {
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchData(() => setRefreshing(false));
+    }, [refreshing]);
+
+    async function fetchData(callback = () => { }) {
         setLoading(true)
         const result = await PrivateApi.GetNotifications();
-        console.log('result', result)
         setLoading(false);
+        callback();
         if (result.success) {
             setNotifications(result.response);
         }
@@ -43,9 +49,13 @@ function NotificationScene() {
 
     return (
         <FlatList
+            pull
             style={{ backgroundColor: GREY_BG }}
             data={notifications}
             renderItem={NotificationCard}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
         />
     )
 }
@@ -77,20 +87,20 @@ function ShinyCard() {
     )
 }
 
-function NotificationCard() {
+function NotificationCard({ item, key }) {
     const newNotification = false;
 
     return (
-        <View style={{ flex: 1, padding: 10, margin: 5, borderRadius: 4, elevation: 1, backgroundColor: ON_PRIMARY, flexDirection: 'row' }}>
+        <View key={key} style={{ flex: 1, padding: 10, margin: 5, borderRadius: 4, elevation: 1, backgroundColor: ON_PRIMARY, flexDirection: 'row' }}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                 <NotificationIcon height={25} width={25} />
             </View>
             <View style={{ flex: 5 }} >
                 <Text style={{ fontSize: 16, color: TEXT_COLOR, fontWeight: '500' }} >
-                    Notification Title
+                    {item.title}
                 </Text>
                 <Text style={{ fontSize: 13, color: GREY_1, fontWeight: '500' }} >
-                    Notification content is the ui content of content is the ui content of content is the ui content of
+                    {item.message}
                 </Text>
             </View>
             {

@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import {
     SafeAreaView,
     StatusBar,
 } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert';
-import { useScreens, screensEnabled } from 'react-native-screens';
+import { useScreens } from 'react-native-screens';
 import NetworkState from 'react-native-network-state'
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';

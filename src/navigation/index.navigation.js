@@ -37,7 +37,7 @@ import SetRankingScene from '../scene/set-ranking-scene/set-ranking.scene';
 import ManageOrganizerProfile from '../scene/manage-organizer-profile-scene/manage-organizer-profile.scene';
 import JoinedTournamentScene from '../scene/joined-tournament-scene/joined-tournament.scene';
 import SelectParticipentScene from '../scene/select-participent-scene/select-participent.scene';
-
+import TNCScene from '../scene/tnc-scene/tnc.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -110,8 +110,8 @@ const NotificationStack = createStackNavigator({
 const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
-        Message: NotificationStack,
         Manage: WalletStack,
+        Message: NotificationStack,
         Menu: MenuStack,
     }, {
     tabBarOptions: {
@@ -306,6 +306,13 @@ const RootNavigator = createStackNavigator({
         screen: SelectParticipentScene,
         navigationOptions: {
             title: "Select participent",
+            headerStyle,
+        }
+    },
+    TNC: {
+        screen: TNCScene,
+        navigationOptions: {
+            title: "Terms & Conditions",
             headerStyle,
         }
     }

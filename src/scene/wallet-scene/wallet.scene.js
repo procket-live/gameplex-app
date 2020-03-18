@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { PRIMARY_COLOR, ON_PRIMARY, GREY_1, TEXT_COLOR, GREY_2, GREY_BG } from '../../constant/color.constant';
-import Button from '../../component/button/button.component';
-import IconComponent from '../../component/icon/icon.component';
+import { Freshchat, ConversationOptions } from 'react-native-freshchat-sdk';
+
 import WalletDetail from '../../component/wallet-detail/wallet-detail.component';
 import MenuItem from '../../component/menu-item/menu-item.component';
 import { navigate } from '../../service/navigation.service';
@@ -21,15 +19,22 @@ class WalletScene extends Component {
         navigate('JoinedTournament');
     }
 
+    navigateToContactUs = () => {
+        const conversationOptions = new ConversationOptions();
+        conversationOptions.tags = ["payment"];
+        conversationOptions.filteredViewTitle = "Contact us";
+        Freshchat.showConversations(conversationOptions);
+    }
+
     render() {
         return (
             <ScrollView
                 style={styles.container}
             >
                 <View style={styles.walletDetailContainer} >
-                    {/* <WalletDetail
+                    <WalletDetail
                         navigateToAddMoney={this.navigateToAddMoney}
-                    /> */}
+                    />
                 </View>
                 <View style={styles.menuContainer} >
                     <MenuItem
@@ -37,17 +42,16 @@ class WalletScene extends Component {
                         detail="Your past wallet transactions"
                         onPress={this.navigateToTransactions}
                     />
-                    {/* <MenuItem
-                        name="Add Money"
-                        detail="Using netbanking, UPI, debit card and more"
-                        onPress={this.navigateToAddMoney}
-                    /> */}
                     <MenuItem
                         name="Joined Tournaments"
                         detail="List of all joined tournaments"
                         onPress={this.navigateToJoinedTournaments}
                     />
-                    <MenuItem name="Contact Us" detail="We love to hear from you" />
+                    <MenuItem
+                        name="Contact Us"
+                        detail="We love to hear from you"
+                        onPress={this.navigateToContactUs}
+                    />
                 </View>
             </ScrollView>
         );
@@ -63,7 +67,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     menuContainer: {
-        marginTop: 10
     }
 })
 

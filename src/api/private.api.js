@@ -1,5 +1,5 @@
 import { Post, Get, Put } from "../service/http.service"
-import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT, INITIATE_PAYMENT, VALIDATE_PAYMENT, TRANSACTIONS, ADD_GAME_USER_ID, JOIN_TOURNAMENT, TOURNAMENT_PARTICIPENTS, WALLET_TANSACTIONS, ORGANIZER, JOINED_TOURNAMENT, NOTIFICATION, RANKING } from "../constant/api.constant"
+import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT, INITIATE_PAYMENT, VALIDATE_PAYMENT, TRANSACTIONS, ADD_GAME_USER_ID, JOIN_TOURNAMENT, TOURNAMENT_PARTICIPENTS, WALLET_TANSACTIONS, ORGANIZER, JOINED_TOURNAMENT, NOTIFICATION, RANKING, OFFER, MY_TOURNAMENT } from "../constant/api.constant"
 
 class PrivateApi {
     static GetUser = () => {
@@ -92,6 +92,14 @@ class PrivateApi {
 
     static SetRanking = (id, body) => {
         return Post({ url: `${RANKING}/${id}`, body })
+    }
+
+    static GetOffers = () => {
+        return Get({ url: OFFER });
+    }
+
+    static GetMyTournaments = () => {
+        return Get({ url: MY_TOURNAMENT })
     }
 }
 

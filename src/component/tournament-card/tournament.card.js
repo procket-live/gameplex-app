@@ -11,6 +11,8 @@ import ParticipentsCircle from '../participents-circle/participents-circle.compo
 import { GetTournamentStatus, IsJoined } from '../../utils/tournament.utils';
 console.disableYellowBox = true;
 
+const WIDTH = 93;
+
 const TournamentCard = props => {
     if (props.loading) {
         return <TournamentCardPlaceholder />
@@ -85,7 +87,7 @@ const TournamentCard = props => {
                 </View>
             </View>
             {
-                tournamentStatus == "pending" ?
+                tournamentStatus == "pending" && !props.hideStatus ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 14, color: YELLOW }} >
@@ -95,7 +97,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "registration_closed" ?
+                tournamentStatus == "registration_closed" && !props.hideStatus ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 14, color: YELLOW }} >
@@ -105,7 +107,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "registration_will_start" ?
+                tournamentStatus == "registration_will_start" && !props.hideStatus ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 10, color: TEXT_COLOR }} >
@@ -120,7 +122,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "registration_open" ?
+                tournamentStatus == "registration_open" && !props.hideStatus ?
                     <View style={styles.bottomContainer} >
                         <ParticipentsCircle participents={participents} />
                         <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
@@ -131,7 +133,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "slot_full" ?
+                tournamentStatus == "slot_full" && !props.hideStatus ?
                     <View style={styles.bottomContainer} >
                         <ParticipentsCircle participents={participents} />
                         <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
@@ -147,12 +149,13 @@ const TournamentCard = props => {
 
 const styles = StyleSheet.create({
     container: {
-        width: widthPercentageToDP(93),
+        width: widthPercentageToDP(WIDTH),
         borderRadius: 10,
         marginRight: 10,
         marginLeft: 10,
         borderWidth: 1,
         borderColor: GREY_BG,
+        backgroundColor: ON_PRIMARY
     },
     detailsContainer: {
         height: 120,
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     imageContainer: {
-        width: widthPercentageToDP(93),
+        width: widthPercentageToDP(WIDTH),
         height: 100,
         alignItems: 'center',
         justifyContent: 'center',
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 10,
     },
     image: {
-        width: widthPercentageToDP(93),
+        width: widthPercentageToDP(WIDTH),
         height: 100,
         resizeMode: 'cover',
         borderTopRightRadius: 10,

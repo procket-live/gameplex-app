@@ -42,12 +42,15 @@ class MenuScene extends Component {
                     iconName="profile"
                     name="Terms and Conditions"
                     detail="A primer on the & regulation"
+                    onPress={() => {
+                        navigate('TNC')
+                    }}
                 />
-                <MenuItem
+                {/* <MenuItem
                     iconName="setting"
                     name="Settings"
                     detail="Finetune your experience"
-                />
+                /> */}
                 <MenuItem
                     iconName="question"
                     name="FAQ"

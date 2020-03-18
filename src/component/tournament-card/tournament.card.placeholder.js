@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         borderWidth: 1,
         borderColor: GREY_BG,
+        backgroundColor: ON_PRIMARY
     },
     detailsContainer: {
         height: 100,
