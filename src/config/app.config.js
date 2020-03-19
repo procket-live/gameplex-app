@@ -1,7 +1,5 @@
 module.exports = {
-    // BASE_URL: 'http://54.145.129.204:3001',
-    BASE_URL: 'http://192.168.0.100:3001',
-    // BASE_URL: 'https://gameplex-app.herokuapp.com',
+    BASE_URL: __DEV__ ? 'http://192.168.0.100:3001' : 'https://gameplex-app.herokuapp.com',
     PAYTM_CONFIG: {
         MODE: 'Staging',
         MID: 'gzGeYn36130961827220',
