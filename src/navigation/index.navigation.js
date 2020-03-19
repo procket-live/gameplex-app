@@ -27,8 +27,7 @@ import AddTournamentPrizeDetailScene from '../scene/add-tournament-prize-detail-
 import AddTournamentRankDetailScene from '../scene/add-tournament-rank-detail-scene/add-tournament-rank-detal.scene';
 import AddTournamentRegistrationDetailScene from '../scene/add-tournament-registration-detail-scene/add-tournament-registration-detail.scene';
 import TournamentScene from '../scene/tournament-scene/tournament.scene';
-import TournamentHowToPlayScene from '../scene/tournament-how-to-play-scene/tournament-how-to-play.scene';
-import HowToGetUserId from '../scene/how-to-get-user-id-scene/how-to-get-user-id.scene';
+import InstructionGenerator from '../scene/instruction-generator-scene/instruction-generator.scene';
 import addGameUserIdComponent from '../component/add-game-user-id/add-game-user-id.component';
 import CheckoutScene from '../scene/checkout-scene/checkout.scene';
 import ManageParticipents from '../scene/manage-participents/manage-participents.scene';
@@ -239,17 +238,9 @@ const RootNavigator = createStackNavigator({
             headerStyle
         }
     },
-    TournamentHowToPlay: {
-        screen: TournamentHowToPlayScene,
+    InstructionGenerator: {
+        screen: InstructionGenerator,
         navigationOptions: {
-            title: "How to play?",
-            headerStyle,
-        }
-    },
-    HowToGetUserId: {
-        screen: HowToGetUserId,
-        navigationOptions: {
-            title: "How to get User ID?",
             headerStyle,
         }
     },

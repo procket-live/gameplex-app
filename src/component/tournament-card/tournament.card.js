@@ -155,7 +155,9 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         borderWidth: 1,
         borderColor: GREY_BG,
-        backgroundColor: ON_PRIMARY
+        backgroundColor: ON_PRIMARY,
+        marginTop: 5,
+        marginBottom: 5
     },
     detailsContainer: {
         height: 120,

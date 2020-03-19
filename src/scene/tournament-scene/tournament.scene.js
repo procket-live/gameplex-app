@@ -8,7 +8,7 @@ import moment from 'moment';
 import IconComponent from '../../component/icon/icon.component';
 import Tabs from '../../component/tabs/tabs.component';
 import { navigate } from '../../service/navigation.service';
-import { Title } from '../tournament-how-to-play-scene/tournament-how-to-play.scene';
+import { Title } from '../instruction-generator-scene/instruction-generator.scene';
 import { GetTournamentStatus, GetUserGameId, IsJoined } from '../../utils/tournament.utils';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import NotifyService from '../../service/notify.service';
@@ -32,6 +32,10 @@ function TournamentScene(props) {
     const isJoined = IsJoined(participents, AccessNestedObject(props, 'user._id'))
     const roomId = AccessNestedObject(tournament, 'room_detail.room_id', '');
     const roomPassword = AccessNestedObject(tournament, 'room_detail.room_password', '');
+    const instructions = AccessNestedObject(tournament, 'game.instructions', []);
+    const guide = AccessNestedObject(tournament, 'game.guide', []);
+
+    console.log('tournament', tournament)
 
     function joinTournament() {
         if (!userGameIdResult.success) {
@@ -167,7 +171,7 @@ function TournamentScene(props) {
                     <View style={[styles.detailsContainer, { marginTop: 10 }]} >
                         <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
                             <Text style={{ fontSize: 14, fontWeight: '500', color: GREY_2 }} >
-                                PUBG USER ID: {userGameIdResult.success ? userGameIdResult.response : 'NOT SET'}
+                                USER ID: {userGameIdResult.success ? userGameIdResult.response : 'NOT SET'}
                             </Text>
                         </View>
                         {
@@ -176,40 +180,47 @@ function TournamentScene(props) {
                                     <View style={{ flex: 1, padding: 5 }} >
                                         <TouchableOpacity
                                             onPress={() => {
-                                                navigate('AddGameUserId', { gameId });
+                                                navigate('AddGameUserId', { gameId, getUserId: () => navigate('InstructionGenerator', { title: "How to get user id", steps: guide }) });
                                             }}
                                             style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
                                             <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="pen" size={14} />
                                             <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >ADD</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ flex: 3, padding: 5 }} >
-                                        <TouchableOpacity
-                                            onPress={() => navigate('HowToGetUserId')}
-                                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: ON_PRIMARY, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                                            <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="user" size={14} />
-                                            <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >HOW TO GET PUBG USER ID</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                    {
+                                        guide.length ?
+                                            <View style={{ flex: 3, padding: 5 }} >
+                                                <TouchableOpacity
+                                                    onPress={() => navigate('InstructionGenerator', { title: "How to get user id", steps: guide })}
+                                                    style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: ON_PRIMARY, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                                    <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="user" size={14} />
+                                                    <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >HOW TO GET USER ID</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                            : null
+                                    }
                                 </View> : null
                         }
-                        <TouchableOpacity
-                            onPress={() => navigate('TournamentHowToPlay')}
-                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', marginTop: 10, margintBottom: 10 }}>
-                            <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name="list" size={14} />
-                            <Text style={{ fontSize: 14, color: ON_PRIMARY, marginLeft: 10 }} >TOURNAMENT INSTRUCTIONS</Text>
-                        </TouchableOpacity>
+                        {
+                            instructions.length ?
+                                <TouchableOpacity
+                                    onPress={() => navigate('InstructionGenerator', { title: "How to Play?", steps: instructions })}
+                                    style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', marginTop: 10, margintBottom: 10 }}>
+                                    <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name="list" size={14} />
+                                    <Text style={{ fontSize: 14, color: ON_PRIMARY, marginLeft: 10 }} >TOURNAMENT INSTRUCTIONS</Text>
+                                </TouchableOpacity> : null
+                        }
                     </View>
                     <View style={[styles.detailsContainer, { marginTop: 10, overflow: 'hidden', height: 390 }]} >
                         <Tabs>
+                            {
+                                participents.length ?
+                                    <Leaderboard key="2" tabLabel="Participents" participents={participents} /> : null
+                            }
                             <PrizeTab key="0" tabLabel="Prize" rank={rank} />
                             {
                                 (message && tnc) ?
                                     <Instruction key="1" tabLabel="Organizer Instructions" message={message} tnc={tnc} /> : null
-                            }
-                            {
-                                participents.length ?
-                                    <Leaderboard key="2" tabLabel="Participents" participents={participents} /> : null
                             }
                         </Tabs>
                     </View>
@@ -370,7 +381,7 @@ function RankDetail({ rank, amount, props }) {
     )
 }
 
-function ParticipentItem({ participent }) {
+function ParticipentItem({ participent = {} }) {
     return (
         <View style={{ borderBottomColor: GREY_BG, borderBottomWidth: 1, flexDirection: 'row', height: 50, }} >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
@@ -383,7 +394,7 @@ function ParticipentItem({ participent }) {
                 />
             </View>
             <View style={{ flex: 4, alignItems: 'flex-start', justifyContent: 'center' }} >
-                <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{participent.name}</Text>
+                <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{participent.user.name}</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
                 <IconComponent
@@ -402,7 +413,7 @@ function Leaderboard({ participents = [] }) {
     return (
         <ScrollView style={{ padding: 10 }} >
             {
-                participents.filter((item) => item.amount || item.props).map((item) => (
+                participents.map((item) => (
                     <ParticipentItem participent={item} />
                 ))
             }
