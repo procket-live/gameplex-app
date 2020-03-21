@@ -26,7 +26,7 @@ function TournamentScene(props) {
     const positions = ['flex-start', 'center', 'flex-end'];
     const message = AccessNestedObject(tournament, 'form_message', '');
     const tnc = AccessNestedObject(tournament, 'tnc_link', '')
-    const participents = AccessNestedObject(tournament, 'participents', []);
+    const participents = AccessNestedObject(tournament, 'participents', []).filter((item = {}) => item.user);
     const tournamentStatus = GetTournamentStatus(tournament);
     const userGameIdResult = GetUserGameId(props.user, gameId);
     const isJoined = IsJoined(participents, AccessNestedObject(props, 'user._id'))
@@ -34,8 +34,6 @@ function TournamentScene(props) {
     const roomPassword = AccessNestedObject(tournament, 'room_detail.room_password', '');
     const instructions = AccessNestedObject(tournament, 'game.instructions', []);
     const guide = AccessNestedObject(tournament, 'game.guide', []);
-
-    console.log('tournament', tournament)
 
     function joinTournament() {
         if (!userGameIdResult.success) {
@@ -45,6 +43,8 @@ function TournamentScene(props) {
 
         navigate('Checkout', { tournament })
     }
+
+
 
     return (
         <>
@@ -394,7 +394,7 @@ function ParticipentItem({ participent = {} }) {
                 />
             </View>
             <View style={{ flex: 4, alignItems: 'flex-start', justifyContent: 'center' }} >
-                <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{participent.user.name}</Text>
+                <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{AccessNestedObject(participent, 'user.name')}</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
                 <IconComponent

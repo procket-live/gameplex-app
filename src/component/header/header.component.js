@@ -55,13 +55,21 @@ function HeaderComponent({ user, onProfile, fantasy }) {
                         </TouchableOpacity> : null
                 }
             </View>
-            <View style={{ flex: 4, alignItems: 'flex-start', justifyContent: 'center' }} >
-                {
-                    onProfile ?
+
+            {
+                onProfile ?
+                    <View style={{ flex: 4, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 20, color: ON_PRIMARY }} >{user.name}</Text>
-                        : null
-                }
-            </View>
+                    </View>
+                    : null
+            }
+            {
+                !onProfile ?
+                    <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center' }} >
+                        <Text style={{ fontSize: 18, color: ON_PRIMARY }} >GAMEPLEX</Text>
+                    </View>
+                    : null
+            }
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                 {
                     !onProfile ?

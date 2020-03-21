@@ -17,7 +17,6 @@ const GameCircleSlider = () => {
                 style={{ borderRadius: 10, overflow: 'hidden', marginTop: 5, width: widthPercentageToDP(95), height: 130 }}
                 onPress={() => {
                     navigate('Fantasy')
-                    // NotifyService.notify({ title: "Underprocess", message: "This feature is under development" })
                 }}
                 key={key}
             >
@@ -33,6 +32,7 @@ const GameCircleSlider = () => {
     return (
         <>
             <FlatList
+                contentContainerStyle={{ alignItems: 'center' }}
                 horizontal={false}
                 data={games}
                 showsHorizontalScrollIndicator={false}
@@ -44,14 +44,14 @@ const GameCircleSlider = () => {
 
 const styles = StyleSheet.create({
     container: {
-        width: widthPercentageToDP(95),
+        width: widthPercentageToDP(90),
         height: 130,
         marginRight: 10,
         marginLeft: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
-        resizeMode: 'cover'
+        borderRadius: 20,
+        resizeMode: 'contain'
     }
 })
 
