@@ -154,14 +154,14 @@ function TransactionsScene(props) {
                         data={transactions}
                     />
                 </Box>
-                {/* <Box tabLabel="Wallet Statements"  >
+                <Box tabLabel="Wallet Statements"  >
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         style={{ flex: 1 }}
                         renderItem={RenderWalletTransaction}
                         data={walletStatements}
                     />
-                </Box> */}
+                </Box>
                 <View tabLabel="Received" style={{ flex: 1 }}  ></View>
             </Tabs>
         </View>

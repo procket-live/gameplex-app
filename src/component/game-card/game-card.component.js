@@ -6,8 +6,8 @@ import {
     Fade,
 } from "rn-placeholder";
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-
-const IMAGE = 'https://preview.redd.it/h2iz05k9xsm11.jpg?width=960&crop=smart&auto=webp&s=b2ba90222ff111aab4a8b0effecdb1517c5c679c';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { navigate } from '../../service/navigation.service';
 
 const GameCard = props => {
     if (props.loading) {
@@ -26,13 +26,17 @@ const GameCard = props => {
 
     const game = props.game || {};
     return (
-        <View style={styles.container} >
+        <TouchableOpacity
+            onPress={() => {
+                navigate('Game', { game })
+            }}
+            style={styles.container} >
             <Image
                 source={{ uri: game.thumbnail }}
                 style={styles.gameCard}
             />
             <Text style={styles.text}>{game.name}</Text>
-        </View>
+        </TouchableOpacity>
     )
 }
 

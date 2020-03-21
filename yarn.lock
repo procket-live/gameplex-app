@@ -4909,6 +4909,11 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+libmoji@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/libmoji/-/libmoji-2.3.0.tgz#58fcc33e2fa71cc3299f31a6ae19d52181f1c13a"
+  integrity sha512-EPu3e8X/QKT3uDjOhA2783/uQ5dQtPQCSHWA34pW4dmTGVtrmxUjAUGIjX1jLl1tsNg2CfS8rtO8XjEC1L0o7g==
+
 load-json-file@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-2.0.0.tgz#7947e42149af80d696cbf797bcaabcfe1fe29ca8"
@@ -6504,10 +6509,12 @@ react-native-cached-image@^1.4.3:
     react-native-fetch-blob "0.10.8"
     url-parse "1.1.9"
 
-react-native-check-app-install@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/react-native-check-app-install/-/react-native-check-app-install-0.0.5.tgz#1cd5bff09a7d294af7acc88da627984654cb1b9c"
-  integrity sha512-nKUf0HcLbRGlOgSun4w2ftKZsabcwwff4GK//WwdoxG5wstqhWK1231+SKapjJY4GjoM2pI2Xv6ClTQV6e5cog==
+react-native-camera@^3.20.0:
+  version "3.20.0"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.20.0.tgz#a11df0e9125c12244a8803b41cf68f6ea6cb5aa6"
+  integrity sha512-CZ7vYnNdZv+T1ab8sXK29sGE1bSIN8Kur5TBLXU6unfkBSPQAsmXQuJkj8AfTC3J8pHw21o2J0YtqwLyL7d3sA==
+  dependencies:
+    prop-types "^15.6.2"
 
 react-native-clcasher@1.0.0:
   version "1.0.0"
@@ -6634,11 +6641,6 @@ react-native-i18n@^2.0.15:
   dependencies:
     i18n-js "3.0.11"
 
-react-native-image-picker@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-1.1.0.tgz#c2a0523886edb4cf2cdc008ad0a71433142a4d53"
-  integrity sha512-/KjHf4NNAjl6XM7FQuqvGDz1wB9sRdLf86+2yksLW/QTRR7CitX4TLCM8ZF9CX6Y0MsCTndkZia3zWE+nt/GiA==
-
 react-native-iphone-x-helper@^1.0.3:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
@@ -6752,6 +6754,11 @@ react-native-share@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-2.0.0.tgz#4543a746013e0d8fa9f765fb8937007cfbcffcf7"
   integrity sha512-J8Xl3mq0L9KDFtSYtKsQDAnZWw/niZIpAD1PRiNfZFHo44Rc+oS2bEIhskNnoQXKEgBNdPzCl/DenMXYAHXRYg==
+
+react-native-sms-retriever-api@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-sms-retriever-api/-/react-native-sms-retriever-api-1.0.3.tgz#493eba059ea6898877947a28c33be33280a73ffc"
+  integrity sha512-r9bdcI14sspUcueOO5JA4SKLlFY+fYSeIseEaNfTQA83ECXjUNT7w31fKMHHf/jSQ2JDikEIteArUdC4SXv8sA==
 
 react-native-snap-carousel@^3.8.4:
   version "3.8.4"

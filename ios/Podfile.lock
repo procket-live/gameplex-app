@@ -305,8 +305,6 @@ PODS:
   - React-jsinspector (0.61.2)
   - react-native-contacts (4.0.3):
     - React
-  - react-native-image-picker (1.1.0):
-    - React
   - react-native-sensitive-info (5.5.3):
     - React
   - react-native-splash-screen (3.2.0):
@@ -420,7 +418,6 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-contacts (from `../node_modules/react-native-contacts`)
-  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
@@ -517,8 +514,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-contacts:
     :path: "../node_modules/react-native-contacts"
-  react-native-image-picker:
-    :path: "../node_modules/react-native-image-picker"
   react-native-sensitive-info:
     :path: "../node_modules/react-native-sensitive-info"
   react-native-splash-screen:
@@ -615,7 +610,6 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8909917ff7d8f21a57e443a866fd8d4560e50c65
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
   react-native-contacts: f7e0e6f8f3c3e53a97c8a2974f2a65beba8f268f
-  react-native-image-picker: 7a85cf7b0a53845f03ae52fb4592a2748ded069b
   react-native-sensitive-info: c93d905f8d875daead38e5affc100390544584bd
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-viewpager: 66c02e8a18d2d11eef08c84ed9a406b149791751

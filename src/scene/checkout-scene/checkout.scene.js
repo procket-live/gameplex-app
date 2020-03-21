@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, PermissionsAndroid, Image, ScrollView } from 'react-native';
 import RNUpiPayment from 'react-native-upi-payment';
-import ImagePicker from 'react-native-image-picker';
-import firebase from 'react-native-firebase';
+// import ImagePicker from 'react-native-image-picker';
 
 
 import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
@@ -28,7 +27,6 @@ function CheckoutScene(props) {
     useEffect(function () {
         fetchOrder();
         return function () {
-
         }
     }, [])
 
@@ -119,21 +117,21 @@ function CheckoutScene(props) {
             },
         };
 
-        ImagePicker.showImagePicker(options, async (response) => {
-            console.log('Response = ', response);
+        // ImagePicker.showImagePicker(options, async (response) => {
+        //     console.log('Response = ', response);
 
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                const uri = response.uri.includes('file') ? response.uri : `file://${response.uri}`;
-                const result = await firebase.storage().ref(`/profile_image/image_${Math.random()}`).putFile(uri);
-                setImage(result.downloadURL);
-            }
-        });
+        //     if (response.didCancel) {
+        //         console.log('User cancelled image picker');
+        //     } else if (response.error) {
+        //         console.log('ImagePicker Error: ', response.error);
+        //     } else if (response.customButton) {
+        //         console.log('User tapped custom button: ', response.customButton);
+        //     } else {
+        //         const uri = response.uri.includes('file') ? response.uri : `file://${response.uri}`;
+        //         const result = await firebase.storage().ref(`/profile_image/image_${Math.random()}`).putFile(uri);
+        //         setImage(result.downloadURL);
+        //     }
+        // });
     }
 
     async function requestCameraPermission(type) {

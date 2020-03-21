@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View, Text } from 'react-native';
 import { connect } from 'react-redux';
+import FastImage from 'react-native-fast-image';
 import { Freshchat, ConversationOptions } from 'react-native-freshchat-sdk';
 
 import MenuItem from '../../component/menu-item/menu-item.component';
@@ -8,6 +9,10 @@ import { logoutUserAction } from '../../action/user.action';
 import { setMode } from '../../action/mode.action';
 import { navigate, resetToScreen } from '../../service/navigation.service';
 import { HasRole } from '../../utils/common.util';
+import HeaderComponent from '../../component/header/header.component';
+import { widthPercentageToDP } from 'react-native-responsive-screen';
+import { TEXT_COLOR, PRIMARY_COLOR, GREEN, YELLOW, GREY_BG } from '../../constant/color.constant';
+import IconComponent from '../../component/icon/icon.component';
 
 class MenuScene extends Component {
     organizer = () => {
@@ -33,57 +38,102 @@ class MenuScene extends Component {
         Freshchat.showConversations(conversationOptions);
     }
 
+    navigateToJoinedTournaments = () => {
+        navigate('JoinedTournament');
+    }
+
+    getFullImage = () => {
+        const { user } = this.props;
+        return user.profile_image.replace("head", "body")
+    }
+
+    renderVerified = ({ success }) => {
+        if (success) {
+            return (
+                <IconComponent size={15} font="fontawesome" focused tintColor={GREEN} name="check-circle" />
+            )
+        }
+
+        return (
+            <IconComponent size={15} font="fontawesome" focused tintColor={YELLOW} name="exclamation-triangle" />
+        )
+    }
+
     render() {
         const { user } = this.props;
 
         return (
-            <ScrollView style={{ flex: 1, }}>
-                <MenuItem
-                    iconName="profile"
-                    name="Terms and Conditions"
-                    detail="A primer on the & regulation"
-                    onPress={() => {
-                        navigate('TNC')
-                    }}
-                />
-                {/* <MenuItem
-                    iconName="setting"
-                    name="Settings"
-                    detail="Finetune your experience"
-                /> */}
-                <MenuItem
-                    iconName="question"
-                    name="FAQ"
-                    detail="Commonly asked questions"
-                    onPress={this.showFAQ}
-                />
-                <MenuItem
-                    iconName="star"
-                    name="Invite friends"
-                    detail="Get your friends playing"
-                />
-                <MenuItem
-                    iconName="wifi"
-                    name="Contact us"
-                    detail="We would love to hear from you"
-                    onPress={this.showConversations}
-                />
-                {
-                    (HasRole(user, 'Organizer') || HasRole(user, 'Admin')) ?
-                        <MenuItem
-                            iconName="swap"
-                            name={this.props.mode == 'user' ? "Switch to organizer mode" : "Switch to user mode"}
-                            detail="Switch to Organizer"
-                            onPress={this.organizer}
-                        /> : null
-                }
-                <MenuItem
-                    iconName="logout"
-                    name="Logout"
-                    detail="Logout from account"
-                    onPress={this.props.logoutUserAction}
-                />
-            </ScrollView>
+            <>
+                <HeaderComponent onProfile />
+                <ScrollView style={{ flex: 1, }}>
+                    <View style={{ width: widthPercentageToDP(100), height: 150, flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: GREY_BG, paddingBottom: 10, paddingTop: 10 }} >
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                            <FastImage resizeMode="contain" style={{ width: 100, height: 110 }} source={{ uri: this.getFullImage() }} />
+                        </View>
+                        <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }} >
+                            <Text style={{ fontSize: 18, color: TEXT_COLOR }} >{user.name}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+                                <Text style={{ fontSize: 18, color: PRIMARY_COLOR, marginRight: 5 }} >{user.mobile}</Text>
+                                <this.renderVerified success={user.is_mobile_verified} />
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+                                <Text style={{ fontSize: 18, color: PRIMARY_COLOR, marginRight: 5 }} >{user.email}</Text>
+                                <this.renderVerified success={user.is_email_verified} />
+                            </View>
+
+                        </View>
+                    </View>
+                    <MenuItem
+                        iconName="list"
+                        font="fontawesome"
+                        name="Joined Tournaments"
+                        detail="List of all joined tournaments"
+                        onPress={this.navigateToJoinedTournaments}
+                    />
+                    <MenuItem
+                        iconName="profile"
+                        name="Terms and Conditions"
+                        detail="A primer on the & regulation"
+                        onPress={() => {
+                            navigate('TNC')
+                        }}
+                    />
+                    <MenuItem
+                        font="fontawesome"
+                        iconName="question-circle"
+                        name="FAQ"
+                        detail="Commonly asked questions"
+                        onPress={this.showFAQ}
+                    />
+                    <MenuItem
+                        iconName="star"
+                        name="Invite friends"
+                        detail="Get your friends playing"
+                    />
+                    <MenuItem
+                        font="fontawesome"
+                        iconName="comment"
+                        name="Contact us"
+                        detail="We would love to hear from you"
+                        onPress={this.showConversations}
+                    />
+                    {
+                        (HasRole(user, 'Organizer') || HasRole(user, 'Admin')) ?
+                            <MenuItem
+                                iconName="swap"
+                                name={this.props.mode == 'user' ? "Switch to organizer mode" : "Switch to user mode"}
+                                detail="Switch to Organizer"
+                                onPress={this.organizer}
+                            /> : null
+                    }
+                    <MenuItem
+                        iconName="logout"
+                        name="Logout"
+                        detail="Logout from account"
+                        onPress={this.props.logoutUserAction}
+                    />
+                </ScrollView>
+            </>
         );
     }
 }

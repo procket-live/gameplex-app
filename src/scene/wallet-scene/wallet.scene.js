@@ -15,10 +15,6 @@ class WalletScene extends Component {
         navigate('Transactions');
     }
 
-    navigateToJoinedTournaments = () => {
-        navigate('JoinedTournament');
-    }
-
     navigateToContactUs = () => {
         const conversationOptions = new ConversationOptions();
         conversationOptions.tags = ["payment"];
@@ -41,11 +37,6 @@ class WalletScene extends Component {
                         name="Transaction History"
                         detail="Your past wallet transactions"
                         onPress={this.navigateToTransactions}
-                    />
-                    <MenuItem
-                        name="Joined Tournaments"
-                        detail="List of all joined tournaments"
-                        onPress={this.navigateToJoinedTournaments}
                     />
                     <MenuItem
                         name="Contact Us"

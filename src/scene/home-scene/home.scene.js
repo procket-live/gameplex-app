@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 
 import OfferSlider from '../../component/offer-slider/offer-slider.component';
 import GameSlider from '../../component/game-slider/game-slider.component';
+import GameCircleSliderComponent from '../../component/game-circle-slider/game-circle-slider.component';
 import TournamentSlider from '../tournament-slider/tournament-slider.component';
 import PrivateApi from '../../api/private.api';
-
+import HeaderComponent from '../../component/header/header.component';
 
 function HomeScene(props) {
     const [offers, setOffers] = React.useState([{ loading: true }]);
@@ -26,17 +27,23 @@ function HomeScene(props) {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={{ paddingTop: 10, paddingBottom: 10 }} >
-                <OfferSlider offers={offers} />
-            </View>
-            <View style={{ paddingTop: 10, paddingBottom: 10 }} >
-                <TournamentSlider user={props.user} />
-            </View>
-            <View style={{ paddingTop: 10, paddingBottom: 10 }} >
-                <GameSlider />
-            </View>
-        </ScrollView >
+        <>
+            <HeaderComponent />
+            <ScrollView style={styles.container}>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }} >
+                    <OfferSlider offers={offers} />
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }} >
+                    <GameCircleSliderComponent />
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }} >
+                    <TournamentSlider user={props.user} />
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 10 }} >
+                    <GameSlider />
+                </View>
+            </ScrollView >
+        </>
     )
 }
 

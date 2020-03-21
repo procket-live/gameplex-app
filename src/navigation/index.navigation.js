@@ -5,6 +5,8 @@ import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { TabBar } from "react-native-animated-nav-tab-bar";
 import { createStackNavigator } from 'react-navigation-stack';
+import DeviceInfo from 'react-native-device-info';
+
 
 import HomeScene from '../scene/home-scene/home.scene';
 import WalletScene from '../scene/wallet-scene/wallet.scene';
@@ -19,7 +21,7 @@ import MenuScene from '../scene/menu-scene/menu.scene';
 import TournamentList from '../scene/tournament-list-scene/tournament-list.scene';
 import DashboardScene from '../scene/dashboard-scene/dashboard.scene';
 import AddTournamentScene from '../scene/add-tournement/add-tournament.scene';
-import { GREY_BG } from '../constant/color.constant';
+import { GREY_BG, PRIMARY_COLOR } from '../constant/color.constant';
 import DashboardTournamentListScene from '../scene/dashboard-tournament-list/dashboard-tournament-list.scene';
 import ManageTournamentScene from '../scene/manage-tournament/manage-tournament.scene';
 import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-detail-scene/add-tournament-general-detail.scene';
@@ -37,6 +39,9 @@ import ManageOrganizerProfile from '../scene/manage-organizer-profile-scene/mana
 import JoinedTournamentScene from '../scene/joined-tournament-scene/joined-tournament.scene';
 import SelectParticipentScene from '../scene/select-participent-scene/select-participent.scene';
 import TNCScene from '../scene/tnc-scene/tnc.scene';
+import GameScene from '../scene/game-scene/game.scene';
+import FantasyHomeScene from '../scene/fantasy-home-scene/fantasy-home.scene';
+import FantasyMyContestScene from '../scene/fantasy-my-contest-scene/fantasy-my-contest-scene';
 
 const headerStyle = {
     elevation: 0,
@@ -55,7 +60,7 @@ const HomeStack = createStackNavigator({
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="home" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="home" />,
         }
     }
 );
@@ -70,7 +75,7 @@ const WalletStack = createStackNavigator({
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="list" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="wallet" />,
         }
     }
 );
@@ -100,18 +105,50 @@ const NotificationStack = createStackNavigator({
 },
     {
         navigationOptions: {
-            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} name="notification" />,
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="bell" />,
         }
     }
 );
 
 
+const FantasyHome = createStackNavigator({
+    Notification: {
+        screen: FantasyHomeScene,
+        navigationOptions: {
+            header: null
+        }
+    }
+},
+    {
+        navigationOptions: {
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="home" />,
+        }
+    }
+);
+
+const FantasyMyContest = createStackNavigator({
+    Notification: {
+        screen: FantasyMyContestScene,
+        navigationOptions: {
+            header: null
+        }
+    }
+},
+    {
+        navigationOptions: {
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="trophy" />,
+        }
+    }
+);
+
+
+
 const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
-        Manage: WalletStack,
-        Message: NotificationStack,
-        Menu: MenuStack,
+        Wallet: WalletStack,
+        Notifications: NotificationStack,
+        Profile: MenuStack,
     }, {
     tabBarOptions: {
         activeTintColor: "#2B7C85",
@@ -122,16 +159,41 @@ const TabsNavigator = createBottomTabNavigator(
             shadow={true}
             tabBarBackground="#fff"
             activeColors="#fff" // or activeColors={'#e6b580'}
-            activeTabBackgrounds={["#2ecc71", "#3498db", "#9b59b6", "#f1c40f"]} // or activeTabBackgrounds={'#ede7e6'}
+            activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
             {...props}
         />
     )
-}
-)
+})
+
+const FantasyTabsNavigator = createBottomTabNavigator(
+    {
+        'Home': FantasyHome,
+        'My Contest': FantasyMyContest,
+    }, {
+    tabBarOptions: {
+        activeTintColor: "#2B7C85",
+        inactiveTintColor: "#222222",
+    },
+    tabBarComponent: props => (
+        <TabBar
+            shadow={true}
+            tabBarBackground="#fff"
+            activeColors="#fff" // or activeColors={'#e6b580'}
+            activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
+            {...props}
+        />
+    )
+})
 
 const RootNavigator = createStackNavigator({
     Empty: {
         screen: () => null,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Fantasy: {
+        screen: FantasyTabsNavigator,
         navigationOptions: {
             header: null
         }
@@ -305,6 +367,13 @@ const RootNavigator = createStackNavigator({
         navigationOptions: {
             title: "Terms & Conditions",
             headerStyle,
+        }
+    },
+    Game: {
+        screen: GameScene,
+        navigationOptions: {
+            headerStyle,
+            header: null
         }
     }
 }, {

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import moment from 'moment';
 import { connect } from 'react-redux';
+import libmoji from 'libmoji';
+import FastImage from 'react-native-fast-image';
 
 import Steps from '../../component/steps/steps.component';
-import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
+import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import TextInput from '../../component/text-input/text-input.component';
 import Button from '../../component/button/button.component';
 import DateTimePickerComponent from '../../component/date-time-input/date-time-input.component';
@@ -13,11 +15,13 @@ import { DISPLAY_DATE_FORMAT } from '../../constant/app.constant';
 import PrivateApi from '../../api/private.api';
 import { setUserAction } from '../../action/user.action';
 import { resetToScreen } from '../../service/navigation.service';
+import { widthPercentageToDP } from 'react-native-responsive-screen';
 
 const STEPS = {
     USER_DETAIL: 1,
-    ENTER_EMAIL: 2,
-    ENTER_EMAIL_OTP: 3
+    ENTER_EMAIL: 3,
+    ENTER_EMAIL_OTP: 4,
+    SELECT_AVATAR: 2
 }
 
 class UserDetailInputScene extends Component {
@@ -25,13 +29,18 @@ class UserDetailInputScene extends Component {
         super(props);
         const user = props.user || {};
         this.state = {
-            step: props.navigation.getParam('step') || 1,
+            step: props.navigation.getParam('step') || STEPS.USER_DETAIL,
             loading: false,
             name: user.name || '',
             dob: user.dob ? moment(user.dob).format(DISPLAY_DATE_FORMAT) : '',
             email: user.email || '',
-            otp: ''
+            otp: '',
+            avatar: ''
         }
+    }
+
+    componentDidMount = () => {
+        this.randomGenerate();
     }
 
     isUserDetailButtonDisabled = () => {
@@ -47,11 +56,15 @@ class UserDetailInputScene extends Component {
     }
 
     editEmail = () => {
-        this.setState({ step: 2 })
+        this.setState({ step: STEPS.ENTER_EMAIL })
     }
 
     userDetailProceed = () => {
-        this.setState({ step: 2 })
+        this.setState({ step: STEPS.SELECT_AVATAR })
+    }
+
+    avatarProceed = () => {
+        this.setState({ step: STEPS.ENTER_EMAIL })
     }
 
     emailProceed = async () => {
@@ -60,14 +73,11 @@ class UserDetailInputScene extends Component {
         const params = {
             name: this.state.name,
             email: this.state.email,
-            dob: moment(this.state.dob).toDate()
+            dob: moment(this.state.dob).toDate(),
+            profile_image: this.state.avatar
         };
 
-        console.log('paramsparams', params);
-        console.log(this.state.dob);
-
         const result = await PrivateApi.SetUser(params);
-        console.log('resultresult', result);
         if (result.success) {
             const newUser = Object.assign(result.response, { token: this.props.user.token });
             this.props.setUserAction(newUser);
@@ -78,10 +88,16 @@ class UserDetailInputScene extends Component {
     }
 
     generateEmailOTP = async () => {
+        const { user } = this.props;
+        if (user.is_email_verified) {
+            this.skip();
+            return;
+        }
+
         const result = await PrivateApi.GenerateEmailOTP()
         this.setState({ loading: false });
         if (result.success) {
-            this.setState({ step: 3 });
+            this.setState({ step: STEPS.ENTER_EMAIL_OTP });
         }
     }
 
@@ -173,6 +189,56 @@ class UserDetailInputScene extends Component {
         )
     }
 
+    RenderSelectAvatar = () => {
+        return (
+            <>
+                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
+                    <Text style={styles.fontMini} >Select your</Text>
+                </View>
+                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
+                    <Text style={styles.fontH1} >Avatar</Text>
+                </View>
+                <View style={{ width: widthPercentageToDP(100), height: 230, alignItems: 'center', justifyContent: 'center' }} >
+                    <FastImage
+                        source={{ uri: this.state.avatar }}
+                        style={{ width: 150, height: 200 }}
+                        resizeMode="contain"
+                    />
+                </View>
+                <View style={{ width: widthPercentageToDP(90), height: 40, flexDirection: 'row' }} >
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.randomGenerate();
+                        }}
+                        style={styles.selected} >
+                        <Text style={styles.selectedText} >
+                            NEXT AVATAR
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.otpButtonContainer} >
+                    <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
+                        <Button
+                            loading={this.state.loading}
+                            text={'PROCEED'}
+                            onPress={this.avatarProceed}
+                        />
+                    </View>
+                </View>
+            </>
+        )
+    }
+
+    randomGenerate = () => {
+        let gender = libmoji.genders[libmoji.randInt(2)];
+        let style = libmoji.styles[libmoji.randInt(3)];
+        let traits = libmoji.randTraits(libmoji.getTraits(gender[0], style[0]));
+        let outfit = libmoji.randOutfit(libmoji.getOutfits(libmoji.randBrand(libmoji.getBrands(gender[0]))));
+
+        const avatar = libmoji.buildPreviewUrl("head", 3, gender[1], style[1], 0, traits, outfit);
+        this.setState({ avatar })
+    }
+
     RenerOTPInputForm = () => {
         return (
             <>
@@ -229,8 +295,9 @@ class UserDetailInputScene extends Component {
             <ScrollView
                 style={styles.container}
             >
-                <Steps currentStep={step} steps={3} />
+                <Steps currentStep={step} steps={Object.keys(STEPS).length} />
                 {step == STEPS.USER_DETAIL ? this.RenderUserDetailForm() : null}
+                {step == STEPS.SELECT_AVATAR ? this.RenderSelectAvatar() : null}
                 {step == STEPS.ENTER_EMAIL ? this.RenderEmailForm() : null}
                 {step == STEPS.ENTER_EMAIL_OTP ? this.RenerOTPInputForm() : null}
             </ScrollView>
@@ -296,6 +363,18 @@ const styles = StyleSheet.create({
     underlineStyleHighLighted: {
         borderColor: PRIMARY_COLOR,
     },
+    unselected: {
+        flex: 1, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: PRIMARY_COLOR
+    },
+    selected: {
+        flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: PRIMARY_COLOR
+    },
+    selectedText: {
+        fontSize: 18, color: ON_PRIMARY
+    },
+    unselectedText: {
+        fontSize: 18, color: PRIMARY_COLOR
+    }
 })
 
 

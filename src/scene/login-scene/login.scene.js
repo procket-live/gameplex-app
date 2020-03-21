@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { connect } from 'react-redux';
+import RNSmsRetriever from 'react-native-sms-retriever-api';
 
 import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
@@ -29,6 +30,22 @@ class LoginScene extends Component {
             mobile: '',
             otp: ''
         }
+    }
+
+    componentDidMount = () => {
+        this.detectOTP();
+    }
+
+    componentWillUnmout() {
+        RNSmsRetriever.removeListener();
+    }
+
+    detectOTP = async () => {
+        await RNSmsRetriever.getOtp();
+        RNSmsRetriever.addListener(({ message }) => {
+            const otp = message.match(/\d/g).join("").substring(0, 6);
+            this.setState({ otp }, this.verifyOTP);
+        })
     }
 
     inputHandler = (mobile) => {
@@ -80,7 +97,6 @@ class LoginScene extends Component {
         const { mobile, otp } = this.state;
         this.setState({ loading: true });
         const result = await PublicApi.VerifyOTP(mobile, otp);
-        console.log('result', result)
         if (result.success) {
             const userObj = result.response;
             const token = result.token;
