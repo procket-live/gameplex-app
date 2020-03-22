@@ -6419,6 +6419,11 @@ querystringify@~1.0.0:
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-1.0.0.tgz#6286242112c5b712fa654e526652bf6a13ff05cb"
   integrity sha1-YoYkIRLFtxL6ZU5SZlK/ahP/Bcs=
 
+quickblox-react-native-sdk@^0.5.1-beta:
+  version "0.5.1-beta"
+  resolved "https://registry.yarnpkg.com/quickblox-react-native-sdk/-/quickblox-react-native-sdk-0.5.1-beta.tgz#87f3f9096aa894a85d18e6ef5a225a6b24dc73a2"
+  integrity sha512-TnYtfip2a29FhNASBwzS7+fShPpHA4nIuu4d8CDxpKglFR+vO6Be+5QK9mmbRXKvThKr8o8fxUx8ygRjmrILww==
+
 raf@^3.1.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
@@ -6788,11 +6793,6 @@ react-native-truecaller-sdk@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-native-truecaller-sdk/-/react-native-truecaller-sdk-1.0.3.tgz#831d72ec5c202d7a344088f2ed1da8bc3b7a0997"
   integrity sha512-mDfHULVUEY5D5K6HlIMueJK6a4/ENo4IJwWEE4o5ojz+oaDLQ7wWzJrBJOUCeddMPiU/zHiaCxeiA1oQxNc/6A==
-
-react-native-upi-payment@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-upi-payment/-/react-native-upi-payment-1.0.2.tgz#685972e9e28244c930e1cbaa7c799c993a1bcb05"
-  integrity sha512-IytUT08Xl0HYEtcjPU7n8RXjYWJYjT4uHpfbL6MEiC74jl06kh4bG9CqBNqt1HTfkA0OXxiPlgYUmaj99XIeMA==
 
 react-native-vector-icons@^6.6.0:
   version "6.6.0"

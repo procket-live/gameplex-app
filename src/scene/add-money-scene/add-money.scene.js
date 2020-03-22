@@ -10,6 +10,7 @@ import { AddAmountToWallet } from '../../utils/paytm.utils';
 import { setUserAction } from '../../action/user.action';
 import NotifyService from '../../service/notify.service';
 import { navigatePop } from '../../service/navigation.service';
+import { TOKEN } from '../../constant/app.constant';
 
 class AddMoneyScene extends Component {
     constructor(props) {
@@ -73,9 +74,9 @@ class AddMoneyScene extends Component {
     }
 
     paymentResponse = ({ success, user }) => {
-        console.log('useruser', user);
         if (success) {
-            this.props.setUserAction(user);
+            const newUser = Object.assign(user, { token: TOKEN })
+            this.props.setUserAction(newUser);
             NotifyService.notify({
                 title: "success",
                 message: "wallet updated",

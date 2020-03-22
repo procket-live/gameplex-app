@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, PermissionsAndroid, Image, ScrollView } from 'react-native';
-import RNUpiPayment from 'react-native-upi-payment';
+// import RNUpiPayment from 'react-native-upi-payment';
 // import ImagePicker from 'react-native-image-picker';
-
 
 import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
 import { GREY_1, TEXT_COLOR, RED, GREEN, GREY_3, ON_PRIMARY, GREY_BG, PRIMARY_COLOR, GREY_2 } from '../../constant/color.constant';
@@ -89,18 +88,6 @@ function CheckoutScene(props) {
     function UpiPayment() {
         const upi = AccessNestedObject(organizer, 'upi_address');
         const name = AccessNestedObject(organizer, 'organizer_name');
-
-        RNUpiPayment.initializePayment({
-            vpa: upi,
-            payeeName: name,
-            amount: 1,
-            transactionRef: AccessNestedObject(order, 'order_id'),
-            transactionNote: `${AccessNestedObject(tournament, 'tournament_name')}-${AccessNestedObject(tournament, '_id')}`
-        }, function (payload) {
-            gotResponse(payload);
-        }, function (error) {
-            gotResponse(error);
-        });
     }
 
     function openGallary() {
@@ -209,7 +196,7 @@ function CheckoutScene(props) {
                                                 <TouchableOpacity
                                                     style={{ padding: 5, borderRadius: 5, flexDirection: 'row', backgroundColor: PRIMARY_COLOR, borderColor: PRIMARY_COLOR, borderWidth: 1, alignItems: 'center' }}
                                                     onPress={() => {
-                                                        UpiPayment();
+                                                        // UpiPayment();
                                                     }}
                                                 >
                                                     <IconComponent font={'fontawesome'} size={14} focused tintColor={ON_PRIMARY} name={"arrow-right"} />
