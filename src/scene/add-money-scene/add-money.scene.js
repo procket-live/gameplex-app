@@ -16,7 +16,7 @@ class AddMoneyScene extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            amount: props.navigation.getParam('amount') || 0,
+            amount: String(props.navigation.getParam('amount')) || "0",
         }
     }
 
@@ -73,7 +73,7 @@ class AddMoneyScene extends Component {
         AddAmountToWallet(this.state.amount, this.props.user, this.paymentResponse)
     }
 
-    paymentResponse = ({ success, user }) => {
+    paymentResponse = ({ success, user, err }) => {
         if (success) {
             const newUser = Object.assign(user, { token: TOKEN })
             this.props.setUserAction(newUser);

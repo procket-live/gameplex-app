@@ -42,6 +42,7 @@ import TNCScene from '../scene/tnc-scene/tnc.scene';
 import GameScene from '../scene/game-scene/game.scene';
 import FantasyHomeScene from '../scene/fantasy-home-scene/fantasy-home.scene';
 import FantasyMyContestScene from '../scene/fantasy-my-contest-scene/fantasy-my-contest-scene';
+import ChatScreen from '../scene/chat-scene/chat.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -110,6 +111,20 @@ const NotificationStack = createStackNavigator({
     }
 );
 
+const ChatStack = createStackNavigator({
+    ChatScreen: {
+        screen: ChatScreen,
+        navigationOptions: {
+            header: null
+        }
+    }
+},
+    {
+        navigationOptions: {
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="comment" />,
+        }
+    }
+);
 
 const FantasyHome = createStackNavigator({
     Notification: {
@@ -147,6 +162,7 @@ const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
         Wallet: WalletStack,
+        // Chat: ChatStack,
         Notifications: NotificationStack,
         Profile: MenuStack,
     }, {

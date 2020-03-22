@@ -67,7 +67,6 @@ class AddGameUserId extends React.Component {
                 <View style={styles.inputTextContainer} >
                     <TextInputComponent
                         label="User ID"
-                        keyboardType="number-pad"
                         value={this.state.userId}
                         onChangeText={this.inputHandler}
                         RenderRight={() => (
