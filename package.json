@@ -11,7 +11,6 @@
         "bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/"
     },
     "dependencies": {
-        "@philly25/react-native-paytm": "^1.0.12",
         "@react-native-community/async-storage": "^1.6.2",
         "@react-native-community/viewpager": "^3.1.0",
         "@twotalltotems/react-native-otp-input": "^1.1.2",
@@ -44,6 +43,7 @@
         "react-native-network-state": "^1.1.4",
         "react-native-otp-verify": "^1.0.3",
         "react-native-progress-steps": "^1.2.8",
+        "react-native-razorpay": "^2.1.32",
         "react-native-reanimated": "^1.3.0",
         "react-native-responsive-screen": "^1.3.0",
         "react-native-screens": "^1.0.0-alpha.23",

@@ -959,11 +959,6 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@philly25/react-native-paytm@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@philly25/react-native-paytm/-/react-native-paytm-1.0.12.tgz#afa349f60c8ecbbbc202a5ba9a4e99ea91c61764"
-  integrity sha512-pYYspd6Vtw+x481r74x+m+LEXCSFHLE+gdY9lMehYh3wEzP+CTEA7zOzp7bGAlk/vZMDsF91mMuxkJm/O+rDGw==
-
 "@react-native-community/async-storage@^1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.6.2.tgz#a19ca7149c4dfe8216f2330e6b1ebfe2d075ef92"
@@ -6703,6 +6698,11 @@ react-native-progress-steps@^1.2.8:
   dependencies:
     lodash "^4.17.11"
     prop-types "^15.6.2"
+
+react-native-razorpay@^2.1.32:
+  version "2.1.32"
+  resolved "https://registry.yarnpkg.com/react-native-razorpay/-/react-native-razorpay-2.1.32.tgz#b3bae78b85710ae6f653bc5245d0b37f50a5e542"
+  integrity sha512-ib289CuvGulPT0uZk5gw0USnKtFSkAD4WdEpKTjF1CQ4BrxLmX6N59VAkOoY2vDzsJkxiX17t/+AcBKe4S0C1Q==
 
 react-native-reanimated@^1.3.0:
   version "1.3.0"

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.gameplex">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.gameplex">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -16,6 +17,8 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
+      tools:replace="android:appComponentFactory,android:icon"
+        android:appComponentFactory="someString"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
