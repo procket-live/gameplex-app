@@ -5,6 +5,7 @@ import { navigate } from '../../service/navigation.service';
 import { AccessNestedObject } from '../../utils/common.util';
 import { TEXT_COLOR, PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import TournamentCard from '../../component/tournament-card/tournament.card';
+import TitleComponent from '../../component/title-component/title.component';
 
 const TournamentSlider = props => {
     const tournaments = AccessNestedObject(props, 'tournament.list', []);
@@ -13,26 +14,9 @@ const TournamentSlider = props => {
 
     return (
         <>
-            <View style={{ flexDirection: 'row', backgroundColor: PRIMARY_COLOR, paddingLeft: 15, paddingRight: 15, marginBottom: 10, marginTop: 10 }}>
-                <View style={{ height: 50, flex: 2, alignItems: 'flex-start', justifyContent: 'center', }} >
-                    <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14 }} >
-                        UPCOMING TOURNAMENTS
-                    </Text>
-                </View>
-                <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
-                    {
-                        horizontal ?
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigate('TournamentList');
-                                }}
-                            >
-                                <Text style={{ fontWeight: '500', color: PRIMARY_COLOR, fontSize: 12 }} >View All</Text>
-                            </TouchableOpacity> : null
-                    }
-                </View>
-            </View>
+            <TitleComponent title="Upcoming Tournaments" />
             <FlatList
+                contentContainerStyle={{ alignItems: 'center' }}
                 horizontal={horizontal}
                 data={tournaments}
                 showsHorizontalScrollIndicator={false}

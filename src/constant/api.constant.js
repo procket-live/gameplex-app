@@ -22,3 +22,5 @@ export const NOTIFICATION = 'notification';
 export const RANKING = `${TOURNAMENT}/ranking`;
 export const OFFER = 'offer';
 export const MY_TOURNAMENT = `${TOURNAMENT}/my`;
+export const BATTLE = 'battle';
+export const JOIN_BATTLE = `${BATTLE}/join`;

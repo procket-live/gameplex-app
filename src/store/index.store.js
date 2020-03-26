@@ -13,14 +13,14 @@ const persistConfig = {
         keychainService: "myKeychain",
         sharedPreferencesName: "mySharedPrefs"
     }),
-    whitelist: ['user', 'mode', 'game', 'tournament'],
+    whitelist: ['user', 'mode', 'game', 'tournament', 'battle'],
     blacklist: ['organizer']
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 
 const sagaMiddleware = createSagaMiddleware();
-const middlewares = [sagaMiddleware, logger];
+const middlewares = [sagaMiddleware];
 
 const store = createStore(
     persistedReducer,

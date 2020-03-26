@@ -15,8 +15,9 @@ import { TOKEN } from '../../constant/app.constant';
 class AddMoneyScene extends Component {
     constructor(props) {
         super(props);
+        const amount = props.navigation.getParam('amount') || 0;
         this.state = {
-            amount: String(props.navigation.getParam('amount')) || "0",
+            amount: String(amount),
         }
     }
 

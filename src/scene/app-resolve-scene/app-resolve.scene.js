@@ -10,6 +10,7 @@ import PrivateApi from '../../api/private.api';
 import { setUserAction } from '../../action/user.action';
 import { fetchGames } from '../../action/game.action';
 import { fetchTournaments } from '../../action/tournament.action';
+import { fetchBattle } from '../../action/battle.action';
 
 class AppResolve extends PureComponent {
     componentDidMount = () => {
@@ -34,6 +35,7 @@ class AppResolve extends PureComponent {
                 if (mode == 'user') {
                     this.props.fetchGames();
                     this.props.fetchTournaments();
+                    this.props.fetchBattle();
                     resetToScreen('TabNavigator');
                 } else {
                     resetToScreen('Dashboard');
@@ -77,4 +79,4 @@ const mapStateToProps = state => ({
     mode: state.mode
 })
 
-export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments })(AppResolve);
+export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments, fetchBattle })(AppResolve);

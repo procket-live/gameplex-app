@@ -5,6 +5,7 @@ import mode from './mode.reducer';
 import game from './game.reducer';
 import tournament from './tournament.reducer';
 import organizer from './organizer.reducer';
+import battle from './battle.reducer';
 
 const rootReducer = combineReducers({
     user,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     game,
     tournament,
     organizer,
+    battle
 });
 
 export default rootReducer;

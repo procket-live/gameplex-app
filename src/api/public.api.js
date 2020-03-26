@@ -1,5 +1,5 @@
 import { Post, Get } from "../service/http.service"
-import { GENERATE_OTP, VERIFY_OTP, RESEND_OTP, GAME } from "../constant/api.constant"
+import { GENERATE_OTP, VERIFY_OTP, RESEND_OTP, GAME, BATTLE } from "../constant/api.constant"
 
 class PublicApi {
     static GenerateOTP = (mobile) => {
@@ -16,6 +16,10 @@ class PublicApi {
 
     static GetGames = () => {
         return Get({ url: GAME });
+    }
+
+    static GetBattle = () => {
+        return Get({ url: BATTLE });
     }
 }
 

@@ -43,6 +43,8 @@ import GameScene from '../scene/game-scene/game.scene';
 import FantasyHomeScene from '../scene/fantasy-home-scene/fantasy-home.scene';
 import FantasyMyContestScene from '../scene/fantasy-my-contest-scene/fantasy-my-contest-scene';
 import ChatScreen from '../scene/chat-scene/chat.scene';
+import BattleScene from '../scene/battle-scene/battle.scene';
+import BattleChatScene from '../scene/battle-chat-scene/battle-chat.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -228,6 +230,18 @@ const RootNavigator = createStackNavigator({
     },
     UserDetailInput: {
         screen: UserDetailInputScene,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Battle: {
+        screen: BattleScene,
+        navigationOptions: {
+            header: null
+        }
+    },
+    BattleChat: {
+        screen: BattleChatScene,
         navigationOptions: {
             header: null
         }

@@ -36,22 +36,20 @@ function TransactionsScene(props) {
     }
 
     function RenderWalletTransaction({ item }) {
-        const order = AccessNestedObject(item, 'order');
         const tournament = AccessNestedObject(item, 'source.tournament_name');
+        const order = item.amount > 0;
 
         return (
             <View style={{ width: widthPercentageToDP(95), backgroundColor: ON_PRIMARY, marginBottom: 10, marginTop: 10, borderRadius: 10 }} >
                 <View style={{ padding: 10, flexDirection: 'row', }} >
                     <View style={{ flex: 3, paddingTop: 5, paddingBottom: 5 }} >
+                        <Text style={{ fontSize: 14, color: GREY_1 }}>{moment(item.created_at).format(DISPLAY_DATE_TIME_FORMAT)}</Text>
                         {
                             order ?
-                                <Text style={{ fontSize: 14, color: GREY_3 }} >Order Id: {order}</Text> : null
+                                <Text style={{ fontSize: 14, color: GREY_3, fontWeight: 'bold' }} >Added to wallet</Text> :
+
+                                <Text style={{ fontSize: 14, color: GREY_3, fontWeight: 'bold' }} >Deducted from wallet</Text>
                         }
-                        {
-                            tournament ?
-                                <Text style={{ fontSize: 14, color: GREY_3 }} >Tournament: {tournament}</Text> : null
-                        }
-                        <Text style={{ fontSize: 14, color: GREY_1 }}>{moment(item.created_at).format(DISPLAY_DATE_TIME_FORMAT)}</Text>
                         <View style={{ flexDirection: 'row', paddingTop: 5, paddingBottom: 5 }} >
                             <View style={{ flex: 1, justifyContent: 'center' }} >
                                 <View style={{ width: 100, height: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: order ? GREEN : RED, borderRadius: 50 }} >
@@ -80,7 +78,7 @@ function TransactionsScene(props) {
                         <Text style={{ fontSize: 14, color: GREY_1 }}>{moment(item.created_at).format(DISPLAY_DATE_TIME_FORMAT)}</Text>
                         <View style={{ flexDirection: 'row' }} >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 10, paddingBottom: 10 }} >
-                                <Image source={UpiIcon()} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
+                                <Image source={PaytmIcon()} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center' }} >
                                 {
@@ -109,7 +107,7 @@ function TransactionsScene(props) {
                                 <Text style={{ fontSize: 18, color: GREY_2 }} >{DisplayPrice(item.amount)}</Text>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', height: 25 }} >
+                        {/* <View style={{ flexDirection: 'row', height: 25 }} >
                             <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                                 <Text style={{ color: GREY_1, fontSize: 14 }} >Paid To</Text>
                             </View>
@@ -125,8 +123,8 @@ function TransactionsScene(props) {
                                     </Text>
                                 </View>
                             </View>
-                        </View>
-                        <View style={{ flexDirection: 'row', height: 25, marginBottom: 20 }} >
+                        </View> */}
+                        {/* <View style={{ flexDirection: 'row', height: 25, marginBottom: 20 }} >
                             <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                                 <Text style={{ color: GREY_1, fontSize: 14 }} >Tournament</Text>
                             </View>
@@ -135,8 +133,8 @@ function TransactionsScene(props) {
                                     {AccessNestedObject(item, 'source.tournament_name')}
                                 </Text>
                             </View>
-                        </View>
-                        <Image source={{ uri: AccessNestedObject(item, 'document_links.0') }} style={{ width: widthPercentageToDP(93), height: 100, resizeMode: 'contain' }} />
+                        </View> */}
+                        {/* <Image source={{ uri: AccessNestedObject(item, 'document_links.0') }} style={{ width: widthPercentageToDP(93), height: 100, resizeMode: 'contain' }} /> */}
                     </View>
                 </View>
             </View>

@@ -8,6 +8,7 @@ import GameCircleSliderComponent from '../../component/game-circle-slider/game-c
 import TournamentSlider from '../tournament-slider/tournament-slider.component';
 import PrivateApi from '../../api/private.api';
 import HeaderComponent from '../../component/header/header.component';
+import BattleSliderComponent from '../../component/battle-slider/battle-slider.component';
 
 function HomeScene(props) {
     const [offers, setOffers] = React.useState([{ loading: true }]);
@@ -33,14 +34,13 @@ function HomeScene(props) {
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
                     <OfferSlider offers={offers} />
                 </View>
+
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
                     <GameCircleSliderComponent />
+                    <BattleSliderComponent />
                 </View>
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
                     <TournamentSlider user={props.user} />
-                </View>
-                <View style={{ paddingTop: 10, paddingBottom: 10 }} >
-                    <GameSlider />
                 </View>
             </ScrollView >
         </>

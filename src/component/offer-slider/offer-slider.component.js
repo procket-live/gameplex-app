@@ -10,7 +10,9 @@ import {
 
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 
-const OfferSlider = ({ offers = [] }) => {
+const OfferSlider = ({ offers = [], height = 180 }) => {
+    const width = widthPercentageToDP(85);
+
     return (
         <Carousel
             autoplay
@@ -22,7 +24,7 @@ const OfferSlider = ({ offers = [] }) => {
                         <Placeholder
                             Animation={Fade}
                         >
-                            <PlaceholderLine style={styles.slide} />
+                            <PlaceholderLine style={[styles.slide, { width, height }]} />
                         </Placeholder>
                     )
                 }
@@ -31,21 +33,19 @@ const OfferSlider = ({ offers = [] }) => {
                     <ImageBackground
                         key={key}
                         source={{ uri: item.image }}
-                        style={styles.slide}
+                        style={[styles.slide, { width, height }]}
                     >
                     </ImageBackground>
                 )
             }}
             sliderWidth={widthPercentageToDP(100)}
-            itemWidth={widthPercentageToDP(85)}
+            itemWidth={width}
         />
     )
 }
 
 const styles = StyleSheet.create({
     slide: {
-        width: widthPercentageToDP(85),
-        height: 180,
         borderRadius: 10,
         overflow: 'hidden',
         resizeMode: 'contain'
