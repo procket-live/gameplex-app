@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import { navigatePop } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
 import IconComponent from '../icon/icon.component';
 
-function HeaderBattleComponent({ name, icon }) {
+function HeaderBattleComponent({ name, icon, actionIcon, active = () => [] }) {
     return (
         <View style={{
             height: 60,
@@ -23,7 +23,9 @@ function HeaderBattleComponent({ name, icon }) {
                 <Text style={{ fontSize: 20, color: ON_PRIMARY }} >{name}</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name="question-circle" />
+                <TouchableOpacity onPress={active}  >
+                    <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
+                </TouchableOpacity>
             </View>
         </View >
     )

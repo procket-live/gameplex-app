@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import {
     Placeholder,
     PlaceholderLine,
     Fade,
 } from "rn-placeholder";
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { navigate } from '../../service/navigation.service';
 
 const GameCard = props => {

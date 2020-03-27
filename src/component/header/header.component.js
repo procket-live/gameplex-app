@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import FastImage from 'react-native-fast-image';
 import IconComponent from '../icon/icon.component';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { navigate, navigatePop } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
 

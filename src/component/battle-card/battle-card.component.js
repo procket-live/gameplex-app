@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { ON_PRIMARY, SECONDARY_COLOR, GREY_3, TEXT_COLOR, GREEN, YELLOW } from '../../constant/color.constant';
-import { DisplayPrice } from '../../utils/common.util';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ON_PRIMARY, SECONDARY_COLOR, GREY_3, TEXT_COLOR, GREEN, YELLOW, PRIMARY_COLOR, GREY_2 } from '../../constant/color.constant';
+import { DisplayPrice, AccessNestedObject } from '../../utils/common.util';
+import moment from 'moment';
+import ParticipentsCircle from '../participents-circle/participents-circle.component';
 
 function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = false, proceedToChat }) {
     function onPress() {
@@ -44,9 +45,24 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
             </View>
             <View style={{ flex: 3, alignItems: 'flex-end', justifyContent: 'center', padding: 10, paddingRight: 20 }} >
                 {
-                    match.entry_fee == 0 ?
-                        <FreeButton /> :
-                        <PrizeButton prize={match.entry_fee} />
+                    queueEntry ?
+                        <>
+                            <Text style={{ fontSize: 14, color: PRIMARY_COLOR, fontWeight: 'bold' }} >
+                                YOU PAID {DisplayPrice(match.entry_fee)}
+                            </Text>
+                            {
+                                queueEntry ?
+                                    <ParticipentsCircle participents={AccessNestedObject(queueEntry, 'tournament.participents')} />
+                                    : null
+                            }
+                            <Text style={{ fontSize: 12, color: GREY_2, fontWeight: 'bold' }} >
+                                {moment(queueEntry.created_at).format('lll')}
+                            </Text>
+                        </>
+                        :
+                        match.entry_fee == 0 ?
+                            <FreeButton /> :
+                            <PrizeButton prize={match.entry_fee} />
                 }
             </View>
         </TouchableOpacity>
@@ -88,9 +104,9 @@ const styles = StyleSheet.create({
         height: 80,
         borderRadius: 5,
         backgroundColor: ON_PRIMARY,
-        flexDirection: 'row',
         marginBottom: 10,
-        elevation: 2
+        elevation: 2,
+        flexDirection: 'row'
     },
     textBoldLight: {
         fontSize: 14,

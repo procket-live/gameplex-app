@@ -4,6 +4,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import HeaderBattleComponent from '../../component/header/header-battle.component';
 import { GREY_BG, ON_PRIMARY, TEXT_COLOR, PRIMARY_COLOR, GREEN } from '../../constant/color.constant';
@@ -11,7 +12,6 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 import OfferSlider from '../../component/offer-slider/offer-slider.component';
 import BattleCard from '../../component/battle-card/battle-card.component';
 import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import PrivateApi from '../../api/private.api';
 import { navigate } from '../../service/navigation.service';
 import Tabs from '../../component/tabs/tabs.component';
@@ -105,8 +105,10 @@ function BattleScene({ navigation, user }) {
         if (match == null) {
             return null;
         }
+
         setLoading(true);
         const result = await PrivateApi.JoinBattle(match._id);
+        console.log('result', 'result', result)
         setLoading(false);
         if (result.success) {
             navigate('BattleChat', { battleQueue: result.response });
@@ -239,7 +241,8 @@ const styles = StyleSheet.create({
         width: widthPercentageToDP(95),
         height: 50,
         borderRadius: 10,
-        alignItems: 'center', justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: GREEN
     },
     boldText: {

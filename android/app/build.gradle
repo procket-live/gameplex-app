@@ -147,6 +147,7 @@ android {
         versionName "2.2"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
+        vectorDrawables.useSupportLibrary = true
     }
     splits {
         abi {
@@ -214,6 +215,7 @@ dependencies {
     implementation "com.google.firebase:firebase-config:17.0.0"
     implementation 'com.android.support:multidex:1.0.3'
     implementation "com.google.firebase:firebase-perf:17.0.2"
+    implementation "com.google.firebase:firebase-storage:17.0.0"
 
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.1.0"

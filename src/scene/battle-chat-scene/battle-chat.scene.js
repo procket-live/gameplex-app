@@ -2,8 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { GiftedChat } from 'react-native-gifted-chat'
 import moment from 'moment';
+import Spinner from 'react-native-loading-spinner-overlay';
+import useAppState from 'react-native-appstate-hook';
+import OpenApp from 'react-native-open-app';
+import { AppInstalledChecker } from 'react-native-check-app-install';
+import ImagePicker from 'react-native-image-crop-picker';
+import firebase from 'react-native-firebase';
 
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { BASE_URL } from '../../config/app.config';
 import io from 'socket.io-client';
 
@@ -13,46 +20,83 @@ import { GREY_BG, ON_PRIMARY, TEXT_COLOR, GREY_2, GREEN, GREY_3, PRIMARY_COLOR }
 import { TOKEN, DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
 import NotifyService from '../../service/notify.service';
 import IconComponent from '../../component/icon/icon.component';
-import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { TextInput } from 'react-native-gesture-handler';
+import PrivateApi from '../../api/private.api';
 
 let socket;
 
 function BattleChatScene({ navigation, user }) {
     const initialBattleQueue = navigation.getParam('battleQueue') || {};
+    const battleQueueId = navigation.getParam('id');
+
     const [battleQueue, setBattleQueue] = useState(initialBattleQueue);
+    const [roomId, setRoomId] = useState(initialBattleQueue.chat_room);
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [reconnectId, setReconnectId] = useState(Math.random());
+    const [isAppInstalled, setIsAppInstalled] = useState(false);
+    const [loadingText, setLoadingText] = useState('Loading ...');
 
     const headerTitle = AccessNestedObject(battleQueue, 'match.name');
     const headerIcon = AccessNestedObject(battleQueue, 'tournament.game.thumbnail');
     const gameName = AccessNestedObject(battleQueue, 'tournament.game.name');
     const matchEntryFee = AccessNestedObject(battleQueue, 'match.entry_fee');
     const winningAmount = AccessNestedObject(battleQueue, 'match.winning_amount');
-
     const participents = AccessNestedObject(battleQueue, 'tournament.participents', []);
-    const roomId = battleQueue.chat_room;
+
+    const { appState } = useAppState({
+        onForeground: () => {
+            setReconnectId(Math.random());
+        },
+        onBackground: disconnect,
+    });
+
+    useEffect(() => {
+        fetchInitial();
+    }, [])
+
+    async function fetchInitial() {
+        if (battleQueueId) {
+            setLoading(true);
+            const result = await PrivateApi.GetBattleQueuqEntry(battleQueueId);
+            setLoading(false);
+            if (result.success) {
+                const battleQueue = result.response;
+                setRoomId(battleQueue.chat_room);
+                setBattleQueue(battleQueue);
+                joinChannel();
+            }
+        }
+    }
+
+    async function resolveAppInstalled() {
+        AppInstalledChecker
+            .isAppInstalledAndroid(AccessNestedObject(battleQueue, 'tournament.game.packageId'))
+            .then((isInstalled) => {
+                setIsAppInstalled(isInstalled);
+            });
+    }
+
 
     useEffect(() => {
         socket = io(BASE_URL);
+        if (!roomId) return;
+
+        resolveAppInstalled();
+
         socket.emit('join', { token: TOKEN, roomId: roomId }, (err) => {
+            console.log('err', err);
             if (err && typeof err == 'object' && Object.keys(err).length) {
                 NotifyService.notify({ title: "Unable to connect", type: "error" });
             }
         })
 
-        return () => {
-            socket.emit("disconnect");
-            socket.off();
-        }
-    }, [])
-
-    useEffect(() => {
         socket.on('message', message => {
             setMessages((messages) => {
                 const messageObject = {
                     _id: message._id,
                     text: message.text,
                     createdAt: moment(message.created_at).format(),
+                    image: message.image,
                     user: {
                         _id: message.created_by._id
                     },
@@ -69,6 +113,7 @@ function BattleChatScene({ navigation, user }) {
                     _id: message._id,
                     text: message.text,
                     createdAt: moment(message.created_at).format(),
+                    image: message.image,
                     user: {
                         _id: message.created_by._id
                     }
@@ -80,20 +125,55 @@ function BattleChatScene({ navigation, user }) {
         socket.on("battleQueueUpdate", (data) => {
             setBattleQueue(data);
         });
-    }, []);
 
-    function sendMessage(messages) {
-        const message = AccessNestedObject(messages, '0.text');
-        socket.emit('sendMessage', { token: TOKEN, roomId: roomId, message });
+        return disconnect;
+    }, [roomId, reconnectId])
+
+    function disconnect() {
+        if (!socket) {
+            return;
+        }
+
+        socket?.emit("disconnect");
+        socket?.off();
     }
 
-    function invite() {
+    function sendMessage(messages, image) {
+        const message = AccessNestedObject(messages, '0.text');
+        socket.emit('sendMessage', { token: TOKEN, roomId: roomId, message, image });
+    }
 
+    async function uploadImage() {
+        const image = await ImagePicker
+            .openPicker({
+                width: 300,
+                height: 400,
+                cropping: true
+            });
+        if (image) {
+            setLoading(true);
+            setLoadingText('Uploading ...');
+            const result = await firebase.storage().ref(`/chat_rooms/${roomId}_${Math.random()}`).putFile(image.path)
+            setLoadingText('Loading ...');
+            setLoading(false);
+            sendMessage('', result.downloadURL);
+        }
     }
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderBattleComponent name={headerTitle} icon={headerIcon} />
+            <HeaderBattleComponent
+                name={headerTitle}
+                icon={headerIcon}
+                actionIcon={isAppInstalled ? "play-circle" : "download"}
+                active={() => {
+                    const config = {
+                        playStoreId: AccessNestedObject(battleQueue, 'tournament.game.packageId'),
+                    };
+
+                    OpenApp.openInStore(config);
+                }}
+            />
             <View style={styles.gameContainer} >
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                     <Image source={{ uri: headerIcon }} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
@@ -154,13 +234,11 @@ function BattleChatScene({ navigation, user }) {
                                     <Text style={{ fontSize: 14, color: TEXT_COLOR, fontWeight: 'bold' }} >
                                         Waiting for opponent
                                     </Text>
-                                    <TouchableOpacity onPress={invite} style={[styles.buttonContainer]} >
-                                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                                            <Text style={{ fontSize: 14, color: ON_PRIMARY, fontWeight: 'bold' }} >
-                                                INVITE
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
+                                    <ActivityIndicator
+                                        animating
+                                        size="small"
+                                        color={PRIMARY_COLOR}
+                                    />
                                 </View>
                             </View>
                         </View>
@@ -176,6 +254,23 @@ function BattleChatScene({ navigation, user }) {
                 placeholder="Enter message ..."
                 alwaysShowSend
                 isLoadingEarlier
+                renderLoading={() => (
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }} >
+                        <ActivityIndicator
+                            animating
+                            size='large'
+                            color={PRIMARY_COLOR}
+                        />
+                    </View>
+                )}
+                showUserAvatar={true}
+                renderInputToolbar={participents.length == 1 ? () => null : undefined}
+                onPressActionButton={uploadImage}
+            />
+            <Spinner
+                visible={loading}
+                textContent={loadingText}
+                textStyle={{ color: ON_PRIMARY }}
             />
         </View>
     )

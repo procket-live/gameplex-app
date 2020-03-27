@@ -15,12 +15,11 @@ import { fetchBattle } from '../../action/battle.action';
 
 class AppResolve extends PureComponent {
     componentDidMount = () => {
-        setTimeout(this.init, 100);
+        setTimeout(this.getInitialNotification, 100);
     }
 
     init = () => {
         const { user, mode } = this.props;
-
         if (user == null) {
             resetToScreen('Login')
             SplashScreen.hide();
@@ -76,6 +75,44 @@ class AppResolve extends PureComponent {
         if (fcmToken) {
             PrivateApi.SetUser({ firebase_token: fcmToken });
         }
+    }
+
+    getInitialNotification = async () => {
+        const notificationOpen = await firebase.notifications().getInitialNotification();
+        console.log('notificationOpen', notificationOpen);
+        if (notificationOpen) {
+            const data = notificationOpen.notification.data;
+            console.log('a', data);
+            if (AccessNestedObject(data, 'route') == "BattleQueue") {
+                APP.REDIRECT_TO = {
+                    route: 'BattleChat',
+                    payload: {
+                        id: AccessNestedObject(data, 'value')
+                    }
+                }
+            }
+        }
+
+        this.getInitialLink();
+    }
+
+    getInitialLink = async () => {
+        const link = await firebase.links().getInitialLink();
+        if (link) {
+            // if (link.includes('bloodRequest')) {
+            //     const parts = link.split('/');
+            //     const id = parts[4];
+
+            //     APP.REDIRECT_TO = {
+            //         route: 'BloodRequest',
+            //         payload: {
+            //             id
+            //         }
+            //     }
+            // }
+        }
+
+        this.init()
     }
 
     render() {

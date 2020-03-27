@@ -15,6 +15,7 @@ import APP from '../../constant/app.constant';
 import { IsUserDetailsSet } from '../../utils/common.util';
 import { fetchGames } from '../../action/game.action';
 import { fetchTournaments } from '../../action/tournament.action';
+import { fetchBattle } from '../../action/battle.action';
 
 const STEPS = {
     MOBILE_NUMBER_INPUT: 1,
@@ -112,6 +113,7 @@ class LoginScene extends Component {
                 resetToScreen('TabNavigator');
                 this.props.fetchGames();
                 this.props.fetchTournaments();
+                this.props.fetchBattle();
             }
         } else {
             this.setState({ loading: false });
@@ -277,4 +279,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(null, { setUserAction, fetchGames, fetchTournaments })(LoginScene);
+export default connect(null, { setUserAction, fetchGames, fetchTournaments, fetchBattle })(LoginScene);

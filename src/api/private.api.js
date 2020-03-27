@@ -109,6 +109,10 @@ class PrivateApi {
     static GetJoinedBattle = (id) => {
         return Get({ url: `${JOIN_BATTLE}/${id}` })
     }
+
+    static GetBattleQueuqEntry = (id) => {
+        return Get({ url: `${BATTLE}/${id}` })
+    }
 }
 
 export default PrivateApi;
