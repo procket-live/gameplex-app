@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
+import firebase from 'react-native-firebase';
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -27,6 +28,7 @@ class AppResolve extends PureComponent {
             const token = user.token;
             APP.TOKEN = token;
             this.updateUser(token);
+            this.setFiretoken();
 
             const result = IsUserDetailsSet(user, true);
             if (!result.allStepDone) {
@@ -66,6 +68,13 @@ class AppResolve extends PureComponent {
             const user = AccessNestedObject(result, 'response');
             const newUser = Object.assign(user, { token });
             this.props.setUserAction(newUser);
+        }
+    }
+
+    setFiretoken = async () => {
+        const fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            PrivateApi.SetUser({ firebase_token: fcmToken });
         }
     }
 

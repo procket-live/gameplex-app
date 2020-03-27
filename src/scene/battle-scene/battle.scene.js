@@ -110,6 +110,7 @@ function BattleScene({ navigation, user }) {
         setLoading(false);
         if (result.success) {
             navigate('BattleChat', { battleQueue: result.response });
+            bottomSheetRef.current?.snapTo(0);
             fetchJoinedTournaments();
         }
     }

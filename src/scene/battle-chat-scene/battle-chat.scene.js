@@ -19,9 +19,9 @@ import { TextInput } from 'react-native-gesture-handler';
 let socket;
 
 function BattleChatScene({ navigation, user }) {
-    const battleQueue = navigation.getParam('battleQueue') || {};
+    const initialBattleQueue = navigation.getParam('battleQueue') || {};
+    const [battleQueue, setBattleQueue] = useState(initialBattleQueue);
     const [messages, setMessages] = useState([]);
-    const [message, setMessage] = useState('');
 
     const headerTitle = AccessNestedObject(battleQueue, 'match.name');
     const headerIcon = AccessNestedObject(battleQueue, 'tournament.game.thumbnail');
@@ -29,7 +29,7 @@ function BattleChatScene({ navigation, user }) {
     const matchEntryFee = AccessNestedObject(battleQueue, 'match.entry_fee');
     const winningAmount = AccessNestedObject(battleQueue, 'match.winning_amount');
 
-    const participents = AccessNestedObject(battleQueue, 'tournament.participents', []).filter((item) => item.user._id == user._id);
+    const participents = AccessNestedObject(battleQueue, 'tournament.participents', []);
     const roomId = battleQueue.chat_room;
 
     useEffect(() => {
@@ -76,11 +76,15 @@ function BattleChatScene({ navigation, user }) {
                 .reverse();
             setMessages(messages);
         });
+
+        socket.on("battleQueueUpdate", (data) => {
+            setBattleQueue(data);
+        });
     }, []);
 
     function sendMessage(messages) {
         const message = AccessNestedObject(messages, '0.text');
-        socket.emit('sendMessage', { token: TOKEN, roomId: roomId, message }, () => setMessage(''));
+        socket.emit('sendMessage', { token: TOKEN, roomId: roomId, message });
     }
 
     function invite() {
