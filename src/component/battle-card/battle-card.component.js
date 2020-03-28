@@ -27,19 +27,19 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'flex-start' }} ></View>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 5 }} >
                     <Text style={{ fontSize: 8, fontWeight: 'bold', color: ON_PRIMARY, transform: [{ rotate: '90deg' }], width: 100 }} >
-                        {match.match_type}
+                        {AccessNestedObject(match, 'match_type')}
                     </Text>
                 </View>
             </View>
             <View style={{ flex: 3, padding: 10 }} >
                 <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-end' }} >
-                    <Text style={styles.textBoldLight} >{match.name}</Text>
+                    <Text style={styles.textBoldLight} >{AccessNestedObject(match, 'name')}</Text>
                 </View>
                 <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }} >
                     {
-                        match.winning_amount == 0 ?
+                        AccessNestedObject(match, 'winning_amount') == 0 ?
                             < Text style={styles.textBold} >PRACTICE MATCH</Text> :
-                            <Text style={styles.textBoldBig} >WIN<Text style={{ color: GREEN }} > {DisplayPrice(match.winning_amount)}</Text></Text>
+                            <Text style={styles.textBoldBig} >WIN<Text style={{ color: GREEN }} > {DisplayPrice(AccessNestedObject(match, 'winning_amount'))}</Text></Text>
                     }
                 </View>
             </View>
@@ -48,7 +48,7 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
                     queueEntry ?
                         <>
                             <Text style={{ fontSize: 14, color: PRIMARY_COLOR, fontWeight: 'bold' }} >
-                                YOU PAID {DisplayPrice(match.entry_fee)}
+                                YOU PAID {DisplayPrice(AccessNestedObject(match, 'entry_fee'))}
                             </Text>
                             {
                                 queueEntry ?
@@ -60,18 +60,18 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
                             </Text>
                         </>
                         :
-                        match.entry_fee == 0 ?
+                        AccessNestedObject(match, 'entry_fee') == 0 ?
                             <FreeButton /> :
-                            <PrizeButton prize={match.entry_fee} />
+                            <PrizeButton prize={AccessNestedObject(match, 'entry_fee')} />
                 }
             </View>
         </TouchableOpacity>
     )
 }
 
-function PrizeButton({ prize, onPress }) {
+function PrizeButton({ prize }) {
     return (
-        <TouchableOpacity onPress={onPress} style={styles.buttonContainer} >
+        <View style={styles.buttonContainer} >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                 <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: 'bold' }} >
                     {DisplayPrice(prize)}
@@ -82,19 +82,19 @@ function PrizeButton({ prize, onPress }) {
                     PER MATCH
                 </Text>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 
-function FreeButton({ onPress }) {
+function FreeButton() {
     return (
-        <TouchableOpacity onPress={onPress} style={[styles.buttonContainer, { backgroundColor: YELLOW }]} >
+        <View style={[styles.buttonContainer, { backgroundColor: YELLOW }]} >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                 <Text style={{ fontSize: 14, color: TEXT_COLOR, fontWeight: 'bold' }} >
                     FREE
                 </Text>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 

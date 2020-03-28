@@ -4,17 +4,17 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import HeaderBattleComponent from '../../component/header/header-battle.component';
-import { GREY_BG, ON_PRIMARY, TEXT_COLOR, PRIMARY_COLOR, GREEN } from '../../constant/color.constant';
+import { GREY_BG, ON_PRIMARY, TEXT_COLOR, PRIMARY_COLOR } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import OfferSlider from '../../component/offer-slider/offer-slider.component';
 import BattleCard from '../../component/battle-card/battle-card.component';
-import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
+import { AccessNestedObject } from '../../utils/common.util';
 import PrivateApi from '../../api/private.api';
 import { navigate } from '../../service/navigation.service';
 import Tabs from '../../component/tabs/tabs.component';
+import JoinBattleComponent from '../../component/join-battle-component/join-battle.component';
 
 
 function BattleScene({ navigation, user }) {
@@ -55,66 +55,34 @@ function BattleScene({ navigation, user }) {
             return null;
         }
 
-        function RenderItem({ name, value }) {
-            return (
-                <View style={{ flex: 1, flexDirection: 'row', width: widthPercentageToDP(100), padding: 10, paddingLeft: 20, paddingRight: 20 }} >
-                    <View style={{ alignItems: 'flex-start', justifyContent: 'center' }} >
-                        <Text style={{ fontWeight: 'bold', color: TEXT_COLOR, fontSize: 16 }} >
-                            {name}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
-                        <Text style={{ fontWeight: '100', color: TEXT_COLOR, fontSize: 16 }} >
-                            {value}
-                        </Text>
-                    </View>
-                </View>
-            )
-        }
-
         return (
-            <View style={styles.contentContainer}  >
-                <View style={{ height: 100, alignItems: 'center', justifyContent: 'flex-start', padding: 10 }} >
-                    <BattleCard item={match} disableButton />
-                </View>
-                <View style={{ height: 150, alignItems: 'center', justifyContent: 'flex-start', padding: 10 }} >
-                    <RenderItem name={"Wallet Balance"} value={DisplayPrice(walletBalance)} />
-                    <RenderItem name={"Entry Fee"} value={DisplayPrice(entryFee)} />
-                    {
-                        isLessAmount ?
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigate('AddMoney', { amount: lessAmount });
-                                }}
-                                style={[styles.buttonContainer, { backgroundColor: PRIMARY_COLOR }]} >
-                                <Text style={styles.boldText} >ADD {DisplayPrice(lessAmount)} TO JOIN</Text>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity
-                                onPress={makeApiCall}
-                                style={styles.buttonContainer} >
-                                <Text style={styles.boldText} >{entryFee == 0 ? 'JOIN BATTLE' : `JOIN BATTLE FOR ${DisplayPrice(entryFee)}`}</Text>
-                            </TouchableOpacity>
-                    }
-                </View>
-            </View>
+            <JoinBattleComponent
+                match={match}
+                walletBalance={walletBalance}
+                entryFee={entryFee}
+                lessAmount={lessAmount}
+                isLessAmount={isLessAmount}
+                makeApiCall={makeApiCall}
+            />
         )
     }
 
-    async function makeApiCall() {
+    function makeApiCall() {
         if (match == null) {
             return null;
         }
 
-        setLoading(true);
-        const result = await PrivateApi.JoinBattle(match._id);
-        console.log('result', 'result', result)
-        setLoading(false);
-        if (result.success) {
-            navigate('BattleChat', { battleQueue: result.response });
-            bottomSheetRef.current?.snapTo(0);
-            fetchJoinedTournaments();
-        }
+        bottomSheetRef.current?.snapTo(0);
+
+        setTimeout(async () => {
+            setLoading(true);
+            const result = await PrivateApi.JoinBattle(match._id);
+            setLoading(false);
+            if (result.success) {
+                fetchJoinedTournaments();
+                navigate('BattleChat', { battleQueue: result.response });
+            }
+        }, 100)
     }
 
     function RenderHeaderContent() {
@@ -149,7 +117,7 @@ function BattleScene({ navigation, user }) {
     const renderShadow = () => {
         const animatedShadowOpacity = Animated.interpolate(fall, {
             inputRange: [0, 1],
-            outputRange: [1, 0],
+            outputRange: [0.6, 0],
             interpolate: Animated.Extrapolate
         })
 
@@ -231,24 +199,6 @@ const styles = StyleSheet.create({
         backgroundColor: PRIMARY_COLOR,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10
-    },
-    contentContainer: {
-        width: widthPercentageToDP(100),
-        height: 250,
-        backgroundColor: ON_PRIMARY,
-    },
-    buttonContainer: {
-        width: widthPercentageToDP(95),
-        height: 50,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: GREEN
-    },
-    boldText: {
-        color: ON_PRIMARY,
-        fontWeight: 'bold',
-        fontSize: 20
     },
     spinnerTextStyle: {
         color: ON_PRIMARY

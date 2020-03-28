@@ -165,7 +165,7 @@ function BattleChatScene({ navigation, user }) {
             <HeaderBattleComponent
                 name={headerTitle}
                 icon={headerIcon}
-                actionIcon={isAppInstalled ? "play-circle" : "download"}
+                actionIcon={"play-circle"}
                 active={() => {
                     const config = {
                         playStoreId: AccessNestedObject(battleQueue, 'tournament.game.packageId'),

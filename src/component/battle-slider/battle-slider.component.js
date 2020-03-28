@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { ON_PRIMARY } from '../../constant/color.constant';
+import { ON_PRIMARY, TEXT_COLOR } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { navigate } from '../../service/navigation.service';
 import { AccessNestedObject } from '../../utils/common.util';
+import TitleComponent from '../title-component/title.component';
 
 const BattleSliderComponent = ({ battle = {} }) => {
     const { list } = battle;
@@ -13,14 +14,20 @@ const BattleSliderComponent = ({ battle = {} }) => {
 
         return (
             <TouchableOpacity
-                style={{ height: 130, width: widthPercentageToDP(95), marginBottom: 10 }}
                 onPress={() => {
-                    navigate('Battle', { battle: battleItem });
+                    if (battleItem.battle_type == "match") {
+                        navigate('Battle', { battle: battleItem });
+                    }
+
+                    if (battleItem.battle_type == "fantasy") {
+                        navigate('Fantasy')
+                    }
+
                 }}
                 key={key}
             >
-                <Image style={styles.image} source={{ uri: AccessNestedObject(battleItem, 'game.wallpaper') }} />
-                <Text style={{ color: ON_PRIMARY, fontSize: 30, position: 'absolute', bottom: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.4)', paddingRight: 10, paddingLeft: 10, borderBottomRightRadius: 10 }} >
+                <Image style={styles.image} source={{ uri: AccessNestedObject(battleItem, 'game.thumbnail') }} />
+                <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold', marginLeft: 10 }} >
                     {AccessNestedObject(battleItem, 'game.name')}
                 </Text>
             </TouchableOpacity >
@@ -29,9 +36,9 @@ const BattleSliderComponent = ({ battle = {} }) => {
 
     return (
         <>
+            <TitleComponent title="Games" />
             <FlatList
-                contentContainerStyle={{ alignItems: 'center' }}
-                horizontal={false}
+                contentContainerStyle={{ marginLeft: widthPercentageToDP(5), alignItems: 'center', flexWrap: 'wrap', flexDirection: 'row' }}
                 data={list}
                 showsHorizontalScrollIndicator={false}
                 renderItem={RenderTextCircle}
@@ -42,12 +49,14 @@ const BattleSliderComponent = ({ battle = {} }) => {
 
 const styles = StyleSheet.create({
     image: {
-        width: widthPercentageToDP(95),
-        height: 130,
+        width: widthPercentageToDP(40),
+        height: 200,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
-        resizeMode: 'cover'
+        resizeMode: 'cover',
+        padding: widthPercentageToDP(2.5),
+        margin: widthPercentageToDP(2.5),
     }
 });
 

@@ -1,4 +1,4 @@
-import { StackActions, NavigationActions } from 'react-navigation';
+import { StackActions, NavigationActions, NavigationTabAction } from 'react-navigation';
 
 let _navigator;
 
@@ -15,6 +15,22 @@ export function navigate(routeName, params = {}) {
     );
 }
 
+export function changeTab(routeName) {
+    const action = StackActions.reset({
+        index: 0,
+        actions: [
+            NavigationActions.navigate({
+                routeName: "TabNavigator",
+                action: NavigationActions.navigate({
+                    routeName: routeName,
+                })
+            }),
+        ]
+    })
+
+    _navigator.dispatch(action);
+}
+
 export function navigatePop() {
     _navigator.dispatch(
         NavigationActions.back()
@@ -26,6 +42,7 @@ export function resetToScreen(screen, params = {}) {
         index: 0,
         actions: [NavigationActions.navigate({ routeName: screen, params: params })],
     });
+
     _navigator.dispatch(resetAction);
 }
 

@@ -5,7 +5,7 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import FastImage from 'react-native-fast-image';
 import IconComponent from '../icon/icon.component';
-import { navigate, navigatePop } from '../../service/navigation.service';
+import { navigate, navigatePop, changeTab } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
 
 function HeaderComponent({ user, onProfile, fantasy }) {
@@ -74,6 +74,7 @@ function HeaderComponent({ user, onProfile, fantasy }) {
                     !onProfile ?
                         <TouchableOpacity onPress={() => {
                             navigate('Wallet')
+                            // changeTab('Wallet')
                         }} >
                             <IconComponent focused tintColor={ON_PRIMARY} name="wallet" />
                         </TouchableOpacity> : null

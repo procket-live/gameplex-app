@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { GREY_BG, TEXT_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import { widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
@@ -18,6 +19,7 @@ class AddMoneyScene extends Component {
         const amount = props.navigation.getParam('amount') || 0;
         this.state = {
             amount: String(amount),
+            loading: false
         }
     }
 
@@ -71,10 +73,16 @@ class AddMoneyScene extends Component {
     }
 
     initiatePayment = () => {
+        this.setLoading(true);
         AddAmountToWallet(this.state.amount, this.props.user, this.paymentResponse)
     }
 
+    setLoading = (success) => {
+        this.setState({ loading: success });
+    }
+
     paymentResponse = ({ success, user, err }) => {
+        this.setLoading(false);
         if (success) {
             const newUser = Object.assign(user, { token: TOKEN })
             this.props.setUserAction(newUser);
@@ -158,6 +166,12 @@ class AddMoneyScene extends Component {
                 <BottomStickButton
                     onPress={this.initiatePayment}
                     text="ADD MONEY"
+                />
+
+                <Spinner
+                    visible={this.state.loading}
+                    textContent={'Loading...'}
+                    textStyle={{ color: TEXT_COLOR }}
                 />
             </View>
         );

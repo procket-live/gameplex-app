@@ -13,3 +13,7 @@ export const UpiIcon = () => {
 export const NotificationIcon = () => {
     return require('../assets/images/notification-flat.png');
 }
+
+export const RazorpayIcon = () => {
+    return require('../assets/images/razorpay.png');
+}

@@ -4,6 +4,7 @@ import { ON_PRIMARY } from '../../constant/color.constant';
 import NotifyService from '../../service/notify.service';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { navigate } from '../../service/navigation.service';
+import TitleComponent from '../title-component/title.component';
 
 const GameCircleSlider = () => {
     const games = [
@@ -11,7 +12,7 @@ const GameCircleSlider = () => {
             text: "Fantasy Sports",
             image: 'https://miro.medium.com/max/3840/1*C9ndHCk1fWCtaxla5GytXw.jpeg',
             onPress: () => {
-                navigate('Fantasy')
+
             }
         }
     ]
@@ -37,6 +38,7 @@ const GameCircleSlider = () => {
             <FlatList
                 contentContainerStyle={{ alignItems: 'center' }}
                 horizontal={false}
+                ListHeaderComponent={() => <TitleComponent title="Games" />}
                 data={games}
                 showsHorizontalScrollIndicator={false}
                 renderItem={RenderTextCircle}

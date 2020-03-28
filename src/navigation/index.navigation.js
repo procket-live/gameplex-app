@@ -21,7 +21,7 @@ import MenuScene from '../scene/menu-scene/menu.scene';
 import TournamentList from '../scene/tournament-list-scene/tournament-list.scene';
 import DashboardScene from '../scene/dashboard-scene/dashboard.scene';
 import AddTournamentScene from '../scene/add-tournement/add-tournament.scene';
-import { GREY_BG, PRIMARY_COLOR } from '../constant/color.constant';
+import { GREY_BG, PRIMARY_COLOR, TEXT_COLOR, GREY_2, GREY_3 } from '../constant/color.constant';
 import DashboardTournamentListScene from '../scene/dashboard-tournament-list/dashboard-tournament-list.scene';
 import ManageTournamentScene from '../scene/manage-tournament/manage-tournament.scene';
 import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-detail-scene/add-tournament-general-detail.scene';
@@ -164,23 +164,24 @@ const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
         Wallet: WalletStack,
-        // Chat: ChatStack,
         Notifications: NotificationStack,
         Profile: MenuStack,
     }, {
     tabBarOptions: {
-        activeTintColor: "#2B7C85",
-        inactiveTintColor: "#222222",
+        activeTintColor: PRIMARY_COLOR,
+        inactiveTintColor: 'red',
+        keyboardHidesTabBar: true,
+        labelStyle: { display: 'none' },
     },
-    tabBarComponent: props => (
-        <TabBar
-            shadow={true}
-            tabBarBackground="#fff"
-            activeColors="#fff" // or activeColors={'#e6b580'}
-            activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
-            {...props}
-        />
-    )
+    // tabBarComponent: props => (
+    //     <TabBar
+    //         shadow={true}
+    //         tabBarBackground="#fff"
+    //         activeColors="#fff" // or activeColors={'#e6b580'}
+    //         activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
+    //         {...props}
+    //     />
+    // )
 })
 
 const FantasyTabsNavigator = createBottomTabNavigator(

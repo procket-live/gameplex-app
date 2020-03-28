@@ -31,6 +31,7 @@ class ManageTournamentScene extends PureComponent {
         const id = this.props.navigation.getParam('id');
         this.setState({ loading: true });
         const result = await PrivateApi.GetTournament(id);
+        console.log('result', result);
         this.setState({ loading: false });
         if (result.success) {
             this.setState({ tournament: result.response });

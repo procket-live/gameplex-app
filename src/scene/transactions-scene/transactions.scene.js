@@ -8,7 +8,7 @@ import { DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
 
 import { DisplayPrice, AccessNestedObject } from '../../utils/common.util';
 import moment from 'moment';
-import { PaytmIcon, UpiIcon } from '../../config/image.config';
+import { RazorpayIcon } from '../../config/image.config';
 
 function TransactionsScene(props) {
     const [transactions, setTransactions] = React.useState([]);
@@ -57,6 +57,10 @@ function TransactionsScene(props) {
                                 </View>
                             </View>
                         </View>
+                        {
+                            tournament ?
+                                <Text style={{ color: TEXT_COLOR, fontWeight: 'bold' }} >{tournament}</Text> : null
+                        }
                     </View>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 18, color: order ? GREEN : RED }} >{order ? '+ ' : '- '} {DisplayPrice(Math.abs(item.amount))}</Text>
@@ -78,7 +82,7 @@ function TransactionsScene(props) {
                         <Text style={{ fontSize: 14, color: GREY_1 }}>{moment(item.created_at).format(DISPLAY_DATE_TIME_FORMAT)}</Text>
                         <View style={{ flexDirection: 'row' }} >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 10, paddingBottom: 10 }} >
-                                <Image source={PaytmIcon()} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
+                                <Image source={RazorpayIcon()} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center' }} >
                                 {
@@ -107,34 +111,6 @@ function TransactionsScene(props) {
                                 <Text style={{ fontSize: 18, color: GREY_2 }} >{DisplayPrice(item.amount)}</Text>
                             </View>
                         </View>
-                        {/* <View style={{ flexDirection: 'row', height: 25 }} >
-                            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                                <Text style={{ color: GREY_1, fontSize: 14 }} >Paid To</Text>
-                            </View>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                                <Text style={{ color: TEXT_COLOR, fontSize: 14 }} >
-                                    {AccessNestedObject(item, 'target_ref.organizer_name')}
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
-                                <View style={{ minWidth: 100, height: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: PRIMARY_COLOR, borderRadius: 50 }} >
-                                    <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
-                                        {AccessNestedObject(item, 'target_ref.upi_address')}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View> */}
-                        {/* <View style={{ flexDirection: 'row', height: 25, marginBottom: 20 }} >
-                            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                                <Text style={{ color: GREY_1, fontSize: 14 }} >Tournament</Text>
-                            </View>
-                            <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
-                                <Text style={{ color: PRIMARY_COLOR, fontSize: 14 }} >
-                                    {AccessNestedObject(item, 'source.tournament_name')}
-                                </Text>
-                            </View>
-                        </View> */}
-                        {/* <Image source={{ uri: AccessNestedObject(item, 'document_links.0') }} style={{ width: widthPercentageToDP(93), height: 100, resizeMode: 'contain' }} /> */}
                     </View>
                 </View>
             </View>

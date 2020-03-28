@@ -30,6 +30,49 @@
             {
               "client_id": "62408106269-ctd4ivdkam3eldqp779tpdjnn7he3q9f.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "62408106269-rkq8oblgkjgv13710vsh9j00hjgagqbo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gameplex"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62408106269:android:526f61c87380b82a1cc1f4",
+        "android_client_info": {
+          "package_name": "com.gameplexapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62408106269-ctd4ivdkam3eldqp779tpdjnn7he3q9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPHycAZBXskVmHj7vAX7-4N5tkJYHkG9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62408106269-ctd4ivdkam3eldqp779tpdjnn7he3q9f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "62408106269-rkq8oblgkjgv13710vsh9j00hjgagqbo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gameplex"
+              }
             }
           ]
         }

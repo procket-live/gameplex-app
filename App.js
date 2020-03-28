@@ -4,7 +4,7 @@ import {
     StatusBar,
 } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert';
-import { useScreens } from 'react-native-screens';
+// import { useScreens } from 'react-native-screens';
 import NetworkState from 'react-native-network-state'
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -17,8 +17,6 @@ import store, { persistor } from './src/store/index.store';
 import { setTopLevelNavigator } from './src/service/navigation.service';
 import AppResolve from './src/scene/app-resolve-scene/app-resolve.scene';
 import CONFIG from './src/config/app.config'
-
-useScreens();
 
 const freshchatConfig = new FreshchatConfig(CONFIG.FRESHCHAT.APP_ID, CONFIG.FRESHCHAT.APP_KEY);
 Freshchat.init(freshchatConfig);

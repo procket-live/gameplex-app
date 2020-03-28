@@ -12,9 +12,9 @@ import APP from '../../constant/app.constant';
 import { AccessNestedObject } from '../../utils/common.util';
 import { navigate } from '../../service/navigation.service';
 
-function HomeScene(props) {
+function HomeScene({ user, navigation }) {
     const [offers, setOffers] = React.useState([{ loading: true }]);
-
+    console.log('navigation', navigation)
     useEffect(() => {
         fetchOffers();
         redirect();
@@ -48,11 +48,10 @@ function HomeScene(props) {
                 </View>
 
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
-                    <GameCircleSliderComponent />
                     <BattleSliderComponent />
                 </View>
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
-                    <TournamentSlider user={props.user} />
+                    <TournamentSlider user={user} />
                 </View>
             </ScrollView >
         </>
