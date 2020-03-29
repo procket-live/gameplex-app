@@ -7,7 +7,7 @@ export function setTopLevelNavigator(navigatorRef) {
 }
 
 export function navigate(routeName, params = {}) {
-    _navigator.dispatch(
+    _navigator && _navigator.dispatch(
         NavigationActions.navigate({
             routeName,
             params,
@@ -28,11 +28,11 @@ export function changeTab(routeName) {
         ]
     })
 
-    _navigator.dispatch(action);
+    _navigator && _navigator.dispatch(action);
 }
 
 export function navigatePop() {
-    _navigator.dispatch(
+    _navigator && _navigator.dispatch(
         NavigationActions.back()
     );
 }
@@ -43,9 +43,5 @@ export function resetToScreen(screen, params = {}) {
         actions: [NavigationActions.navigate({ routeName: screen, params: params })],
     });
 
-    _navigator.dispatch(resetAction);
-}
-
-export function openDrawer() {
-    _navigator && _navigator._navigation.openDrawer();
+    _navigator && _navigator.dispatch(resetAction);
 }

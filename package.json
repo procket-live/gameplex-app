@@ -9,7 +9,7 @@
         "test": "jest",
         "lint": "eslint .",
         "bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/",
-        "apk": "npm run bundle && cd android && ./gradlew assembleRelease && cd app/build/outputs/apk && open .",
+        "apk": "npx jetify && npm run bundle && cd android && ./gradlew assembleRelease && cd app/build/outputs/apk && open .",
         "codepush": "appcenter codepush release-react -a GamePlex/Gameplex-Android -d Production --mandatory"
     },
     "dependencies": {
@@ -58,7 +58,7 @@
         "react-native-scrollable-tab-view": "^1.0.0",
         "react-native-sensitive-info": "^5.5.3",
         "react-native-share": "^2.0.0",
-        "react-native-sms-retriever-api": "^1.0.3",
+        "react-native-sms-retriever": "^1.1.1",
         "react-native-snap-carousel": "^3.8.4",
         "react-native-splash-screen": "^3.2.0",
         "react-native-svg": "^11.0.1",

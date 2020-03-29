@@ -2,11 +2,12 @@ import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { PRIMARY_COLOR } from '../../constant/color.constant';
+import { TNC_LINK } from '../../config/app.config';
 
 function TNCScene() {
     return (
         <WebView
-            source={{ uri: 'https://www.termsandconditionsgenerator.com/live.php?token=KpAY38T1omPltvNzNMUqW4GRVbx2RFyu' }}
+            source={{ uri: TNC_LINK }}
             startInLoadingState
             renderLoading={() => {
                 return (

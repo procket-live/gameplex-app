@@ -1,4 +1,4 @@
-import { SET_USER, LOGOUT_USER, SET_AUTH_TOKEN } from "../constant/redux.constant";
+import { SET_USER, LOGOUT_USER, SET_AUTH_TOKEN, REFRESH_USER } from "../constant/redux.constant";
 
 export const setUserAction = user => ({
     type: SET_USER,
@@ -12,4 +12,8 @@ export const logoutUserAction = () => ({
 export const setAuthTokenAction = (token) => ({
     type: SET_AUTH_TOKEN,
     token
+})
+
+export const refreshUser = () => ({
+    type: REFRESH_USER
 })

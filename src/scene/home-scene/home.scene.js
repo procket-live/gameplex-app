@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
+import codepush from 'react-native-code-push';
+import Analytics from 'appcenter-analytics';
 
 import OfferSlider from '../../component/offer-slider/offer-slider.component';
-import GameCircleSliderComponent from '../../component/game-circle-slider/game-circle-slider.component';
 import TournamentSlider from '../tournament-slider/tournament-slider.component';
 import PrivateApi from '../../api/private.api';
 import HeaderComponent from '../../component/header/header.component';
@@ -18,6 +19,8 @@ function HomeScene({ user, navigation }) {
     useEffect(() => {
         fetchOffers();
         redirect();
+        codepush.checkForUpdate();
+        Analytics.trackEvent("My custom event");
         return () => {
 
         }
@@ -46,7 +49,6 @@ function HomeScene({ user, navigation }) {
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
                     <OfferSlider offers={offers} />
                 </View>
-
                 <View style={{ paddingTop: 10, paddingBottom: 10 }} >
                     <BattleSliderComponent />
                 </View>

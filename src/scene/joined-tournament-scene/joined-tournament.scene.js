@@ -21,10 +21,13 @@ function JoinedTournamentScene(props) {
         setLoading(true)
         const { success, response = {} } = await PrivateApi.GetMyTournaments();
         setLoading(false)
-        if (success) {
+        if (success && response && typeof response == 'object' && Object.keys(response).length) {
             const { joined, completed } = response;
             setUpcomingActiveTournaments(joined);
             setCompletedTournaments(completed);
+        } else {
+            setUpcomingActiveTournaments([]);
+            setCompletedTournaments([]);
         }
     }
 

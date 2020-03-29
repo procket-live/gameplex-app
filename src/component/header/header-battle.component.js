@@ -7,7 +7,7 @@ import { navigatePop } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
 import IconComponent from '../icon/icon.component';
 
-function HeaderBattleComponent({ name, icon, actionIcon, active = () => [] }) {
+function HeaderBattleComponent({ name, icon, actionIcon, action = () => [] }) {
     return (
         <View style={{
             height: 60,
@@ -23,7 +23,7 @@ function HeaderBattleComponent({ name, icon, actionIcon, active = () => [] }) {
                 <Text style={{ fontSize: 20, color: ON_PRIMARY }} >{name}</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                <TouchableOpacity onPress={active}  >
+                <TouchableOpacity onPress={action}  >
                     <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
                 </TouchableOpacity>
             </View>

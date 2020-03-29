@@ -33,7 +33,6 @@ function BattleChatScene({ navigation, user }) {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [reconnectId, setReconnectId] = useState(Math.random());
-    const [isAppInstalled, setIsAppInstalled] = useState(false);
     const [loadingText, setLoadingText] = useState('Loading ...');
 
     const headerTitle = AccessNestedObject(battleQueue, 'match.name');
@@ -68,20 +67,9 @@ function BattleChatScene({ navigation, user }) {
         }
     }
 
-    async function resolveAppInstalled() {
-        AppInstalledChecker
-            .isAppInstalledAndroid(AccessNestedObject(battleQueue, 'tournament.game.packageId'))
-            .then((isInstalled) => {
-                setIsAppInstalled(isInstalled);
-            });
-    }
-
-
     useEffect(() => {
         socket = io(BASE_URL);
         if (!roomId) return;
-
-        resolveAppInstalled();
 
         socket.emit('join', { token: TOKEN, roomId: roomId }, (err) => {
             console.log('err', err);
@@ -166,7 +154,7 @@ function BattleChatScene({ navigation, user }) {
                 name={headerTitle}
                 icon={headerIcon}
                 actionIcon={"play-circle"}
-                active={() => {
+                action={() => {
                     const config = {
                         playStoreId: AccessNestedObject(battleQueue, 'tournament.game.packageId'),
                     };

@@ -3,6 +3,7 @@ import { ScrollView, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import { Freshchat, ConversationOptions } from 'react-native-freshchat-sdk';
+import Share from 'react-native-share';
 
 import MenuItem from '../../component/menu-item/menu-item.component';
 import { logoutUserAction } from '../../action/user.action';
@@ -13,6 +14,7 @@ import HeaderComponent from '../../component/header/header.component';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { TEXT_COLOR, PRIMARY_COLOR, GREEN, YELLOW, GREY_BG } from '../../constant/color.constant';
 import IconComponent from '../../component/icon/icon.component';
+import { PLAYSTORE_LINK } from '../../config/app.config';
 
 class MenuScene extends Component {
     organizer = () => {
@@ -57,6 +59,14 @@ class MenuScene extends Component {
         return (
             <IconComponent size={15} font="fontawesome" focused tintColor={YELLOW} name="exclamation-triangle" />
         )
+    }
+
+    shareApp = () => {
+        Share.open({
+            url: PLAYSTORE_LINK,
+            message: "Hello, I am playing PUBG, Ludo, 8 Ball pool and Fantasy Cricket on Gameplex and winning cash daily! Download the app and start earning.",
+            title: "Hello, I am playing PUBG, Ludo, 8 Ball pool and Fantasy Cricket on Gameplex and winning cash daily! Download the app and start earning."
+        })
     }
 
     render() {
@@ -109,6 +119,7 @@ class MenuScene extends Component {
                         iconName="star"
                         name="Invite friends"
                         detail="Get your friends playing"
+                        onPress={this.shareApp}
                     />
                     <MenuItem
                         font="fontawesome"

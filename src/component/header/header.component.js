@@ -65,7 +65,7 @@ function HeaderComponent({ user, onProfile, fantasy }) {
             {
                 !onProfile ?
                     <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center' }} >
-                        <Text style={{ fontSize: 18, color: ON_PRIMARY }} >GAMEPLEX</Text>
+                        <Text style={{ fontSize: 18, color: ON_PRIMARY }} >Gameplex</Text>
                     </View>
                     : null
             }
@@ -74,7 +74,6 @@ function HeaderComponent({ user, onProfile, fantasy }) {
                     !onProfile ?
                         <TouchableOpacity onPress={() => {
                             navigate('Wallet')
-                            // changeTab('Wallet')
                         }} >
                             <IconComponent focused tintColor={ON_PRIMARY} name="wallet" />
                         </TouchableOpacity> : null

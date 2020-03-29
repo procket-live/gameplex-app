@@ -1,16 +1,36 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { ON_PRIMARY, TEXT_COLOR } from '../../constant/color.constant';
+import { Text, FlatList, StyleSheet, TouchableOpacity, Image, View } from 'react-native';
+import {
+    Placeholder,
+    PlaceholderLine,
+    Shine
+} from "rn-placeholder";
+import { TEXT_COLOR } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { navigate } from '../../service/navigation.service';
 import { AccessNestedObject } from '../../utils/common.util';
 import TitleComponent from '../title-component/title.component';
+import { } from 'native-base';
 
 const BattleSliderComponent = ({ battle = {} }) => {
-    const { list } = battle;
+    const { list, loading } = battle;
 
-    function RenderTextCircle({ item: battleItem = {}, key }) {
+    function RenderCard({ item: battleItem = {}, key }) {
+
+        if (loading) {
+            return (
+                <Placeholder
+                    Animation={Shine}
+                >
+                    <View>
+                        <PlaceholderLine color={'red'} width={widthPercentageToDP(40)} height={200} />
+                        <PlaceholderLine width={30} style={{ margin: 3 }} />
+                    </View>
+                </Placeholder>
+
+            )
+        }
 
         return (
             <TouchableOpacity
@@ -20,9 +40,8 @@ const BattleSliderComponent = ({ battle = {} }) => {
                     }
 
                     if (battleItem.battle_type == "fantasy") {
-                        navigate('Fantasy')
+                        navigate('Fantasy', { battle: battleItem })
                     }
-
                 }}
                 key={key}
             >
@@ -41,7 +60,7 @@ const BattleSliderComponent = ({ battle = {} }) => {
                 contentContainerStyle={{ marginLeft: widthPercentageToDP(5), alignItems: 'center', flexWrap: 'wrap', flexDirection: 'row' }}
                 data={list}
                 showsHorizontalScrollIndicator={false}
-                renderItem={RenderTextCircle}
+                renderItem={RenderCard}
             />
         </>
     )

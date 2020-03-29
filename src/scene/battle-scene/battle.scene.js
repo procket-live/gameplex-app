@@ -15,9 +15,10 @@ import PrivateApi from '../../api/private.api';
 import { navigate } from '../../service/navigation.service';
 import Tabs from '../../component/tabs/tabs.component';
 import JoinBattleComponent from '../../component/join-battle-component/join-battle.component';
+import { refreshUser } from '../../action/user.action';
 
 
-function BattleScene({ navigation, user }) {
+function BattleScene({ navigation, user, refreshUser }) {
     const battle = navigation.getParam('battle') || {};
     const [joinedBattle, setJoinedBattle] = useState([]);
     const [loadingJoinedBattle, setLoadingJoinedBattle] = useState(false);
@@ -28,6 +29,7 @@ function BattleScene({ navigation, user }) {
     const [match, setMatch] = useState(null);
     let bottomSheetRef = React.createRef()
     let fall = new Animated.Value(1)
+    const instructions = AccessNestedObject(battle, 'instructions', []);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -38,7 +40,7 @@ function BattleScene({ navigation, user }) {
         const battleId = battle._id;
         setLoadingJoinedBattle(true);
         const result = await PrivateApi.GetJoinedBattle(battleId);
-        setLoadingJoinedBattle(true);
+        setLoadingJoinedBattle(false);
         if (result.success) {
             setJoinedBattle(result.response);
         }
@@ -81,6 +83,7 @@ function BattleScene({ navigation, user }) {
             if (result.success) {
                 fetchJoinedTournaments();
                 navigate('BattleChat', { battleQueue: result.response });
+                refreshUser();
             }
         }, 100)
     }
@@ -142,6 +145,7 @@ function BattleScene({ navigation, user }) {
             <HeaderBattleComponent
                 name={game.name}
                 icon={game.thumbnail}
+                action={() => navigate('InstructionGenerator', { title: "How to Play?", steps: instructions })}
             />
             <View style={{ marginTop: 20, marginBottom: 20 }} >
                 <OfferSlider height={100} offers={offers} />
@@ -155,7 +159,7 @@ function BattleScene({ navigation, user }) {
                     renderItem={({ item }) => <BattleCard item={item} joinMatch={joinMatch} />}
                 />
                 <FlatList
-                    tabLabel="Joined Battle"
+                    tabLabel={"Joined Battle" + `${joinedBattle.length ? " •" : ""}`}
                     style={{ marginTop: 10 }}
                     contentContainerStyle={{ alignItems: 'center' }}
                     data={joinedBattle}
@@ -209,4 +213,4 @@ const mapStateToProps = (state) => ({
     user: state.user
 })
 
-export default connect(mapStateToProps)(BattleScene);
+export default connect(mapStateToProps, { refreshUser })(BattleScene);

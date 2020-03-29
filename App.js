@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
     SafeAreaView,
     StatusBar,
 } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert';
-// import { useScreens } from 'react-native-screens';
 import NetworkState from 'react-native-network-state'
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -21,38 +20,44 @@ import CONFIG from './src/config/app.config'
 const freshchatConfig = new FreshchatConfig(CONFIG.FRESHCHAT.APP_ID, CONFIG.FRESHCHAT.APP_KEY);
 Freshchat.init(freshchatConfig);
 
-function App() {
-    return (
-        <>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={{ flex: 1 }} >
-                <ReduxProvider
-                    store={store}
-                >
-                    <PersistGate
-                        loading={null}
-                        persistor={persistor}
+class App extends Component {
+    render() {
+        return (
+            <>
+                <StatusBar barStyle="dark-content" />
+                <SafeAreaView style={{ flex: 1 }} >
+                    <ReduxProvider
+                        store={store}
                     >
-                        <AppResolve />
-                        <Navigator
-                            ref={navigatorRef => {
-                                setTopLevelNavigator(navigatorRef);
-                            }}
-                            {...getPersistenceFunctions()}
-                        />
-                    </PersistGate>
-                </ReduxProvider>
-            </SafeAreaView>
-            <NetworkState
-                style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
-                onConnected={() => console.log('connected')}
-                onDisconnected={() => { }}
-            />
-            <DropdownAlert
-                ref={ref => NotifyService.register(ref)}
-            />
-        </>
-    )
+                        <PersistGate
+                            loading={null}
+                            persistor={persistor}
+                        >
+                            <AppResolve />
+                            <Navigator
+                                ref={navigatorRef => {
+                                    setTopLevelNavigator(navigatorRef);
+                                }}
+                                {...getPersistenceFunctions()}
+                            />
+                        </PersistGate>
+                    </ReduxProvider>
+                </SafeAreaView>
+                <NetworkState
+                    style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
+                    onConnected={() => console.log('connected')}
+                    onDisconnected={() => { }}
+                />
+                <DropdownAlert
+                    ref={ref => NotifyService.register(ref)}
+                />
+            </>
+        )
+    }
 }
 
-export default codePush(App);
+export default codePush({
+    updateDialog: true,
+    checkFrequency: codePush.CheckFrequency.ON_APP_START,
+    installMode: codePush.InstallMode.ON_NEXT_RESTART
+})(App);

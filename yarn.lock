@@ -7851,10 +7851,10 @@ react-native-share@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-2.0.0.tgz#4543a746013e0d8fa9f765fb8937007cfbcffcf7"
   integrity sha512-J8Xl3mq0L9KDFtSYtKsQDAnZWw/niZIpAD1PRiNfZFHo44Rc+oS2bEIhskNnoQXKEgBNdPzCl/DenMXYAHXRYg==
 
-react-native-sms-retriever-api@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/react-native-sms-retriever-api/-/react-native-sms-retriever-api-1.0.3.tgz#493eba059ea6898877947a28c33be33280a73ffc"
-  integrity sha512-r9bdcI14sspUcueOO5JA4SKLlFY+fYSeIseEaNfTQA83ECXjUNT7w31fKMHHf/jSQ2JDikEIteArUdC4SXv8sA==
+react-native-sms-retriever@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-sms-retriever/-/react-native-sms-retriever-1.1.1.tgz#e87225836b394560c63db4c106552a0b9247d9b3"
+  integrity sha512-WRwiITfssx59+TB1iEMmjB7w4OTkatR34js5+4a4pP2jMXJ4aLdXK0hOtHxl8ciS8aIejdd49Sz8AXonlvtdRw==
 
 react-native-snap-carousel@^3.8.4:
   version "3.8.4"

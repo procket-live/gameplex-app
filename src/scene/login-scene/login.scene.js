@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { connect } from 'react-redux';
-import RNSmsRetriever from 'react-native-sms-retriever-api';
+import SmsRetriever from 'react-native-sms-retriever';
 
 import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
@@ -35,18 +35,33 @@ class LoginScene extends Component {
 
     componentDidMount = () => {
         this.detectOTP();
+        this.fechMobileNumber();
+    }
+
+    fechMobileNumber = async () => {
     }
 
     componentWillUnmout() {
-        RNSmsRetriever.removeListener();
+        SmsRetriever.removeSmsListener();
     }
 
     detectOTP = async () => {
-        await RNSmsRetriever.getOtp();
-        RNSmsRetriever.addListener(({ message }) => {
-            const otp = message.match(/\d/g).join("").substring(0, 6);
-            this.setState({ otp }, this.verifyOTP);
-        })
+        try {
+            const registered = await SmsRetriever.startSmsRetriever();
+            if (registered) {
+                SmsRetriever.addSmsListener(event => {
+                    console.log('event', event);
+                    const message = event.message;
+                    if (message) {
+                        const otp = message.match(/\d/g).join("").substring(0, 4);
+                        this.setState({ otp }, this.verifyOTP);
+                        SmsRetriever.removeSmsListener();
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(JSON.stringify(error));
+        }
     }
 
     inputHandler = (mobile) => {
@@ -111,10 +126,11 @@ class LoginScene extends Component {
                 resetToScreen('UserDetailInput', { step: userDetailSet.step });
             } else {
                 resetToScreen('TabNavigator');
-                this.props.fetchGames();
-                this.props.fetchTournaments();
-                this.props.fetchBattle();
             }
+
+            this.props.fetchGames();
+            this.props.fetchTournaments();
+            this.props.fetchBattle();
         } else {
             this.setState({ loading: false });
         }
@@ -175,6 +191,7 @@ class LoginScene extends Component {
                 <View style={styles.inputTextContainer} >
                     <OTPInputView
                         pinCount={4}
+                        code={this.state.otp}
                         autoFocusOnLoad
                         codeInputFieldStyle={styles.underlineStyleBase}
                         codeInputHighlightStyle={styles.underlineStyleHighLighted}

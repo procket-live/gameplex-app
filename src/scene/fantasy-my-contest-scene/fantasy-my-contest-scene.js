@@ -4,6 +4,7 @@ import HeaderComponent from '../../component/header/header.component';
 import Tabs from '../../component/tabs/tabs.component';
 import FastImage from 'react-native-fast-image';
 import { TEXT_COLOR } from '../../constant/color.constant';
+import { TrophyIcon } from '../../config/image.config';
 
 function FantasyMyContestScene({ }) {
     return (
@@ -39,7 +40,7 @@ function EmptyScene({ message1, message2 }) {
                 <Text style={{ fontSize: 16, color: TEXT_COLOR }} >{message1}</Text>
             </View>
             <View style={{ flex: 3, alignItems: 'center', justifyContent: 'center' }} >
-                <FastImage style={{ width: 180, height: 180 }} source={{ uri: 'https://www.iconsdb.com/icons/preview/gray/trophy-2-xxl.png' }} />
+                <FastImage style={{ width: 180, height: 180 }} source={TrophyIcon()} />
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
                 <Text style={{ fontSize: 14, color: TEXT_COLOR }} >{message2}</Text>

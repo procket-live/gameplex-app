@@ -4,13 +4,13 @@ import FastImage from 'react-native-fast-image'
 import HeaderComponent from '../../component/header/header.component';
 import OfferSlider from '../../component/offer-slider/offer-slider.component';
 import { ON_PRIMARY, PRIMARY_COLOR, TEXT_COLOR } from '../../constant/color.constant';
-import { widthPercentageToDP } from 'react-native-responsive-screen';
+import { CricketHitIcon } from '../../config/image.config';
+import { AccessNestedObject } from '../../utils/common.util';
 
-function FantasyHomeScene({ }) {
-    const offers = [
-        { image: 'https://d13ir53smqqeyp.cloudfront.net/d11-static-pages/images/BBL_Tour-banner.jpg' },
-        { image: 'https://www.indiafantasy.com/wp-content/uploads/BRB-vs-NJ.jpg' }
-    ]
+function FantasyHomeScene({ navigation }) {
+    const battle = navigation.getParam('battle') || {};
+    const offers = AccessNestedObject(battle, 'offers', []);
+
     return (
         <>
             <HeaderComponent fantasy />
@@ -32,7 +32,7 @@ function FantasyHomeScene({ }) {
                         <Text style={{ fontSize: 16, color: TEXT_COLOR }} >No upcoming contests</Text>
                     </View>
                     <View style={{ flex: 5, alignItems: 'center', justifyContent: 'center' }} >
-                        <FastImage style={{ width: 180, height: 180 }} source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/9/92/Cricket-hit-wall-sticker1.png' }} />
+                        <FastImage style={{ width: 180, height: 180 }} source={CricketHitIcon()} />
                     </View>
                 </View>
             </View>
