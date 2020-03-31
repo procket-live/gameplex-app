@@ -88,7 +88,7 @@ class MenuScene extends Component {
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }} >
                                 <Text style={{ fontSize: 18, color: PRIMARY_COLOR, marginRight: 5 }} >{user.email}</Text>
-                                <this.renderVerified success={user.is_email_verified} />
+                                <this.renderVerified success={true} />
                             </View>
 
                         </View>

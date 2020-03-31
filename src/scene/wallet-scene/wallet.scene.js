@@ -22,6 +22,10 @@ class WalletScene extends Component {
         Freshchat.showConversations(conversationOptions);
     }
 
+    navigateToBankDetails = () => {
+        navigate('BankDetail');
+    }
+
     render() {
         return (
             <ScrollView
@@ -37,6 +41,11 @@ class WalletScene extends Component {
                         name="Transaction History"
                         detail="Your past wallet transactions"
                         onPress={this.navigateToTransactions}
+                    />
+                    <MenuItem
+                        name="Bank Details"
+                        detail="Your bank account details"
+                        onPress={this.navigateToBankDetails}
                     />
                     <MenuItem
                         name="Contact Us"

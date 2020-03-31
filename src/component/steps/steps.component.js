@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { PRIMARY_COLOR, GREY_1 } from '../../constant/color.constant';
+import { PRIMARY_COLOR, GREY_1, SECONDARY_COLOR } from '../../constant/color.constant';
 
 
 
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     activeStep: {
-        backgroundColor: PRIMARY_COLOR,
+        backgroundColor: SECONDARY_COLOR,
         width: 50,
     },
     inactiveStep: {

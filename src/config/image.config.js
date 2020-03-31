@@ -25,3 +25,7 @@ export const TrophyIcon = () => {
 export const CricketHitIcon = () => {
     return { uri: "https://firebasestorage.googleapis.com/v0/b/gameplex-5a29e.appspot.com/o/assets%2FCricket-hit-wall-sticker1.png?alt=media&token=99a6b440-1e24-4678-87d5-22bd1c69bdce" }
 }
+
+export const CompanyLogo = () => {
+    return require('../assets/images/logo.png');
+}

@@ -50,7 +50,6 @@ class LoginScene extends Component {
             const registered = await SmsRetriever.startSmsRetriever();
             if (registered) {
                 SmsRetriever.addSmsListener(event => {
-                    console.log('event', event);
                     const message = event.message;
                     if (message) {
                         const otp = message.match(/\d/g).join("").substring(0, 4);
@@ -191,11 +190,14 @@ class LoginScene extends Component {
                 <View style={styles.inputTextContainer} >
                     <OTPInputView
                         pinCount={4}
-                        code={this.state.otp}
                         autoFocusOnLoad
                         codeInputFieldStyle={styles.underlineStyleBase}
                         codeInputHighlightStyle={styles.underlineStyleHighLighted}
+                        onCodeChange={(code) => {
+                            console.log('ttcode', code);
+                        }}
                         onCodeFilled={(code => {
+                            console.log('code', code)
                             this.setState({ otp: code })
                         })}
                     />

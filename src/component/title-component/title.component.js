@@ -31,9 +31,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        fontWeight: 'bold',
+        fontWeight: '100',
         color: ON_PRIMARY,
-        fontSize: 14
+        fontSize: 16
     },
     buttonContainer: {
         flex: 1,

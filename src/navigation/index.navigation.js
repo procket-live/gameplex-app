@@ -21,7 +21,7 @@ import MenuScene from '../scene/menu-scene/menu.scene';
 import TournamentList from '../scene/tournament-list-scene/tournament-list.scene';
 import DashboardScene from '../scene/dashboard-scene/dashboard.scene';
 import AddTournamentScene from '../scene/add-tournement/add-tournament.scene';
-import { GREY_BG, PRIMARY_COLOR, TEXT_COLOR, GREY_2, GREY_3 } from '../constant/color.constant';
+import { GREY_BG, PRIMARY_COLOR, TEXT_COLOR, GREY_2, GREY_3, SECONDARY_COLOR } from '../constant/color.constant';
 import DashboardTournamentListScene from '../scene/dashboard-tournament-list/dashboard-tournament-list.scene';
 import ManageTournamentScene from '../scene/manage-tournament/manage-tournament.scene';
 import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-detail-scene/add-tournament-general-detail.scene';
@@ -45,6 +45,7 @@ import FantasyMyContestScene from '../scene/fantasy-my-contest-scene/fantasy-my-
 import ChatScreen from '../scene/chat-scene/chat.scene';
 import BattleScene from '../scene/battle-scene/battle.scene';
 import BattleChatScene from '../scene/battle-chat-scene/battle-chat.scene';
+import BankDetailScene from '../scene/bank-detail-scene/bank-detail.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -168,7 +169,7 @@ const TabsNavigator = createBottomTabNavigator(
         Profile: MenuStack,
     }, {
     tabBarOptions: {
-        activeTintColor: PRIMARY_COLOR,
+        activeTintColor: SECONDARY_COLOR,
         inactiveTintColor: 'red',
         keyboardHidesTabBar: true,
         labelStyle: { display: 'none' },
@@ -405,6 +406,13 @@ const RootNavigator = createStackNavigator({
         navigationOptions: {
             headerStyle,
             header: null
+        }
+    },
+    BankDetail: {
+        screen: BankDetailScene,
+        navigationOptions: {
+            headerStyle,
+
         }
     }
 }, {

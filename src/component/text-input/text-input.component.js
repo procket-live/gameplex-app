@@ -5,7 +5,7 @@ import { PRIMARY_COLOR, FONT_FAMILY, TEXT_COLOR, GREY_1 } from '../../constant/c
 
 class TextInputComponent extends PureComponent {
     render() {
-        const { label, prefix, RenderRight } = this.props;
+        const { label, prefix, RenderRight, secure } = this.props;
 
         return (
             <View>
@@ -25,6 +25,7 @@ class TextInputComponent extends PureComponent {
                     <TextInput
                         style={styles.common}
                         placeholderTextColor={GREY_1}
+                        secureTextEntry={secure}
                         {...this.props}
                     />
                     {

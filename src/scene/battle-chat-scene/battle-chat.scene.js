@@ -95,15 +95,14 @@ function BattleChatScene({ navigation, user }) {
         });
 
         socket.on("roomData", (data) => {
-            const messages = data
-                .messages
-                .map((message) => ({
+            const messages = data.messages
+                .map((message = {}) => ({
                     _id: message._id,
                     text: message.text,
                     createdAt: moment(message.created_at).format(),
                     image: message.image,
                     user: {
-                        _id: message.created_by._id
+                        _id: AccessNestedObject(message, 'created_by._id')
                     }
                 }))
                 .reverse();

@@ -10,6 +10,7 @@ import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
 const WalletDetail = props => {
     const cashBalance = AccessNestedObject(props, 'user.wallet_cash_balance', 0);
     const bonousBalance = AccessNestedObject(props, 'user.wallet_bonous_balance', 0);
+    const winAmount = AccessNestedObject(props, 'user.wallet_win_balance', 0);
 
     return (
         <View style={styles.container} >
@@ -17,12 +18,12 @@ const WalletDetail = props => {
                 <View style={{ flex: 1 }} >
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 12, color: ON_PRIMARY }} >
-                            Available Balance
+                            Cash Balance
                     </Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: '500' }} >
-                            {DisplayPrice(cashBalance + bonousBalance)}
+                            {DisplayPrice(cashBalance)}
                         </Text>
                     </View>
                 </View>
@@ -40,12 +41,12 @@ const WalletDetail = props => {
                 <View style={{ flex: 1 }} >
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 14, color: ON_PRIMARY }} >
-                            {DisplayPrice(cashBalance)}
+                            {DisplayPrice(winAmount)}
                         </Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 10, color: ON_PRIMARY }} >
-                            Cash Balance
+                            Win Amount
                     </Text>
                     </View>
                 </View>

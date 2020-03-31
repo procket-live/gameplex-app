@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import { ON_PRIMARY, GREY_1, PRIMARY_COLOR, TEXT_COLOR } from '../../constant/color.constant';
+import { ON_PRIMARY, GREY_1, PRIMARY_COLOR, TEXT_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 
 function Button({ text, onPress = () => { }, disabled, loading, style }) {
     return (
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         backgroundColor: GREY_1
     },
     active: {
-        backgroundColor: PRIMARY_COLOR
+        backgroundColor: SECONDARY_COLOR
     },
     text: {
         color: ON_PRIMARY,

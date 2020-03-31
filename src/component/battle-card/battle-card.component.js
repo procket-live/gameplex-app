@@ -23,7 +23,7 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
 
     return (
         <TouchableOpacity onPress={onPress} style={styles.container} >
-            <View style={{ flex: 0.5, backgroundColor: SECONDARY_COLOR, overflow: 'hidden', borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }} >
+            <View style={{ flex: 0.5, backgroundColor: PRIMARY_COLOR, overflow: 'hidden', borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }} >
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'flex-start' }} ></View>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 5 }} >
                     <Text style={{ fontSize: 8, fontWeight: 'bold', color: ON_PRIMARY, transform: [{ rotate: '90deg' }], width: 100 }} >

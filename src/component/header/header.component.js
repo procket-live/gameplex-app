@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import FastImage from 'react-native-fast-image';
 import IconComponent from '../icon/icon.component';
 import { navigate, navigatePop, changeTab } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
+import { CompanyLogo } from '../../config/image.config';
 
 function HeaderComponent({ user, onProfile, fantasy }) {
     if (fantasy) {
@@ -42,8 +43,7 @@ function HeaderComponent({ user, onProfile, fantasy }) {
                     !onProfile ?
                         <TouchableOpacity
                             style={{
-                                backgroundColor: ON_PRIMARY,
-                                width: 45, height: 45, borderRadius: 45,
+                                width: 45, height: 45,
                                 alignItems: 'center',
                                 justifyContent: 'center'
                             }}
@@ -65,7 +65,7 @@ function HeaderComponent({ user, onProfile, fantasy }) {
             {
                 !onProfile ?
                     <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center' }} >
-                        <Text style={{ fontSize: 18, color: ON_PRIMARY }} >Gameplex</Text>
+                        <Image source={CompanyLogo()} style={{ width: 100, height: 20 }} />
                     </View>
                     : null
             }

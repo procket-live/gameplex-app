@@ -24,3 +24,4 @@ export const OFFER = 'offer';
 export const MY_TOURNAMENT = `${TOURNAMENT}/my`;
 export const BATTLE = 'battle';
 export const JOIN_BATTLE = `${BATTLE}/join`;
+export const BANK = `${USER}/bank`;

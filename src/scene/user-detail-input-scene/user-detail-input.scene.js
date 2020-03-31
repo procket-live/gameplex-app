@@ -81,7 +81,7 @@ class UserDetailInputScene extends Component {
         if (result.success) {
             const newUser = Object.assign(result.response, { token: this.props.user.token });
             this.props.setUserAction(newUser);
-            this.generateEmailOTP();
+            this.skip();
         } else {
             this.setState({ loading: false });
         }
