@@ -46,6 +46,7 @@ import ChatScreen from '../scene/chat-scene/chat.scene';
 import BattleScene from '../scene/battle-scene/battle.scene';
 import BattleChatScene from '../scene/battle-chat-scene/battle-chat.scene';
 import BankDetailScene from '../scene/bank-detail-scene/bank-detail.scene';
+import UpdateScene from '../scene/update-scene/update.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -413,6 +414,12 @@ const RootNavigator = createStackNavigator({
         navigationOptions: {
             headerStyle,
 
+        }
+    },
+    Update: {
+        screen: UpdateScene,
+        navigationOptions: {
+            header: null
         }
     }
 }, {

@@ -6,5 +6,6 @@ module.exports = {
         APP_KEY: '24bb1432-a903-4390-9c0c-3dd90b68c018'
     },
     TNC_LINK: 'https://www.termsandconditionsgenerator.com/live.php?token=KpAY38T1omPltvNzNMUqW4GRVbx2RFyu',
-    PLAYSTORE_LINK: 'https://play.google.com/store/apps/details?id=com.gameplexapp'
+    PLAYSTORE_LINK: 'https://play.google.com/store/apps/details?id=com.gameplexapp',
+    DONWLOAD_LINK: null
 }

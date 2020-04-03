@@ -21,3 +21,5 @@ export const SET_ORGANIZER = 'SET_ORGANIZER';
 export const FETCH_BATTLE = 'FETCH_BATTLE';
 export const SET_BATTLE_LOADING = 'SET_BATTLE_LOADING';
 export const SET_BATTLE = 'SET_BATTLE';
+
+export const CHECK_UPDATE = 'CHECK_UPDATE';

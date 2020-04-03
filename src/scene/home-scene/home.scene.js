@@ -12,8 +12,9 @@ import BattleSliderComponent from '../../component/battle-slider/battle-slider.c
 import APP from '../../constant/app.constant';
 import { AccessNestedObject } from '../../utils/common.util';
 import { navigate } from '../../service/navigation.service';
+import { checkForUpdateAction } from '../../action/update.action';
 
-function HomeScene({ user, navigation }) {
+function HomeScene({ user, navigation, CheckUpdate }) {
     const [offers, setOffers] = React.useState([{ loading: true }]);
     console.log('navigation', navigation)
     useEffect(() => {
@@ -21,6 +22,8 @@ function HomeScene({ user, navigation }) {
         redirect();
         codepush.checkForUpdate();
         Analytics.trackEvent("My custom event");
+        CheckUpdate();
+
         return () => {
 
         }
@@ -70,4 +73,4 @@ const mapStateToProps = state => ({
     user: state.user
 });
 
-export default connect(mapStateToProps)(HomeScene);
+export default connect(mapStateToProps, { CheckUpdate: checkForUpdateAction })(HomeScene);

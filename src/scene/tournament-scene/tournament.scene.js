@@ -12,7 +12,6 @@ import { Title } from '../instruction-generator-scene/instruction-generator.scen
 import { GetTournamentStatus, GetUserGameId, IsJoined } from '../../utils/tournament.utils';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import NotifyService from '../../service/notify.service';
-import TextInputComponent from '../../component/text-input/text-input.component';
 
 function TournamentScene(props) {
     const tournament = props.navigation.getParam('tournament');

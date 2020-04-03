@@ -29,3 +29,7 @@ export const CricketHitIcon = () => {
 export const CompanyLogo = () => {
     return require('../assets/images/logo.png');
 }
+
+export const AppUpdateLogo = () => {
+    return require('../assets/images/force_update_cover.jpg');
+}
