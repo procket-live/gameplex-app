@@ -25,3 +25,4 @@ export const MY_TOURNAMENT = `${TOURNAMENT}/my`;
 export const BATTLE = 'battle';
 export const JOIN_BATTLE = `${BATTLE}/join`;
 export const BANK = `${USER}/bank`;
+export const GET_LATEST_VERSION = 'getApp/latest';

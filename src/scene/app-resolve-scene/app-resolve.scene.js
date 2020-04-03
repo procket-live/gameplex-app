@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
 import firebase from 'react-native-firebase';
+import RNFS from 'react-native-fs';
+import ApkInstaller from 'react-native-apk-install';
+import { getReadableVersion } from 'react-native-device-info';
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -12,6 +15,7 @@ import { setUserAction } from '../../action/user.action';
 import { fetchGames } from '../../action/game.action';
 import { fetchTournaments } from '../../action/tournament.action';
 import { fetchBattle } from '../../action/battle.action';
+import PublicApi from '../../api/public.api';
 
 class AppResolve extends PureComponent {
     componentDidMount = () => {
@@ -20,6 +24,9 @@ class AppResolve extends PureComponent {
 
     init = () => {
         const { user, mode } = this.props;
+
+        this.getAppUpdate();
+
         if (user == null) {
             resetToScreen('Login')
             SplashScreen.hide();
@@ -46,6 +53,42 @@ class AppResolve extends PureComponent {
             this.setFreshchatUser(user);
 
             SplashScreen.hide();
+        }
+    }
+
+    getAppUpdate = async () => {
+
+        console.log('getAppUpdate');
+        const currentVersion = getReadableVersion();
+
+        const result = await PublicApi.GetLatestApp();
+        if (result.success) {
+            const versionBlock = AccessNestedObject(result, 'response', {});
+            const versionNumber = versionBlock.version;
+            console.log('versionBlock', versionBlock)
+            if (versionNumber != currentVersion) {
+                try {
+                    var filePath = RNFS.CachesDirectoryPath + '/com.gameplexapp.apk';
+                    var download = RNFS.downloadFile({
+                        fromUrl: versionBlock.link,
+                        toFile: filePath,
+                        progress: res => {
+                            console.log((res.bytesWritten / res.contentLength).toFixed(2));
+                        },
+                        progressDivider: 1
+                    });
+
+                    download.promise.then(result => {
+                        if (result.statusCode == 200) {
+                            console.log(filePath);
+                            ApkInstaller.install(filePath);
+                        }
+                    });
+                }
+                catch (error) {
+                    console.warn(error);
+                }
+            }
         }
     }
 
