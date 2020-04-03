@@ -53,12 +53,13 @@ function BankDetailScene() {
         const result = await PrivateApi.GetBankDetail();
         setLoading(false);
         if (result.success) {
-            const { accont_number, user_name, ifsc } = AccessNestedObject(result, 'response', {});
+            const response = AccessNestedObject(result, 'response', {});
+            const { accont_number, user_name, ifsc } = response;
             setAccountNumber(accont_number || '');
             setRepeatAccountNumber(accont_number || '');
             setIfsc(ifsc || '');
             setName(user_name || '');
-            setSaved(true);
+            setSaved(!!Object.keys(response).length);
         } else {
             setSaved(false);
         }
@@ -82,54 +83,44 @@ function BankDetailScene() {
         <ScrollView
             style={styles.container}
         >
-            <View style={{ height: heightPercentageToDP(50) }} >
-                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
-                    {!saved ? <Text style={styles.fontMini} >Enter your</Text> : null}
-                </View>
-                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
-                    <Text style={styles.fontH1} >Bank Account Details</Text>
-                </View>
+            <View style={{ height: 100 }} >
+                <TextInput
+                    editable={!saved}
+                    label="Account number"
+                    secure
+                    keyboardType="number-pad"
+                    value={accountNumber}
+                    onChangeText={setAccountNumber}
+                    RenderRight={saved ? RenderSuccess : null}
+                />
             </View>
-            <View style={styles.inputTextContainer} >
-                <View style={{ height: 100 }} >
-                    <TextInput
-                        editable={!saved}
-                        label="Account number"
-                        secure
-                        keyboardType="number-pad"
-                        value={accountNumber}
-                        onChangeText={setAccountNumber}
-                        RenderRight={saved ? RenderSuccess : null}
-                    />
-                </View>
-                <View style={{ height: 100 }} >
-                    <TextInput
-                        editable={!saved}
-                        label="Repeat account number"
-                        keyboardType="number-pad"
-                        value={repeatAccountNumber}
-                        onChangeText={setRepeatAccountNumber}
-                        RenderRight={saved ? RenderSuccess : null}
-                    />
-                </View>
-                <View style={{ height: 100 }} >
-                    <TextInput
-                        editable={!saved}
-                        label="IFSC"
-                        value={ifsc}
-                        onChangeText={setIfsc}
-                        RenderRight={saved ? RenderSuccess : null}
-                    />
-                </View>
-                <View style={{ height: 100 }} >
-                    <TextInput
-                        editable={!saved}
-                        label="Name"
-                        value={name}
-                        onChangeText={setName}
-                        RenderRight={saved ? RenderSuccess : null}
-                    />
-                </View>
+            <View style={{ height: 100 }} >
+                <TextInput
+                    editable={!saved}
+                    label="Repeat account number"
+                    keyboardType="number-pad"
+                    value={repeatAccountNumber}
+                    onChangeText={setRepeatAccountNumber}
+                    RenderRight={saved ? RenderSuccess : null}
+                />
+            </View>
+            <View style={{ height: 100 }} >
+                <TextInput
+                    editable={!saved}
+                    label="IFSC"
+                    value={ifsc}
+                    onChangeText={setIfsc}
+                    RenderRight={saved ? RenderSuccess : null}
+                />
+            </View>
+            <View style={{ height: 100 }} >
+                <TextInput
+                    editable={!saved}
+                    label="Name"
+                    value={name}
+                    onChangeText={setName}
+                    RenderRight={saved ? RenderSuccess : null}
+                />
             </View>
             <View style={styles.buttonContainer} >
                 <Button

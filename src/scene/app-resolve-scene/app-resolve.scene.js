@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
 import firebase from 'react-native-firebase';
+import { PermissionsAndroid } from 'react-native';
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -48,6 +49,11 @@ class AppResolve extends PureComponent {
 
             SplashScreen.hide();
         }
+    }
+
+    askPermission = async () => {
+        await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE]);
+        this.props.InitFreshchat();
     }
 
     setFreshchatUser = (user) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { ON_PRIMARY, GREY_1, PRIMARY_COLOR, TEXT_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 
-function Button({ text, onPress = () => { }, disabled, loading, style }) {
+function Button({ text, onPress = () => { }, disabled, loading, style, textStyle = {} }) {
     return (
         <TouchableOpacity
             disabled={disabled}
@@ -16,11 +16,11 @@ function Button({ text, onPress = () => { }, disabled, loading, style }) {
                         size="small"
                         color={TEXT_COLOR}
                     /> :
-                    <Text style={styles.text} >
+                    <Text style={[styles.text, textStyle]} >
                         {text}
                     </Text>
             }
-        </TouchableOpacity>
+        </TouchableOpacity >
     );
 }
 

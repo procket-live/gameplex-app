@@ -17,8 +17,10 @@ import { setTopLevelNavigator } from './src/service/navigation.service';
 import AppResolve from './src/scene/app-resolve-scene/app-resolve.scene';
 import CONFIG from './src/config/app.config'
 
-const freshchatConfig = new FreshchatConfig(CONFIG.FRESHCHAT.APP_ID, CONFIG.FRESHCHAT.APP_KEY);
-Freshchat.init(freshchatConfig);
+function InitFreshchat() {
+    const freshchatConfig = new FreshchatConfig(CONFIG.FRESHCHAT.APP_ID, CONFIG.FRESHCHAT.APP_KEY);
+    Freshchat.init(freshchatConfig);
+}
 
 class App extends Component {
     render() {
@@ -33,7 +35,7 @@ class App extends Component {
                             loading={null}
                             persistor={persistor}
                         >
-                            <AppResolve />
+                            <AppResolve InitFreshchat={InitFreshchat} />
                             <Navigator
                                 ref={navigatorRef => {
                                     setTopLevelNavigator(navigatorRef);

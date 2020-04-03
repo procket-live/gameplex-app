@@ -2,10 +2,11 @@ import React from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import { AppUpdateLogo } from '../../config/image.config';
 import { widthPercentageToDP, heightPercentageToDP } from 'react-native-responsive-screen';
-import { TEXT_COLOR, GREY_1, PRIMARY_COLOR } from '../../constant/color.constant';
+import { TEXT_COLOR, GREY_1, PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
 import Button from '../../component/button/button.component';
 import { Linking } from 'react-native';
 import APP_CONFIG from '../../config/app.config';
+import { navigatePop } from '../../service/navigation.service';
 
 function UpdateScene() {
     return (
@@ -26,6 +27,14 @@ function UpdateScene() {
                     }}
                     text="Update now"
                     style={{ backgroundColor: PRIMARY_COLOR, width: widthPercentageToDP(70) }}
+                />
+                <Button
+                    textStyle={{ color: PRIMARY_COLOR }}
+                    onPress={() => {
+                        navigatePop();
+                    }}
+                    text="Later"
+                    style={{ backgroundColor: ON_PRIMARY, width: widthPercentageToDP(70), borderWidth: 1, borderColor: PRIMARY_COLOR, marginTop: 20 }}
                 />
             </View>
         </View>

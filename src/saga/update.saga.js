@@ -4,7 +4,7 @@ import PublicApi from '../api/public.api';
 import { getReadableVersion } from 'react-native-device-info';
 import compareVersion from 'compare-versions';
 import APP_CONFIG from '../config/app.config';
-import { resetToScreen } from '../service/navigation.service';
+import { navigate } from '../service/navigation.service';
 import { AccessNestedObject } from '../utils/common.util';
 
 function* updateSaga() {
@@ -17,7 +17,7 @@ function* updateSaga() {
 
         if (compareVersion(currentVersion, versionNumber, '<')) {
             APP_CONFIG.DONWLOAD_LINK = versionBlock.app_delivery_link;
-            resetToScreen('Update')
+            navigate('Update')
         }
     }
 }
