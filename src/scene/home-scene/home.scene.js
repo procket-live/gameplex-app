@@ -39,7 +39,6 @@ function HomeScene({ user, navigation, CheckUpdate }) {
     function redirect() {
         const route = AccessNestedObject(APP, 'REDIRECT_TO.route');
         const payload = AccessNestedObject(APP, 'REDIRECT_TO.payload');
-        console.log('payload', payload)
         if (route) {
             navigate(route, payload);
         }

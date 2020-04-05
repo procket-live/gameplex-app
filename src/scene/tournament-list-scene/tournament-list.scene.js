@@ -7,30 +7,13 @@ import { AccessNestedObject } from '../../utils/common.util';
 import PrivateApi from '../../api/private.api';
 
 const TournamentList = props => {
-    const [tournaments, setTournaments] = useState([1, 2, 3]);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        setLoading(true);
-        fetchData();
-        setLoading(false);
-    }, [])
-
-    async function fetchData() {
-        const result = await PrivateApi.GetJoinedTournaments();
-        console.log('result', result);
-        if (result.success) {
-            setTournaments(AccessNestedObject(result, 'response', []))
-        } else {
-            setTournaments([])
-        }
-    }
+    const { loading, list } = props.tournament || {};
 
     return (
         <FlatList
             style={{ flex: 1 }}
             contentContainerStyle={{ alignItems: 'center' }}
-            data={tournaments}
+            data={list}
             renderItem={({ item }) => (
                 <View style={{ marginTop: 10, marginBottom: 10 }} >
                     <TournamentCard
@@ -43,4 +26,8 @@ const TournamentList = props => {
     )
 }
 
-export default TournamentList;
+const mapStateToProps = state => ({
+    tournament: state.tournament
+})
+
+export default connect(mapStateToProps)(TournamentList);

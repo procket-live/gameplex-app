@@ -1,31 +1,14 @@
-import React, { Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
-import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { connect } from 'react-redux';
-import SmsRetriever from 'react-native-sms-retriever';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 
-import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, GREEN } from '../../constant/color.constant';
 import TextInput from '../../component/text-input/text-input.component';
 import Button from '../../component/button/button.component';
-import PublicApi from '../../api/public.api';
-import { setUserAction } from '../../action/user.action';
-import { resetToScreen, navigatePop } from '../../service/navigation.service';
-import APP from '../../constant/app.constant';
-import { IsUserDetailsSet, AccessNestedObject } from '../../utils/common.util';
-import { fetchGames } from '../../action/game.action';
-import { fetchTournaments } from '../../action/tournament.action';
-import { fetchBattle } from '../../action/battle.action';
-import { heightPercentageToDP } from 'react-native-responsive-screen';
+import { navigatePop } from '../../service/navigation.service';
+import { AccessNestedObject } from '../../utils/common.util';
 import PrivateApi from '../../api/private.api';
 import NotifyService from '../../service/notify.service';
 import IconComponent from '../../component/icon/icon.component';
-
-const STEPS = {
-    MOBILE_NUMBER_INPUT: 1,
-    OTP_INPUT: 2
-}
-
 
 function BankDetailScene() {
     const [accountNumber, setAccountNumber] = useState('');
@@ -194,6 +177,5 @@ const styles = StyleSheet.create({
     },
 })
 
-// export default  connect(null, { setUserAction, fetchGames, fetchTournaments, fetchBattle })(LoginScene);
 export default BankDetailScene;
 

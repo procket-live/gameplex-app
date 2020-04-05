@@ -12,12 +12,13 @@ function* updateSaga() {
 
     if (result.success) {
         const versionBlock = AccessNestedObject(result, 'response', {});
-        const versionNumber = versionBlock.version;
-        const currentVersion = getReadableVersion();
-
-        if (compareVersion(currentVersion, versionNumber, '<')) {
-            APP_CONFIG.DONWLOAD_LINK = versionBlock.app_delivery_link;
-            navigate('Update')
+        if (Object.keys(versionBlock).length) {
+            const versionNumber = versionBlock.version;
+            const currentVersion = getReadableVersion();
+            if (compareVersion(String(currentVersion), String(versionNumber), '<')) {
+                APP_CONFIG.DONWLOAD_LINK = versionBlock.app_delivery_link;
+                navigate('Update')
+            }
         }
     }
 }

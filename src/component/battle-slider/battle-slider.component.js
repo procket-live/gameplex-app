@@ -42,6 +42,10 @@ const BattleSliderComponent = ({ battle = {} }) => {
                     if (battleItem.battle_type == "fantasy") {
                         navigate('Fantasy', { battle: battleItem })
                     }
+
+                    if (battleItem.battle_type == "gather") {
+                        navigate("TournamentList", { battle: battleItem })
+                    }
                 }}
                 key={key}
             >
