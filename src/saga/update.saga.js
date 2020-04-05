@@ -15,7 +15,8 @@ function* updateSaga() {
         if (Object.keys(versionBlock).length) {
             const versionNumber = versionBlock.version;
             const currentVersion = getReadableVersion();
-            if (compareVersion(String(currentVersion), String(versionNumber), '<')) {
+
+            if (compareVersion.compare(String(currentVersion), String(versionNumber), '<')) {
                 APP_CONFIG.DONWLOAD_LINK = versionBlock.app_delivery_link;
                 navigate('Update')
             }
