@@ -5,7 +5,6 @@ import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useAppState from 'react-native-appstate-hook';
 import OpenApp from 'react-native-open-app';
-import { AppInstalledChecker } from 'react-native-check-app-install';
 import ImagePicker from 'react-native-image-crop-picker';
 import firebase from 'react-native-firebase';
 
@@ -16,17 +15,19 @@ import io from 'socket.io-client';
 
 import HeaderBattleComponent from '../../component/header/header-battle.component';
 import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
-import { GREY_BG, ON_PRIMARY, TEXT_COLOR, GREY_2, GREEN, GREY_3, PRIMARY_COLOR } from '../../constant/color.constant';
+import { GREY_BG, ON_PRIMARY, TEXT_COLOR, YELLOW, GREEN, GREY_3, PRIMARY_COLOR, RED, SECONDARY_COLOR, BLUE } from '../../constant/color.constant';
 import { TOKEN, DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
 import NotifyService from '../../service/notify.service';
 import IconComponent from '../../component/icon/icon.component';
 import PrivateApi from '../../api/private.api';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { widthPercentageToDP } from 'react-native-responsive-screen';
 
 let socket;
 
 function BattleChatScene({ navigation, user }) {
     const initialBattleQueue = navigation.getParam('battleQueue') || {};
-    const battleQueueId = navigation.getParam('id');
+    const battleQueueId = navigation.getParam('id') || AccessNestedObject(initialBattleQueue, '_id');
 
     const [battleQueue, setBattleQueue] = useState(initialBattleQueue);
     const [roomId, setRoomId] = useState(initialBattleQueue.chat_room);
@@ -41,6 +42,8 @@ function BattleChatScene({ navigation, user }) {
     const matchEntryFee = AccessNestedObject(battleQueue, 'match.entry_fee');
     const winningAmount = AccessNestedObject(battleQueue, 'match.winning_amount');
     const participents = AccessNestedObject(battleQueue, 'tournament.participents', []);
+    const completed = AccessNestedObject(battleQueue, 'completed', false);
+    const scorecardUploaded = !!AccessNestedObject(battleQueue, 'scorecard.image_link');
 
     const { appState } = useAppState({
         onForeground: () => {
@@ -62,7 +65,29 @@ function BattleChatScene({ navigation, user }) {
                 const battleQueue = result.response;
                 setRoomId(battleQueue.chat_room);
                 setBattleQueue(battleQueue);
-                joinChannel();
+            }
+        }
+    }
+
+    async function openScorecardUplod() {
+        const image = await ImagePicker
+            .openPicker({
+                width: 300,
+                height: 400,
+                cropping: false
+            });
+
+        if (image && battleQueueId) {
+            setLoading(true);
+            setLoadingText('Uploading ...');
+            const result = await firebase.storage().ref(`/chat_rooms/${roomId}_${Math.random()}`).putFile(image.path)
+            const link = result.downloadURL;
+            const uploadResult = await PrivateApi.UploadScorecardBattleQueueEntry(battleQueueId, { link });
+            setLoadingText('Loading ...');
+            setLoading(false);
+            if (uploadResult.success) {
+                fetchInitial();
+                sendMessage(['Scorecard'], link);
             }
         }
     }
@@ -72,7 +97,6 @@ function BattleChatScene({ navigation, user }) {
         if (!roomId) return;
 
         socket.emit('join', { token: TOKEN, roomId: roomId }, (err) => {
-            console.log('err', err);
             if (err && typeof err == 'object' && Object.keys(err).length) {
                 NotifyService.notify({ title: "Unable to connect", type: "error" });
             }
@@ -86,7 +110,7 @@ function BattleChatScene({ navigation, user }) {
                     createdAt: moment(message.created_at).format(),
                     image: message.image,
                     user: {
-                        _id: message.created_by._id
+                        _id: message.created_by._id,
                     },
                 }
 
@@ -102,7 +126,7 @@ function BattleChatScene({ navigation, user }) {
                     createdAt: moment(message.created_at).format(),
                     image: message.image,
                     user: {
-                        _id: AccessNestedObject(message, 'created_by._id')
+                        _id: AccessNestedObject(message, 'created_by._id'),
                     }
                 }))
                 .reverse();
@@ -135,7 +159,7 @@ function BattleChatScene({ navigation, user }) {
             .openPicker({
                 width: 300,
                 height: 400,
-                cropping: true
+                cropping: false
             });
         if (image) {
             setLoading(true);
@@ -147,11 +171,23 @@ function BattleChatScene({ navigation, user }) {
         }
     }
 
+    async function finishMatch() {
+        setLoading(true);
+        setLoadingText('Uploading ...');
+        const result = await PrivateApi.MarkCompletedBattleQueueEntry(battleQueueId);
+        setLoading(false);
+        setLoadingText('Loading ...');
+        if (result.success) {
+            fetchInitial();
+        }
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <HeaderBattleComponent
                 name={headerTitle}
                 icon={headerIcon}
+                actionText="Play"
                 actionIcon={"play-circle"}
                 action={() => {
                     const config = {
@@ -161,33 +197,7 @@ function BattleChatScene({ navigation, user }) {
                     OpenApp.openInStore(config);
                 }}
             />
-            <View style={styles.gameContainer} >
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                    <Image source={{ uri: headerIcon }} style={{ width: 50, height: 50, resizeMode: 'contain' }} />
-                </View>
-                <View style={{ flex: 3, padding: 5, alignItems: 'center' }} >
-                    <View style={{ flex: 1 }} >
-                        <Text style={{ fontSize: 16, color: TEXT_COLOR, fontWeight: 'bold' }} >
-                            {gameName}
-                        </Text>
-                        <Text style={{ fontSize: 14, color: GREY_2, fontWeight: 'bold' }} >
-                            {headerTitle}
-                        </Text>
-                        <Text style={{ fontSize: 14, color: GREEN, fontWeight: '100' }} >
-                            Entry Fee: {matchEntryFee == 0 ? "FREE" : matchEntryFee}
-                        </Text>
-                    </View>
-                </View>
-                <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }} >
-                    <Text style={{ fontSize: 14, color: GREEN, fontWeight: 'normal' }} >
-                        WINNING AMOUNT
-                    </Text>
-                    <Text style={{ fontSize: 25, color: GREEN, fontWeight: 'bold' }} >
-                        {DisplayPrice(winningAmount)}
-                    </Text>
-                </View>
-            </View>
-            <View style={{ flexDirection: 'row', height: 80 }} >
+            <View style={{ flexDirection: 'row', height: 70 }} >
                 {
                     participents.map((participent) => (
                         <View style={{ flex: 1, flexDirection: 'row', borderWidth: 1, borderColor: GREY_BG }} >
@@ -233,6 +243,105 @@ function BattleChatScene({ navigation, user }) {
                 }
             </View>
 
+            <View style={styles.gameContainer} >
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                    <Text style={{ fontSize: 16, color: TEXT_COLOR, fontWeight: 'bold' }} >
+                        {gameName}
+                    </Text>
+                </View>
+                <View style={{ flex: 1, padding: 5, alignItems: 'center', justifyContent: 'center' }} >
+                    <Text style={{ fontSize: 14, color: GREEN, fontWeight: '100' }} >
+                        Entry Fee: {matchEntryFee == 0 ? "FREE" : matchEntryFee}
+                    </Text>
+                </View>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                    <Text style={{ fontSize: 14, color: GREEN, fontWeight: '100' }} >
+                        WINNING:  {DisplayPrice(winningAmount)}
+                    </Text>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row', height: 50, borderBottomColor: GREY_BG, borderBottomWidth: 1, padding: 10 }} >
+                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                    <View style={{ padding: 5, backgroundColor: !completed ? YELLOW : SECONDARY_COLOR, height: 30, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }} >
+                        <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14 }} >
+                            Status: {completed ? "Completed" : "Open"}
+                        </Text>
+                    </View>
+                </View>
+                <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row' }} >
+                    {
+                        !scorecardUploaded ?
+                            <TouchableOpacity
+                                onPress={openScorecardUplod}
+                                style={{ padding: 5, backgroundColor: BLUE, width: 200, height: 35, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
+                                <IconComponent font={'fontawesome'} size={18} focused tintColor={ON_PRIMARY} name={"upload"} />
+                                <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14, marginLeft: 15 }} >
+                                    Upload Scorecard
+                                </Text>
+                            </TouchableOpacity> : null
+                    }
+                    {
+                        scorecardUploaded ?
+                            <View
+                                style={{ margin: 5, padding: 10, backgroundColor: GREEN, width: 110, height: 30, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}
+                            >
+                                <IconComponent font={'fontawesome'} size={18} focused tintColor={ON_PRIMARY} name={"check"} />
+                                <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14, marginLeft: 15 }} >
+                                    Uploaded
+                                </Text>
+                            </View> : null
+                    }
+                    {
+                        scorecardUploaded && !completed ?
+                            <TouchableOpacity
+                                onPress={openScorecardUplod}
+                                style={{ margin: 5, padding: 10, backgroundColor: BLUE, width: 120, height: 30, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}
+                            >
+                                <IconComponent font={'fontawesome'} size={18} focused tintColor={ON_PRIMARY} name={"upload"} />
+                                <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14, marginLeft: 15 }} >
+                                    Re-Upload
+                                </Text>
+                            </TouchableOpacity> : null
+                    }
+
+                </View>
+            </View>
+            {
+                scorecardUploaded && !completed ?
+                    <View style={{ flexDirection: 'row', height: 50, padding: 10, alignItems: 'center', justifyContent: 'center' }} >
+                        <TouchableOpacity
+                            onPress={finishMatch}
+                            style={{ padding: 5, backgroundColor: PRIMARY_COLOR, width: widthPercentageToDP(80), height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}
+                        >
+                            <IconComponent font={'fontawesome'} size={18} focused tintColor={ON_PRIMARY} name={"arrow-right"} />
+                            <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14, marginLeft: 15 }} >
+                                Finish Match
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    : null
+            }
+            {
+                completed ?
+                    <View style={{ height: 80, padding: 10, alignItems: 'center', justifyContent: 'center' }} >
+                        <View
+                            style={{ padding: 5, backgroundColor: PRIMARY_COLOR, width: widthPercentageToDP(80), height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}
+                        >
+                            <IconComponent font={'fontawesome'} size={18} focused tintColor={ON_PRIMARY} name={"check-circle"} />
+                            <Text style={{ fontWeight: 'bold', color: ON_PRIMARY, fontSize: 14, marginLeft: 15 }} >
+                                Match Finished
+                            </Text>
+                        </View>
+                        {
+                            winningAmount > 0 ?
+                                <Text style={{ color: TEXT_COLOR, padding: 10, fontWeight: 'bold', fontSize: 14 }} >
+                                    Winning amount will transferred to the Winner's wallet.
+                                </Text> : null
+                        }
+                    </View>
+                    : null
+            }
+
             <GiftedChat
                 style={{ height: 400 }}
                 messages={messages}
@@ -250,8 +359,7 @@ function BattleChatScene({ navigation, user }) {
                         />
                     </View>
                 )}
-                showUserAvatar={true}
-                renderInputToolbar={participents.length == 1 ? () => null : undefined}
+                renderInputToolbar={((participents.length == 1) || completed) ? () => null : undefined}
                 onPressActionButton={uploadImage}
             />
             <Spinner
@@ -271,7 +379,9 @@ const styles = StyleSheet.create({
     gameContainer: {
         padding: 5,
         flexDirection: 'row',
-        height: 80,
+        height: 40,
+        borderBottomColor: GREY_BG,
+        borderBottomWidth: 1
     },
     userContainer: {
         height: 80,

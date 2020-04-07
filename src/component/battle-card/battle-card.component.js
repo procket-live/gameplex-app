@@ -5,8 +5,13 @@ import { ON_PRIMARY, SECONDARY_COLOR, GREY_3, TEXT_COLOR, GREEN, YELLOW, PRIMARY
 import { DisplayPrice, AccessNestedObject } from '../../utils/common.util';
 import moment from 'moment';
 import ParticipentsCircle from '../participents-circle/participents-circle.component';
+import {
+    Placeholder,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
 
-function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = false, proceedToChat }) {
+function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = false, proceedToChat, loading }) {
     function onPress() {
         if (disableButton) {
             return;
@@ -19,6 +24,36 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
         if (proceedToChat) {
             proceedToChat(queueEntry);
         }
+    }
+
+    if (loading) {
+        return (
+            <Placeholder
+                Animation={Fade}
+            >
+                <View style={styles.container}>
+
+                    <View style={{ flex: 0.5, backgroundColor: PRIMARY_COLOR, overflow: 'hidden', borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }} >
+                        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'flex-start' }} ></View>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 5 }} >
+
+                        </View>
+                    </View>
+                    <View style={{ flex: 3, padding: 10 }} >
+                        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-end' }} >
+                            <PlaceholderLine width={50} height={10} />
+                        </View>
+                        <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }} >
+                            <PlaceholderLine height={10} width={80} />
+                            <PlaceholderLine height={10} width={80} />
+                        </View>
+                    </View>
+                    <View style={{ flex: 3, alignItems: 'flex-end', justifyContent: 'center', padding: 10, paddingRight: 20 }} >
+                        <PlaceholderLine style={[styles.buttonContainer, { backgroundColor: GREY_3 }]} />
+                    </View>
+                </View>
+            </Placeholder>
+        )
     }
 
     return (
@@ -65,6 +100,17 @@ function BattleCard({ item: match = {}, joinMatch, queueEntry, disableButton = f
                             <PrizeButton prize={AccessNestedObject(match, 'entry_fee')} />
                 }
             </View>
+            {
+                AccessNestedObject(queueEntry, 'completed') ?
+                    <View style={{ flex: 0.5, backgroundColor: GREEN, overflow: 'hidden', borderTopRightRadius: 5, borderBottomRightRadius: 5 }} >
+                        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'flex-start' }} ></View>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 5 }} >
+                            <Text style={{ fontSize: 10, fontWeight: 'bold', color: ON_PRIMARY, transform: [{ rotate: '90deg' }], width: 100 }} >
+                                Completed
+                            </Text>
+                        </View>
+                    </View> : null
+            }
         </TouchableOpacity>
     )
 }

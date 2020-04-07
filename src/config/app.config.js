@@ -1,5 +1,5 @@
 module.exports = {
-    BASE_URL: __DEV__ ? 'http://192.168.0.100:3001' : 'https://gameplex-app.herokuapp.com',
+    BASE_URL: __DEV__ ? 'http://192.168.0.101:3001' : 'https://gameplex-app.herokuapp.com',
     RAZORPAY: __DEV__ ? 'rzp_test_VhrhI0BbetdOyJ' : 'rzp_live_ASqJv1UILjSDj4',
     FRESHCHAT: {
         APP_ID: '54df8003-27ad-4799-b5ed-5770c3a4a7c0',

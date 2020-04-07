@@ -1,5 +1,5 @@
 import { Post, Get, Put } from "../service/http.service"
-import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT, INITIATE_PAYMENT, VALIDATE_PAYMENT, TRANSACTIONS, ADD_GAME_USER_ID, JOIN_TOURNAMENT, TOURNAMENT_PARTICIPENTS, WALLET_TANSACTIONS, ORGANIZER, JOINED_TOURNAMENT, NOTIFICATION, RANKING, OFFER, MY_TOURNAMENT, BATTLE, JOIN_BATTLE, BANK } from "../constant/api.constant"
+import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT, INITIATE_PAYMENT, VALIDATE_PAYMENT, TRANSACTIONS, ADD_GAME_USER_ID, JOIN_TOURNAMENT, TOURNAMENT_PARTICIPENTS, WALLET_TANSACTIONS, ORGANIZER, JOINED_TOURNAMENT, NOTIFICATION, RANKING, OFFER, MY_TOURNAMENT, BATTLE, JOIN_BATTLE, BANK, SCORECARD, COMPLETED } from "../constant/api.constant"
 
 class PrivateApi {
     static GetUser = () => {
@@ -110,8 +110,20 @@ class PrivateApi {
         return Get({ url: `${JOIN_BATTLE}/${id}` })
     }
 
+    static GetAllJoinedBattle = () => {
+        return Get({ url: JOIN_BATTLE });
+    }
+
     static GetBattleQueuqEntry = (id) => {
         return Get({ url: `${BATTLE}/${id}` })
+    }
+
+    static UploadScorecardBattleQueueEntry = (id, params) => {
+        return Post({ url: `${BATTLE}/${id}/${SCORECARD}`, body: params });
+    }
+
+    static MarkCompletedBattleQueueEntry = (id) => {
+        return Post({ url: `${BATTLE}/${id}/${COMPLETED}` })
     }
 
     static SetBankDetail = (params) => {

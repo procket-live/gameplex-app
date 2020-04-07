@@ -26,3 +26,5 @@ export const BATTLE = 'battle';
 export const JOIN_BATTLE = `${BATTLE}/join`;
 export const BANK = `${USER}/bank`;
 export const GET_LATEST_VERSION = 'getApp/latest';
+export const SCORECARD = 'scorecard';
+export const COMPLETED = 'completed';

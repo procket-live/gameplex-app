@@ -5,7 +5,6 @@ import PublicApi from '../api/public.api';
 function* battleSaga() {
     yield put({ type: SET_BATTLE_LOADING, payload: true });
     const result = yield call(PublicApi.GetBattle);
-    console.log('bttttle', result)
     yield put({ type: SET_BATTLE_LOADING, payload: false });
     if (result.success) {
         yield put({ type: SET_BATTLE, payload: result.response });

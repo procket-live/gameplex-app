@@ -1067,6 +1067,11 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
+"@react-native-community/geolocation@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/geolocation/-/geolocation-2.0.2.tgz#ba8b40f560ead8d014740d1cdea970b33f19312e"
+  integrity sha512-tTNXRCgnhJBu79mulQwzabXRpDqfh/uaDqfHVpvF0nX4NTpolpy6mvTRiFg7eWFPGRArsnZz1EYp6rHfJWGgEA==
+
 "@react-native-community/viewpager@^2.0.1":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-2.0.2.tgz#622b190294b1310c4825c98daeaee1c8443f7124"
@@ -7551,6 +7556,13 @@ react-native-appstate-hook@^1.0.3:
   resolved "https://registry.yarnpkg.com/react-native-appstate-hook/-/react-native-appstate-hook-1.0.3.tgz#4f4f86e63127e7b06e53ccc286ec9a6e545d9d59"
   integrity sha512-iVoTUMnlJiU4DldhoEdE0uecr9AuC84tq+ftvfCYbZowirPTxlqAkvi/42sjlUDMFsG6BB8PoWci94qmz15w5Q==
 
+react-native-appupdate@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-appupdate/-/react-native-appupdate-1.1.2.tgz#9771c3e10367b93d807667ef4afba9e6e7a5468e"
+  integrity sha1-l3HD4QNnuT2AdmfvSvup5uelRo4=
+  dependencies:
+    react-native-fs "^2.3.3"
+
 react-native-cached-image@^1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/react-native-cached-image/-/react-native-cached-image-1.4.3.tgz#0942e2cd078284a1f0438de8dfe17f2b36a89752"
@@ -7674,7 +7686,7 @@ react-native-freshchat-sdk@^2.3.1:
   resolved "https://registry.yarnpkg.com/react-native-freshchat-sdk/-/react-native-freshchat-sdk-2.3.1.tgz#f62c6af100847ff749bda17e2f8ebdd73df237f2"
   integrity sha512-/SP4OVOQPPmCIDFsGBqL0trRHUjHT4cjLeCTTWH0nVCMkDtBXnN9i1aiqiLl+Pe97RyjyvyOWXsCLrnaIlaZFw==
 
-react-native-fs@^2.16.6:
+react-native-fs@^2.16.6, react-native-fs@^2.3.3:
   version "2.16.6"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.16.6.tgz#2901789a43210a35a0ef0a098019bbef3af395fd"
   integrity sha512-ZWOooD1AuFoAGY3HS2GY7Qx2LZo4oIg6AK0wbC68detxwvX75R/q9lRqThXNKP6vIo2VHWa0fYUo/SrLw80E8w==

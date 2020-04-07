@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
+import { PRIMARY_COLOR, ON_PRIMARY, SECONDARY_COLOR } from '../../constant/color.constant';
 import { navigatePop } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
 import IconComponent from '../icon/icon.component';
 
-function HeaderBattleComponent({ name, icon, actionIcon, action = () => [] }) {
+function HeaderBattleComponent({ name, icon, actionIcon, action = () => [], actionText }) {
     return (
         <View style={{
             height: 60,
@@ -22,9 +22,12 @@ function HeaderBattleComponent({ name, icon, actionIcon, action = () => [] }) {
                 <Image source={{ uri: icon }} style={{ width: 40, height: 40, resizeMode: 'contain', borderRadius: 5, marginRight: 20 }} />
                 <Text style={{ fontSize: 20, color: ON_PRIMARY }} >{name}</Text>
             </View>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                <TouchableOpacity onPress={action}  >
-                    <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
+            <View style={{ flex: 1.5, alignItems: 'center', justifyContent: 'center' }} >
+                <TouchableOpacity style={{ padding: 10, borderRadius: 10, backgroundColor: SECONDARY_COLOR, flexDirection: 'row' }} onPress={action}>
+                    <Text style={{ color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 10 }} >
+                        {actionText}
+                    </Text>
+                    <IconComponent size={18} font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
                 </TouchableOpacity>
             </View>
         </View >

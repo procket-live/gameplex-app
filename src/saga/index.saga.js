@@ -6,6 +6,7 @@ import tournamentSaga from './tournament.saga';
 import battleSaga from './battle.saga';
 import refreshUserSaga from './refresh-user.saga';
 import updateSaga from './update.saga';
+import allMatchSaga from './all-match.saga';
 
 export default function* rootSaga() {
     yield all([
@@ -15,5 +16,6 @@ export default function* rootSaga() {
         battleSaga(),
         refreshUserSaga(),
         updateSaga(),
+        allMatchSaga(),
     ])
 }

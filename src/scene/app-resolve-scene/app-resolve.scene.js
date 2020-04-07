@@ -13,6 +13,7 @@ import { setUserAction } from '../../action/user.action';
 import { fetchGames } from '../../action/game.action';
 import { fetchTournaments } from '../../action/tournament.action';
 import { fetchBattle } from '../../action/battle.action';
+import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
 
 class AppResolve extends PureComponent {
     componentDidMount = () => {
@@ -39,6 +40,7 @@ class AppResolve extends PureComponent {
                     this.props.fetchGames();
                     this.props.fetchTournaments();
                     this.props.fetchBattle();
+                    this.props.fetchAllJoinedMatchAction();
                     resetToScreen('TabNavigator');
                 } else {
                     resetToScreen('Dashboard');
@@ -132,4 +134,4 @@ const mapStateToProps = state => ({
     mode: state.mode
 })
 
-export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments, fetchBattle })(AppResolve);
+export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments, fetchBattle, fetchAllJoinedMatchAction })(AppResolve);
