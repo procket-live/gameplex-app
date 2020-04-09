@@ -1,5 +1,5 @@
 import { Post, Get, Put } from "../service/http.service"
-import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT, INITIATE_PAYMENT, VALIDATE_PAYMENT, TRANSACTIONS, ADD_GAME_USER_ID, JOIN_TOURNAMENT, TOURNAMENT_PARTICIPENTS, WALLET_TANSACTIONS, ORGANIZER, JOINED_TOURNAMENT, NOTIFICATION, RANKING, OFFER, MY_TOURNAMENT, BATTLE, JOIN_BATTLE, BANK, SCORECARD, COMPLETED } from "../constant/api.constant"
+import { USER, GENERATE_EMAIL_OTP, VERIFY_EMAIL_OTP, DASHBOARD, TOURNAMENT, UPCOMING_TOURNAMENT, INITIATE_PAYMENT, VALIDATE_PAYMENT, TRANSACTIONS, ADD_GAME_USER_ID, JOIN_TOURNAMENT, TOURNAMENT_PARTICIPENTS, WALLET_TANSACTIONS, ORGANIZER, JOINED_TOURNAMENT, NOTIFICATION, RANKING, OFFER, MY_TOURNAMENT, BATTLE, JOIN_BATTLE, BANK, SCORECARD, COMPLETED, ALL_COMPLETED_JOINED_BATTLE, ROLLOUT_PAYMENT, BATTLE_PAYOUT } from "../constant/api.constant"
 
 class PrivateApi {
     static GetUser = () => {
@@ -124,6 +124,23 @@ class PrivateApi {
 
     static MarkCompletedBattleQueueEntry = (id) => {
         return Post({ url: `${BATTLE}/${id}/${COMPLETED}` })
+    }
+
+    static GetAllCompletedBattleQueue = (active = false) => {
+        let url = ALL_COMPLETED_JOINED_BATTLE;
+        if (active) {
+            url += '?active=true'
+        }
+
+        return Get({ url })
+    }
+
+    static RolloutPayment = (id) => {
+        return Get({ url: `${TOURNAMENT}/${id}/${ROLLOUT_PAYMENT}` })
+    }
+
+    static RolloutPaymentBattleQueue = (id) => {
+        return Get({ url: `${BATTLE_PAYOUT}/${id}` });
     }
 
     static SetBankDetail = (params) => {

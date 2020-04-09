@@ -147,6 +147,7 @@ function BattleScene({ navigation, user, refreshUser }) {
                 name={game.name}
                 icon={game.thumbnail}
                 action={() => navigate('InstructionGenerator', { title: "How to Play?", steps: instructions })}
+                actionText="Info"
             />
             <View style={{ marginTop: 20, marginBottom: 20 }} >
                 <OfferSlider height={100} offers={offers} />

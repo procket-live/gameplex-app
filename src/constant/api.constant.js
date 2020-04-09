@@ -28,3 +28,6 @@ export const BANK = `${USER}/bank`;
 export const GET_LATEST_VERSION = 'getApp/latest';
 export const SCORECARD = 'scorecard';
 export const COMPLETED = 'completed';
+export const ALL_COMPLETED_JOINED_BATTLE = `${BATTLE}/all-joined`
+export const ROLLOUT_PAYMENT = 'rollout-payment';
+export const BATTLE_PAYOUT = `${BATTLE}/payout`

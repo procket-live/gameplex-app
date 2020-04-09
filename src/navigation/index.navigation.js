@@ -47,6 +47,7 @@ import BattleScene from '../scene/battle-scene/battle.scene';
 import BattleChatScene from '../scene/battle-chat-scene/battle-chat.scene';
 import BankDetailScene from '../scene/bank-detail-scene/bank-detail.scene';
 import UpdateScene from '../scene/update-scene/update.scene';
+import ManageCompletedMatchScene from '../scene/manage-completed-match-scene/manage-completed-match.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -420,6 +421,13 @@ const RootNavigator = createStackNavigator({
         screen: UpdateScene,
         navigationOptions: {
             header: null
+        }
+    },
+    ManageCompletedMatch: {
+        screen: ManageCompletedMatchScene,
+        navigationOptions: {
+            title: "All match",
+            headerStyle,
         }
     }
 }, {

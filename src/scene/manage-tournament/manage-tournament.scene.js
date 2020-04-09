@@ -31,7 +31,6 @@ class ManageTournamentScene extends PureComponent {
         const id = this.props.navigation.getParam('id');
         this.setState({ loading: true });
         const result = await PrivateApi.GetTournament(id);
-        console.log('result', result);
         this.setState({ loading: false });
         if (result.success) {
             this.setState({ tournament: result.response });
@@ -53,6 +52,7 @@ class ManageTournamentScene extends PureComponent {
     finish = () => {
         const { tournament } = this.state;
         const callback = this.props.navigation.getParam('callback');
+        const queueEntry = this.props.navigation.getParam('queueEntry');
 
         Alert.alert("Complete tournament?", "Are you sure you want to finish tournament.", [
             { text: "Calcel", style: "cancel" },
@@ -63,15 +63,53 @@ class ManageTournamentScene extends PureComponent {
                     const result = await PrivateApi.UpdateTournament(tournament._id, { status: 'completed' });
                     this.setState({ loading: false });
                     if (result.success) {
-                        callback();
-                        navigatePop();
-                        navigatePop();
+                        if (queueEntry) {
+                            this.payoutBattleQueue();
+                        } else {
+                            callback();
+                            navigatePop();
+                            navigatePop();
+                        }
                     }
                 }
             }
         ])
+    }
 
+    payoutBattleQueue = async () => {
+        const queueEntry = this.props.navigation.getParam('queueEntry');
+        const callback = this.props.navigation.getParam('callback');
 
+        this.setState({ loading: true });
+        const result = await PrivateApi.RolloutPaymentBattleQueue(queueEntry._id);
+        this.setState({ loading: false });
+        if (result.success) {
+            callback();
+            navigatePop();
+            navigatePop();
+        }
+    }
+
+    rollout = () => {
+        const { tournament } = this.state;
+        const callback = this.props.navigation.getParam('callback');
+
+        Alert.alert("Rollout payment?", "Are you sure you want to rollout payment.", [
+            { text: "Calcel", style: "cancel" },
+            {
+                text: "Proceed",
+                onPress: async () => {
+                    this.setState({ loading: true });
+                    const result = await PrivateApi.RolloutPayment(tournament._id);
+                    console.log('result', result)
+                    this.setState({ loading: false });
+                    if (result.success) {
+                        callback();
+                        this.fetchData();
+                    }
+                }
+            }
+        ])
     }
 
     makePublic = async () => {
@@ -308,6 +346,11 @@ class ManageTournamentScene extends PureComponent {
         return AccessNestedObject(tournament, 'ranking_set');
     }
 
+    isPayoutDone = () => {
+        const { tournament } = this.state;
+        return AccessNestedObject(tournament, 'payout_released');
+    }
+
     deleteTournament = () => {
         const { tournament } = this.state;
         const callback = this.props.navigation.getParam('callback');
@@ -374,6 +417,7 @@ class ManageTournamentScene extends PureComponent {
     }
 
     RenderTournamentManage = () => {
+
         return (
             <View style={{ flex: 1, paddingBottom: 100 }} >
                 <MenuItem
@@ -393,13 +437,29 @@ class ManageTournamentScene extends PureComponent {
                     onPress={this.navigateToParticipents}
                     inactive={this.isParticiepentMenuInactive()}
                 />
+
             </View>
         )
     }
 
     RenderTournamentPost = () => {
+        const queueEntry = this.props.navigation.getParam('queueEntry');
+
         return (
             <View style={{ flex: 1, paddingBottom: 100 }} >
+                {
+                    queueEntry ?
+                        <MenuItem
+                            iconName="comment"
+                            font="fontawesome"
+                            name="Show Chat"
+                            detail="Chat scene"
+                            onPress={() => {
+                                navigate('BattleChat', { battleQueue: queueEntry });
+                            }}
+                            inactive={false}
+                        /> : null
+                }
                 <MenuItem
                     iconName="users"
                     font="fontawesome"
@@ -414,9 +474,11 @@ class ManageTournamentScene extends PureComponent {
                     font="fontawesome"
                     name="Rollout Payment"
                     detail="Finish tournament and rollout payments"
-                    onPress={this.navigateToGeneralDetailForm}
+                    onPress={this.rollout}
                     inactive={this.isRolloutInactive()}
+                    complete={this.isPayoutDone()}
                 />
+
             </View>
         )
     }

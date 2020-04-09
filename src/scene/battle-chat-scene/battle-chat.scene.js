@@ -22,10 +22,11 @@ import IconComponent from '../../component/icon/icon.component';
 import PrivateApi from '../../api/private.api';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
+import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
 
 let socket;
 
-function BattleChatScene({ navigation, user }) {
+function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
     const initialBattleQueue = navigation.getParam('battleQueue') || {};
     const battleQueueId = navigation.getParam('id') || AccessNestedObject(initialBattleQueue, '_id');
 
@@ -179,6 +180,7 @@ function BattleChatScene({ navigation, user }) {
         setLoadingText('Loading ...');
         if (result.success) {
             fetchInitial();
+            fetchAllJoinedMatchAction();
         }
     }
 
@@ -334,7 +336,7 @@ function BattleChatScene({ navigation, user }) {
                         </View>
                         {
                             winningAmount > 0 ?
-                                <Text style={{ color: TEXT_COLOR, padding: 10, fontWeight: 'bold', fontSize: 14 }} >
+                                <Text style={{ color: TEXT_COLOR, padding: 5, fontWeight: 'bold', fontSize: 14 }} >
                                     Winning amount will transferred to the Winner's wallet.
                                 </Text> : null
                         }
@@ -403,4 +405,4 @@ const mapStateToProps = state => ({
     user: state.user
 });
 
-export default connect(mapStateToProps)(BattleChatScene);
+export default connect(mapStateToProps, { fetchAllJoinedMatchAction })(BattleChatScene);

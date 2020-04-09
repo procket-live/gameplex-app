@@ -30,6 +30,7 @@ function TransactionsScene(props) {
 
     async function fetchWalletStatements() {
         const result = await PrivateApi.GetWalletTransactions();
+        console.log('result', result)
         if (result.success) {
             setWalletStatements(result.response.reverse());
         }

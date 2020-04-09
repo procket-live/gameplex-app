@@ -158,6 +158,26 @@ class DashboardScene extends PureComponent {
                     detail="Handle payments and payouts"
                 />
                 <MenuItem
+                    inactive={!this.isOrganizerProfileSet()}
+                    iconName="database"
+                    font="fontawesome"
+                    name="Completed Match"
+                    detail="Completed match review"
+                    onPress={() => {
+                        navigate('ManageCompletedMatch', { callback: this.componentDidMount })
+                    }}
+                />
+                <MenuItem
+                    inactive={!this.isOrganizerProfileSet()}
+                    iconName="database"
+                    font="fontawesome"
+                    name="Active Match List"
+                    detail="All active match review"
+                    onPress={() => {
+                        navigate('ManageCompletedMatch', { callback: this.componentDidMount, active: true })
+                    }}
+                />
+                <MenuItem
                     inactive
                     iconName="compass"
                     font="fontawesome"
