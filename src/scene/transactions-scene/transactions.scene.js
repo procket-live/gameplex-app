@@ -9,6 +9,7 @@ import { DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
 import { DisplayPrice, AccessNestedObject } from '../../utils/common.util';
 import moment from 'moment';
 import { RazorpayIcon } from '../../config/image.config';
+import WithdrawRequestCard from '../../component/withdraw-request-component/withdraw-request.component';
 
 function TransactionsScene(props) {
     const [transactions, setTransactions] = React.useState([]);
@@ -18,6 +19,7 @@ function TransactionsScene(props) {
     React.useEffect(() => {
         fetchData();
         fetchWalletStatements();
+        fetchWithdrawals();
         return () => { }
     }, [])
 
@@ -30,15 +32,25 @@ function TransactionsScene(props) {
 
     async function fetchWalletStatements() {
         const result = await PrivateApi.GetWalletTransactions();
-        console.log('result', result)
         if (result.success) {
             setWalletStatements(result.response.reverse());
+        }
+    }
+
+    async function fetchWithdrawals() {
+        const result = await PrivateApi.GetWithdrawRequest("success");
+        if (result.success) {
+            setWithdrawals(result.response.reverse());
         }
     }
 
     function RenderWalletTransaction({ item }) {
         const tournament = AccessNestedObject(item, 'source.tournament_name');
         const order = item.amount > 0;
+
+        if (item.amount == 0) {
+            return null;
+        }
 
         return (
             <View style={{ width: widthPercentageToDP(95), backgroundColor: ON_PRIMARY, marginBottom: 10, marginTop: 10, borderRadius: 10 }} >
@@ -63,8 +75,28 @@ function TransactionsScene(props) {
                                 <Text style={{ color: TEXT_COLOR, fontWeight: 'bold' }} >{tournament}</Text> : null
                         }
                     </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                    <View style={{ flex: 2, alignItems: 'flex-end', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 18, color: order ? GREEN : RED }} >{order ? '+ ' : '- '} {DisplayPrice(Math.abs(item.amount))}</Text>
+                        {
+                            item.target == "win_balance" && item.amount > 0 ?
+                                <Text style={{ fontSize: 10, color: GREY_2 }} >Winning amount added to wallet</Text>
+                                : null
+                        }
+                        {
+                            item.target == "win_balance" && item.amount < 0 ?
+                                <Text style={{ fontSize: 10, color: GREY_2 }} >Amount withdrawed from wallet</Text>
+                                : null
+                        }
+                        {
+                            item.target == "cash_balance" && item.amount < 0 ?
+                                <Text style={{ fontSize: 10, color: GREY_2 }} >Tournament joining fee</Text>
+                                : null
+                        }
+                        {
+                            item.target == "cash_balance" && item.amount > 0 ?
+                                <Text style={{ fontSize: 10, color: GREY_2 }} >Added to wallet</Text>
+                                : null
+                        }
                     </View>
                 </View>
             </View>
@@ -74,7 +106,6 @@ function TransactionsScene(props) {
     function RenderCard({ item }) {
         const response = JSON.parse(item.response || JSON.stringify({}));
         const status = item.status;
-
         return (
             <View style={{ width: widthPercentageToDP(95), backgroundColor: ON_PRIMARY, marginBottom: 10, marginTop: 10, borderRadius: 10 }} >
                 <View style={{ padding: 10, flexDirection: 'row', }} >
@@ -137,7 +168,15 @@ function TransactionsScene(props) {
                         data={walletStatements}
                     />
                 </Box>
-                <View tabLabel="Received" style={{ flex: 1 }}  ></View>
+                <Box tabLabel="Withdrawal"  >
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        style={{ flex: 1 }}
+                        renderItem={WithdrawRequestCard}
+                        data={withdrawals}
+                    />
+                </Box>
+                <View tabLabel="" style={{ flex: 1 }}  ></View>
             </Tabs>
         </View>
     )

@@ -26,6 +26,14 @@ class WalletScene extends Component {
         navigate('BankDetail');
     }
 
+    navigateToWithdraw = () => {
+        navigate('Withdraw');
+    }
+
+    navigateToPendingRequests = () => {
+        navigate('PendingWithdrawScene');
+    }
+
     render() {
         return (
             <ScrollView
@@ -46,6 +54,16 @@ class WalletScene extends Component {
                         name="Bank Details"
                         detail="Your bank account details"
                         onPress={this.navigateToBankDetails}
+                    />
+                    <MenuItem
+                        name="Withdraw Amount"
+                        detail="Withdraw amount to bank account"
+                        onPress={this.navigateToWithdraw}
+                    />
+                    <MenuItem
+                        name="Pending Withdraw requests"
+                        detail="All pending withdraw requests"
+                        onPress={this.navigateToPendingRequests}
                     />
                     <MenuItem
                         name="Contact Us"

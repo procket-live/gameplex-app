@@ -16,7 +16,7 @@ function ManageCompletedMatchScene({ navigation }) {
     }, [])
 
     async function fetchData() {
-        const active = !!navigation.getParam('active');
+        const active = !!navigation.getParam('match');
 
         setLoading(true)
         const result = await PrivateApi.GetAllCompletedBattleQueue(active);

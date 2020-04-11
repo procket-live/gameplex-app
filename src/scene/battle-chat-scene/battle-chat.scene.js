@@ -45,6 +45,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
     const participents = AccessNestedObject(battleQueue, 'tournament.participents', []);
     const completed = AccessNestedObject(battleQueue, 'completed', false);
     const scorecardUploaded = !!AccessNestedObject(battleQueue, 'scorecard.image_link');
+    const noOpponent = participents.length == 1;
 
     const { appState } = useAppState({
         onForeground: () => {
@@ -223,7 +224,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
                     ))
                 }
                 {
-                    participents.length == 1 ?
+                    noOpponent ?
                         <View style={{ flex: 1, flexDirection: 'row', borderWidth: 1, borderColor: GREY_BG }} >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                                 <IconComponent font={'fontawesome'} size={20} focused tintColor={TEXT_COLOR} name={"user"} />
@@ -272,7 +273,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
                 </View>
                 <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row' }} >
                     {
-                        !scorecardUploaded ?
+                        !noOpponent && !scorecardUploaded ?
                             <TouchableOpacity
                                 onPress={openScorecardUplod}
                                 style={{ padding: 5, backgroundColor: BLUE, width: 200, height: 35, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >

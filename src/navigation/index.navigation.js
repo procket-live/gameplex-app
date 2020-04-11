@@ -48,6 +48,8 @@ import BattleChatScene from '../scene/battle-chat-scene/battle-chat.scene';
 import BankDetailScene from '../scene/bank-detail-scene/bank-detail.scene';
 import UpdateScene from '../scene/update-scene/update.scene';
 import ManageCompletedMatchScene from '../scene/manage-completed-match-scene/manage-completed-match.scene';
+import WithdrawScene from '../scene/withdraw-scene/withdraw.scene';
+import PendingWithdrawScene from '../scene/pending-withdraw-scene/pending-withdraw.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -427,6 +429,20 @@ const RootNavigator = createStackNavigator({
         screen: ManageCompletedMatchScene,
         navigationOptions: {
             title: "All match",
+            headerStyle,
+        }
+    },
+    Withdraw: {
+        screen: WithdrawScene,
+        navigationOptions: {
+            title: "Withdraw Amount",
+            headerStyle,
+        }
+    },
+    PendingWithdrawScene: {
+        screen: PendingWithdrawScene,
+        navigationOptions: {
+            title: "Pending Withdraw Requests",
             headerStyle,
         }
     }
