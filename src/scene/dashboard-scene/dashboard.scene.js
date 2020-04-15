@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
+import { Freshchat, ConversationOptions } from 'react-native-freshchat-sdk';
 
 import { GREY_BG, TEXT_COLOR, GREEN, ON_PRIMARY, PRIMARY_COLOR } from '../../constant/color.constant';
 import IconComponent from '../../component/icon/icon.component';
@@ -9,7 +10,7 @@ import MenuItem from '../../component/menu-item/menu-item.component';
 import PrivateApi from '../../api/private.api';
 import { setMode } from '../../action/mode.action';
 import { resetToScreen, navigate } from '../../service/navigation.service';
-import { AccessNestedObject } from '../../utils/common.util';
+import { AccessNestedObject, HasRole } from '../../utils/common.util';
 import { setOrganizerActions } from '../../action/organizer.action';
 
 class DashboardScene extends PureComponent {
@@ -84,8 +85,15 @@ class DashboardScene extends PureComponent {
         }
     }
 
+    showConversations = () => {
+        const conversationOptions = new ConversationOptions();
+        conversationOptions.tags = ["normal"];
+        conversationOptions.filteredViewTitle = "Contact us";
+        Freshchat.showConversations(conversationOptions);
+    }
+
     render() {
-        const { mode } = this.props;
+        const { user } = this.props;
         const { dashbordMeta } = this.state;
 
         return (
@@ -150,33 +158,39 @@ class DashboardScene extends PureComponent {
                     detail="Update organizer profile"
                     complete={this.isOrganizerProfileSet()}
                 />
-                <MenuItem
-                    inactive={!this.isOrganizerProfileSet()}
-                    iconName="credit-card"
-                    font="fontawesome"
-                    name="Payments"
-                    detail="Handle payments and payouts"
-                />
-                <MenuItem
-                    inactive={!this.isOrganizerProfileSet()}
-                    iconName="database"
-                    font="fontawesome"
-                    name="Completed Match"
-                    detail="Completed match review"
-                    onPress={() => {
-                        navigate('ManageCompletedMatch', { callback: this.componentDidMount })
-                    }}
-                />
-                <MenuItem
-                    inactive={!this.isOrganizerProfileSet()}
-                    iconName="database"
-                    font="fontawesome"
-                    name="Active Match List"
-                    detail="All active match review"
-                    onPress={() => {
-                        navigate('ManageCompletedMatch', { callback: this.componentDidMount, active: true })
-                    }}
-                />
+                {
+                    HasRole(user, 'Admin') ?
+                        <>
+                            <MenuItem
+                                inactive={!this.isOrganizerProfileSet()}
+                                iconName="credit-card"
+                                font="fontawesome"
+                                name="Payments"
+                                detail="Handle payments and payouts"
+                            />
+                            <MenuItem
+                                inactive={!this.isOrganizerProfileSet()}
+                                iconName="database"
+                                font="fontawesome"
+                                name="Completed Match"
+                                detail="Completed match review"
+                                onPress={() => {
+                                    navigate('ManageCompletedMatch', { callback: this.componentDidMount })
+                                }}
+                            />
+                            <MenuItem
+                                inactive={!this.isOrganizerProfileSet()}
+                                iconName="database"
+                                font="fontawesome"
+                                name="Active Match List"
+                                detail="All active match review"
+                                onPress={() => {
+                                    navigate('ManageCompletedMatch', { callback: this.componentDidMount, active: true })
+                                }}
+                            />
+                        </>
+                        : null
+                }
                 <MenuItem
                     inactive
                     iconName="compass"
@@ -185,18 +199,20 @@ class DashboardScene extends PureComponent {
                     detail="Analize your progress"
                 />
                 <MenuItem
-                    inactive
                     iconName="phone"
                     font="fontawesome"
                     name="Raise an issue / Contact us"
                     detail="Get in touch with us"
+                    onPress={this.showConversations}
                 />
                 <MenuItem
-                    inactive
                     iconName="book"
                     font="fontawesome"
                     name="Help"
                     detail="Frequently asked questions and their answers"
+                    onPress={() => {
+                        Freshchat.showFAQs();
+                    }}
                 />
             </ScrollView>
         )
@@ -234,6 +250,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    user: state.user,
     mode: state.mode,
     organizer: state.organizer
 })

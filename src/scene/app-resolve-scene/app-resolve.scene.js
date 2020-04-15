@@ -18,6 +18,7 @@ import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
 class AppResolve extends PureComponent {
     componentDidMount = () => {
         setTimeout(this.getInitialNotification, 100);
+        this.askPermission();
     }
 
     init = () => {

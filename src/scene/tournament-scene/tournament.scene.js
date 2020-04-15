@@ -33,6 +33,7 @@ function TournamentScene(props) {
     const roomPassword = AccessNestedObject(tournament, 'room_detail.room_password', '');
     const instructions = AccessNestedObject(tournament, 'game.instructions', []);
     const guide = AccessNestedObject(tournament, 'game.guide', []);
+    const organizerName = AccessNestedObject(tournament, 'organizer.organizer_name', '')
 
     function joinTournament() {
         if (!userGameIdResult.success) {
@@ -69,6 +70,21 @@ function TournamentScene(props) {
                             <View style={{ paddingTop: 2, paddingBottom: 2 }} >
                                 <Text style={{ fontSize: 12, color: GREY_2 }} >
                                     {`${date} - STARTING AT ${time}`}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', height: 35 }} >
+                                <IconComponent
+                                    font="fontawesome"
+                                    size={12}
+                                    name="cog"
+                                    tintColor={GREEN}
+                                    focused
+                                />
+                                <Text style={{ fontSize: 12, color: GREEN, paddingLeft: 3 }} >
+                                    Organizer
+                                </Text>
+                                <Text style={{ fontSize: 12, color: TEXT_COLOR, paddingLeft: 5, fontWeight: 'bold' }} >
+                                    {organizerName}
                                 </Text>
                             </View>
                             <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >

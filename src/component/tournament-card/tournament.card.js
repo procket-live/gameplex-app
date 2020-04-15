@@ -31,6 +31,7 @@ const TournamentCard = props => {
     const tournamentStatus = GetTournamentStatus(tournament);
     const size = AccessNestedObject(tournament, 'size');
     const isJoined = IsJoined(participents, AccessNestedObject(props, 'user._id'));
+    const organizerName = AccessNestedObject(tournament, 'organizer.organizer_name', '')
 
     return (
         <TouchableOpacity
@@ -52,10 +53,27 @@ const TournamentCard = props => {
                 />
             </View>
             <View style={styles.detailsContainer} >
-                <View style={{ paddingTop: 2, paddingBottom: 2 }} >
-                    <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
-                        {`${date} - STARTING AT ${time}`}
-                    </Text>
+                <View style={{ paddingTop: 2, paddingBottom: 2, flexDirection: 'row' }} >
+                    <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                        <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                            {`${date} - STARTING AT ${time}`}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row' }} >
+                        <IconComponent
+                            font="fontawesome"
+                            size={12}
+                            name="cog"
+                            tintColor={GREEN}
+                            focused
+                        />
+                        <Text style={{ fontSize: 12, color: GREEN, paddingLeft: 3 }} >
+                            Organizer
+                        </Text>
+                        <Text style={{ fontSize: 12, color: TEXT_COLOR, paddingLeft: 5, fontWeight: 'bold' }} >
+                            {organizerName}
+                        </Text>
+                    </View>
                 </View>
                 <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center' }} >
                     <IconComponent

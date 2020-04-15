@@ -11,7 +11,7 @@ const TournamentSlider = props => {
     const tournaments = AccessNestedObject(props, 'tournament.list', []);
     const loading = AccessNestedObject(props, 'tournament.loading', false);
     const horizontal = AccessNestedObject(props, 'horizontal', false);
-
+    console.log('tournaments', tournaments)
     return (
         <>
             <TitleComponent title="Upcoming Tournaments" />
