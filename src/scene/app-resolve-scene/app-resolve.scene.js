@@ -4,6 +4,7 @@ import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
 import firebase from 'react-native-firebase';
 import { PermissionsAndroid } from 'react-native';
+import io from 'socket.io-client';
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -11,11 +12,18 @@ import { IsUserDetailsSet, AccessNestedObject } from '../../utils/common.util';
 import PrivateApi from '../../api/private.api';
 import { setUserAction } from '../../action/user.action';
 import { fetchGames } from '../../action/game.action';
+import { setOnlineList } from '../../action/online.action';
 import { fetchTournaments } from '../../action/tournament.action';
 import { fetchBattle } from '../../action/battle.action';
 import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
+import { GetSocket } from '../../utils/soket.utils';
 
+const socket = GetSocket();
 class AppResolve extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.userId = null;
+    }
     componentDidMount = () => {
         setTimeout(this.getInitialNotification, 100);
         this.askPermission();
@@ -29,9 +37,11 @@ class AppResolve extends PureComponent {
             SplashScreen.hide();
         } else {
             const token = user.token;
+            this.userId = user._id;
             APP.TOKEN = token;
             this.updateUser(token);
             this.setFiretoken();
+            this.connectSocket();
 
             const result = IsUserDetailsSet(user, true);
             if (!result.allStepDone) {
@@ -57,6 +67,25 @@ class AppResolve extends PureComponent {
     askPermission = async () => {
         await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE]);
         this.props.InitFreshchat();
+    }
+
+    connectSocket = () => {
+        const userId = this.userId;
+        if (userId) {
+            socket.emit('online', { userId });
+            socket.on('online_user_list', (data) => {
+                this.props.setOnlineList(data);
+            })
+        }
+    }
+
+    componentWillUnmount = () => {
+        const userId = this.userId;
+        if (userId) {
+            socket.emit('offline', { userId });
+            socket.off();
+            socket.emit("disconnect");
+        }
     }
 
     setFreshchatUser = (user) => {
@@ -89,13 +118,22 @@ class AppResolve extends PureComponent {
 
     getInitialNotification = async () => {
         const notificationOpen = await firebase.notifications().getInitialNotification();
-        console.log('notificationOpen', notificationOpen);
+
         if (notificationOpen) {
             const data = notificationOpen.notification.data;
-            console.log('a', data);
+
             if (AccessNestedObject(data, 'route') == "BattleQueue") {
                 APP.REDIRECT_TO = {
                     route: 'BattleChat',
+                    payload: {
+                        id: AccessNestedObject(data, 'value')
+                    }
+                }
+            }
+
+            if (AccessNestedObject(data, 'route') == "Tournament") {
+                APP.REDIRECT_TO = {
+                    route: 'Tournament',
                     payload: {
                         id: AccessNestedObject(data, 'value')
                     }
@@ -109,17 +147,17 @@ class AppResolve extends PureComponent {
     getInitialLink = async () => {
         const link = await firebase.links().getInitialLink();
         if (link) {
-            // if (link.includes('bloodRequest')) {
-            //     const parts = link.split('/');
-            //     const id = parts[4];
+            if (link.includes('tournament')) {
+                const parts = link.split('/');
+                const id = parts[4];
 
-            //     APP.REDIRECT_TO = {
-            //         route: 'BloodRequest',
-            //         payload: {
-            //             id
-            //         }
-            //     }
-            // }
+                APP.REDIRECT_TO = {
+                    route: 'Tournament',
+                    payload: {
+                        id
+                    }
+                }
+            }
         }
 
         this.init()
@@ -135,4 +173,4 @@ const mapStateToProps = state => ({
     mode: state.mode
 })
 
-export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments, fetchBattle, fetchAllJoinedMatchAction })(AppResolve);
+export default connect(mapStateToProps, { setUserAction, fetchGames, fetchTournaments, fetchBattle, fetchAllJoinedMatchAction, setOnlineList })(AppResolve);

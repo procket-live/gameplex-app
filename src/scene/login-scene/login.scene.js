@@ -60,7 +60,6 @@ class LoginScene extends Component {
                 });
             }
         } catch (error) {
-            console.log(JSON.stringify(error));
         }
     }
 
@@ -196,10 +195,8 @@ class LoginScene extends Component {
                         codeInputFieldStyle={styles.underlineStyleBase}
                         codeInputHighlightStyle={styles.underlineStyleHighLighted}
                         onCodeChange={(code) => {
-                            console.log('ttcode', code);
                         }}
                         onCodeFilled={(code => {
-                            console.log('code', code)
                             this.setState({ otp: code })
                         })}
                     />

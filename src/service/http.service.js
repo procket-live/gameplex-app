@@ -36,7 +36,6 @@ export async function Delete(obj) {
 }
 
 function getToken() {
-    console.log('APP.TOKEN', APP.TOKEN)
     return APP.TOKEN;
 }
 

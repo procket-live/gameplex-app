@@ -40,7 +40,6 @@ function BattleScene({ navigation, user, refreshUser }) {
         const battleId = battle._id;
         setLoadingJoinedBattle(true);
         const result = await PrivateApi.GetJoinedBattle(battleId);
-        console.log('result', result)
         setLoadingJoinedBattle(false);
         if (result.success) {
             setJoinedBattle(result.response);

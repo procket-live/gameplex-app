@@ -73,8 +73,6 @@ class AddTournamentScene extends PureComponent {
             ]
         ];
 
-        console.log('form', form)
-
         return form;
     }
 
@@ -113,7 +111,6 @@ class AddTournamentScene extends PureComponent {
 
     handleValidation = (props) => {
         const errors = {};
-        console.log('props', props)
         const { tournamentName, tournamentDescription, game, teamSize } = props;
         if (!tournamentName.value) {
             errors.tournamentName = 'Tournament name required';
@@ -122,7 +119,7 @@ class AddTournamentScene extends PureComponent {
         if (!tournamentDescription.value) {
             errors.tournamentDescription = 'Please add tournament description';
         }
-        console.log('game', game)
+
         if (!game.value) {
             errors.game = 'Please select game';
         }

@@ -1,4 +1,5 @@
 import { CURRENCY } from '../constant/app.constant';
+import Share from 'react-native-share';
 
 export function IsUserDetailsSet(user = {}, skipEmail = false) {
     if (!user.name || !user.dob) {
@@ -124,4 +125,12 @@ export function DisplayPrice(price) {
  */
 export function IsUndefined(value) {
     return value == null || value === '';
+}
+
+export function ShareTournament(tournament = {}) {
+    Share.open({
+        url: `https://gameplex.page.link?link=https://www.gameplex.app/tournament/${tournament._id}&apn=com.gameplexapp&afl=https://www.gameplex.app`,
+        message: `Hello Let's Play Tournament, \n\n ${tournament.tournament_name} \n\n  And winning exciting prize. Join the tournament now ... \n\n`,
+        title: `Hello Let's Play Tournament, \n\n ${tournament.tournament_name} \n\n  And winning exciting prize. Join the tournament now ... \n\n`
+    })
 }

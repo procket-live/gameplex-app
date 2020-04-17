@@ -8,6 +8,8 @@ export const REFRESH_USER = 'REFRESH_USER';
 
 export const SWITCH_MODE = 'SWITCH_MODE';
 
+export const SET_ONLINE = 'SET_ONLINE';
+
 export const FETCH_GAMES = 'FETCH_GAMES';
 export const SET_GAMES = 'SET_GAMES';
 export const SET_GAMES_LOADING = 'SET_GAMES_LOADING';

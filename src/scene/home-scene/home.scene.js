@@ -18,13 +18,12 @@ import { checkForUpdateAction } from '../../action/update.action';
 
 function HomeScene({ user, navigation, CheckUpdate }) {
     const [offers, setOffers] = React.useState([{ loading: true }]);
-    console.log('navigation', navigation)
+
     useEffect(() => {
         fetchOffers();
-        redirect();
         codepush.checkForUpdate();
         Analytics.trackEvent("My custom event");
-        CheckUpdate();
+        redirect();
 
         return () => {
 
@@ -43,6 +42,8 @@ function HomeScene({ user, navigation, CheckUpdate }) {
         const payload = AccessNestedObject(APP, 'REDIRECT_TO.payload');
         if (route) {
             navigate(route, payload);
+        } else {
+            CheckUpdate();
         }
     }
 

@@ -14,7 +14,6 @@ function ChatScreen() {
             //             occupantsIds: [104955275]
             //         })
             //         .then(function (dialog) {
-            //             console.log('dialog', dialog);
             //             // handle as necessary, i.e.
             //             // subscribe to chat events, typing events, etc.
             //         })

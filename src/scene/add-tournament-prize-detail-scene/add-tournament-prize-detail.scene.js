@@ -98,8 +98,6 @@ class AddTournamentPrizeDetailScene extends PureComponent {
             response.push({ key: item.key, value: state[Camelize(item.key)].value })
         })
 
-        console.log('response', response, 'callback', callback);
-
         callback(response);
         navigatePop()
     }
@@ -113,8 +111,6 @@ class AddTournamentPrizeDetailScene extends PureComponent {
                 errors[key] = `Please select ${ConvertToWord(key)}`
             }
         })
-
-        console.log('errors', errors)
 
         return errors;
     }

@@ -92,7 +92,6 @@ class AddTournamentRankDetailScene extends PureComponent {
                 response.push({ rank, amount: calAmount });
             }
         })
-        console.log('response', response)
         callback(response);
     }
 
@@ -116,7 +115,6 @@ class AddTournamentRankDetailScene extends PureComponent {
     }
 
     render() {
-        console.log(this.state.amount);
         return (
             <ScrollView style={styles.container}>
                 <Table borderStyle={{ borderColor: 'transparent' }}>

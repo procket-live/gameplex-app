@@ -1,40 +1,54 @@
 import React from 'react';
 import { Image, View, Text, StyleSheet } from 'react-native';
+import { connect } from 'react-redux'
+
 import { ON_PRIMARY, PRIMARY_COLOR, GREY_1, GREEN } from '../../constant/color.constant';
-import { Header } from 'react-navigation-stack';
 import IconComponent from '../icon/icon.component';
 import { AccessNestedObject } from '../../utils/common.util';
 
-function ParticipentsCircle({ participents = [] }) {
+function ParticipentsCircle({ participents = [], onlineList }) {
     const participentCount = participents.length;
     if (participentCount == 0) {
         return <Text style={{ fontSize: 14, color: GREEN }} >Registration Open</Text>;
     }
 
     const firstThree = participents.slice(0, 3);
-    console.log('firstThree', firstThree);
     return (
         <View style={styles.container} >
             {
-                firstThree.map((item, index) => (
-                    <View style={[styles.circleContainer, index != 0 ? styles.moveLeft : {}]} >
-                        {
-                            AccessNestedObject(item, 'user.profile_image') ?
-                                <Image
-                                    style={styles.circle}
-                                    source={{ uri: AccessNestedObject(item, 'user.profile_image') }}
-                                /> :
-                                <IconComponent
-                                    style={styles.circle}
-                                    font="fontawesome"
-                                    size={25}
-                                    name="user-circle"
-                                    focused
-                                    tintColor={GREY_1}
-                                />
-                        }
-                    </View>
-                ))
+                firstThree.map((item, index) => {
+                    const online = onlineList[AccessNestedObject(item, 'user._id')];
+
+                    return (
+                        <>
+                            <View style={[styles.circleContainer, index != 0 ? styles.moveLeft : {}]} >
+                                {
+                                    AccessNestedObject(item, 'user.profile_image') ?
+                                        <>
+                                            <Image
+                                                style={styles.circle}
+                                                source={{ uri: AccessNestedObject(item, 'user.profile_image') }}
+                                            />
+                                        </>
+                                        :
+                                        <IconComponent
+                                            style={styles.circle}
+                                            font="fontawesome"
+                                            size={25}
+                                            name="user-circle"
+                                            focused
+                                            tintColor={GREY_1}
+                                        />
+                                }
+                                {
+                                    online ?
+                                        <View style={{ width: 10, height: 10, backgroundColor: GREEN, borderRadius: 10, position: 'absolute', right: -3, bottom: 0, borderWidth: 1, borderColor: ON_PRIMARY }} />
+                                        : null
+                                }
+                            </View>
+                        </>
+                    )
+                })
             }
             {
                 (participentCount > 3) ?
@@ -56,10 +70,11 @@ const styles = StyleSheet.create({
     circleContainer: {
         width: 30,
         height: 30,
-        overflow: 'hidden',
         borderWidth: 3,
         borderColor: ON_PRIMARY,
         borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     circle: {
         width: 20,
@@ -67,7 +82,7 @@ const styles = StyleSheet.create({
         resizeMode: 'center',
     },
     moveLeft: {
-        marginLeft: -10
+        marginLeft: 0
     },
     countCircleContainer: {
         width: 30,
@@ -81,4 +96,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ParticipentsCircle;
+const mapStateToProps = (state) => ({
+    onlineList: state.online
+})
+
+export default connect(mapStateToProps)(ParticipentsCircle);

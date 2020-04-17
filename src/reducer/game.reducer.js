@@ -8,7 +8,6 @@ const DEFAULT_STATE = {
 function gameReducer(state = DEFAULT_STATE, action) {
     switch (action.type) {
         case SET_GAMES:
-            console.log('userReducer SET_GAMES', SET_GAMES, action);
             return { ...state, list: action.payload };
         case SET_GAMES_LOADING:
             return { ...state, loading: action.payload };

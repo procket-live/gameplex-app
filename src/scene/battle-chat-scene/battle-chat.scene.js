@@ -8,11 +8,7 @@ import OpenApp from 'react-native-open-app';
 import ImagePicker from 'react-native-image-crop-picker';
 import firebase from 'react-native-firebase';
 
-
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { BASE_URL } from '../../config/app.config';
-import io from 'socket.io-client';
-
 import HeaderBattleComponent from '../../component/header/header-battle.component';
 import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
 import { GREY_BG, ON_PRIMARY, TEXT_COLOR, YELLOW, GREEN, GREY_3, PRIMARY_COLOR, RED, SECONDARY_COLOR, BLUE } from '../../constant/color.constant';
@@ -23,10 +19,11 @@ import PrivateApi from '../../api/private.api';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
+import { GetSocket } from '../../utils/soket.utils';
 
-let socket;
+const socket = GetSocket();
 
-function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
+function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineList }) {
     const initialBattleQueue = navigation.getParam('battleQueue') || {};
     const battleQueueId = navigation.getParam('id') || AccessNestedObject(initialBattleQueue, '_id');
 
@@ -95,7 +92,6 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
     }
 
     useEffect(() => {
-        socket = io(BASE_URL);
         if (!roomId) return;
 
         socket.emit('join', { token: TOKEN, roomId: roomId }, (err) => {
@@ -206,6 +202,11 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction }) {
                         <View style={{ flex: 1, flexDirection: 'row', borderWidth: 1, borderColor: GREY_BG }} >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                                 <Image source={{ uri: AccessNestedObject(participent, 'user.profile_image') }} style={{ width: 40, height: 40, resizeMode: 'contain', borderRadius: 50 }} />
+                                {
+                                    onlineList[AccessNestedObject(participent, 'user._id')] ?
+                                        <View style={{ width: 15, height: 15, backgroundColor: GREEN, borderRadius: 15, position: 'absolute', right: 0, bottom: 10, borderWidth: 1, borderColor: ON_PRIMARY }} />
+                                        : null
+                                }
                             </View>
                             <View style={{ flex: 3, padding: 5, alignItems: 'center' }} >
                                 <View style={{ flex: 1, justifyContent: 'center' }} >
@@ -403,7 +404,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    user: state.user
+    user: state.user,
+    onlineList: state.online
 });
 
 export default connect(mapStateToProps, { fetchAllJoinedMatchAction })(BattleChatScene);

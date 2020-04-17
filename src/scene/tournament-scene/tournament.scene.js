@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Linking, ImageBackground, TouchableOpacity, Text, StyleSheet, ScrollView, Clipboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Linking, ImageBackground, TouchableOpacity, Text, StyleSheet, ScrollView, Clipboard, ActivityIndicator, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
+import { AccessNestedObject, DisplayPrice, ShareTournament } from '../../utils/common.util';
 import { ON_PRIMARY, PRIMARY_COLOR, TEXT_COLOR, GREY_3, GREY_2, GREY_BG, GREY_1, GREEN, YELLOW, RED } from '../../constant/color.constant';
 import ParticipentsCircle from '../../component/participents-circle/participents-circle.component';
 import moment from 'moment';
@@ -12,9 +12,15 @@ import { Title } from '../instruction-generator-scene/instruction-generator.scen
 import { GetTournamentStatus, GetUserGameId, IsJoined } from '../../utils/tournament.utils';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import NotifyService from '../../service/notify.service';
+import PrivateApi from '../../api/private.api';
 
 function TournamentScene(props) {
-    const tournament = props.navigation.getParam('tournament');
+    const tournamentId = props.navigation.getParam('id');
+    const initTournament = props.navigation.getParam('tournament');
+
+    const [tournament, setTournament] = useState(initTournament || {});
+    const [loading, setLoading] = useState(!!tournamentId);
+
     const gameId = AccessNestedObject(tournament, 'game._id');
     const date = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('MMM DD');
     const time = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('hh:mm A');
@@ -34,6 +40,10 @@ function TournamentScene(props) {
     const instructions = AccessNestedObject(tournament, 'game.instructions', []);
     const guide = AccessNestedObject(tournament, 'game.guide', []);
     const organizerName = AccessNestedObject(tournament, 'organizer.organizer_name', '')
+    const onlineList = AccessNestedObject(props, 'onlineList', {});
+
+    let perKill = 0;
+    const rankWise = {}
 
     function joinTournament() {
         if (!userGameIdResult.success) {
@@ -42,6 +52,36 @@ function TournamentScene(props) {
         }
 
         navigate('Checkout', { tournament })
+    }
+
+    useEffect(() => {
+        if (tournamentId) {
+            fetchTournaments(tournamentId);
+        }
+        return () => {
+
+        }
+    }, []);
+
+    async function fetchTournaments(id) {
+        setLoading(true);
+        const result = await PrivateApi.GetTournament(id);
+        setLoading(false);
+        if (result.success) {
+            setTournament(result.response);
+        }
+    }
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                <ActivityIndicator
+                    animating
+                    size="large"
+                    color={TEXT_COLOR}
+                />
+            </View>
+        )
     }
 
 
@@ -89,44 +129,65 @@ function TournamentScene(props) {
                             </View>
                             <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
                                 {
-                                    prize.map((item, index) => (
-                                        <View style={{ flex: 1 }} >
-                                            <View style={{ flex: 1, alignItems: positions[index] }} >
-                                                <Text style={{ fontSize: 12, color: GREY_3 }} >
-                                                    {item.key}
-                                                </Text>
+                                    prize.map((item, index) => {
+                                        if (item.key == "Per Kill") {
+                                            perKill = item.value;
+                                        }
+
+                                        return (
+                                            <View style={{ flex: 1 }} >
+                                                <View style={{ flex: 1, alignItems: positions[index] }} >
+                                                    <Text style={{ fontSize: 12, color: GREY_3 }} >
+                                                        {item.key}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ flex: 1, alignItems: positions[index] }} >
+                                                    <Text style={{ fontSize: 14, fontWeight: '500', color: TEXT_COLOR }} >
+                                                        {DisplayPrice(item.value)}
+                                                    </Text>
+                                                </View>
                                             </View>
-                                            <View style={{ flex: 1, alignItems: positions[index] }} >
-                                                <Text style={{ fontSize: 14, fontWeight: '500', color: TEXT_COLOR }} >
-                                                    {DisplayPrice(item.value)}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    ))
+                                        )
+                                    })
                                 }
                             </View>
-                            <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
-                                {
-                                    tournamentMeta.map((item, index) => (
-                                        <View style={{ flex: 1 }} >
-                                            <View style={{ flex: 1, alignItems: positions[index] }} >
-                                                <Text style={{ fontSize: 12, color: GREY_3 }} >
-                                                    {item.key}
-                                                </Text>
-                                            </View>
-                                            <View style={{ flex: 1, alignItems: positions[index] }} >
-                                                <Text style={{ fontSize: 14, fontWeight: '500', color: TEXT_COLOR }} >
-                                                    {item.value}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    ))
-                                }
-                            </View>
+                            {
+                                tournamentMeta.length ?
+                                    <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
+                                        {
+                                            tournamentMeta.map((item, index) => (
+                                                <View style={{ flex: 1 }} >
+                                                    <View style={{ flex: 1, alignItems: positions[index] }} >
+                                                        <Text style={{ fontSize: 12, color: GREY_3 }} >
+                                                            {item.key}
+                                                        </Text>
+                                                    </View>
+                                                    <View style={{ flex: 1, alignItems: positions[index] }} >
+                                                        <Text style={{ fontSize: 14, fontWeight: '500', color: TEXT_COLOR }} >
+                                                            {item.value}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            ))
+                                        }
+                                    </View> : null
+                            }
+                            {
+                                tournament.status != "completed" ?
+                                    <TouchableOpacity
+                                        style={{ padding: 10, margin: 5, borderWidth: 1, borderRadius: 5, flexDirection: 'row', borderColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center' }}
+                                        onPress={() => {
+                                            ShareTournament(tournament);
+                                        }}
+                                    >
+                                        <IconComponent font={'fontawesome'} size={16} focused tintColor={PRIMARY_COLOR} name={"share"} />
+                                        <Text style={{ color: PRIMARY_COLOR, fontSize: 12, marginRight: 5, marginLeft: 5 }} >Invite and Share</Text>
+                                    </TouchableOpacity> : null
+                            }
                         </View>
                     </View>
                     {
-                        (isJoined && roomId && roomPassword) ?
+                        (isJoined && roomId && roomPassword && tournament.status != "completed") ?
                             <View style={[styles.detailsContainer, { marginTop: 10 }]} >
                                 <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
                                     <Text style={{ fontSize: 14, fontWeight: '500', color: GREY_2 }} >
@@ -183,56 +244,59 @@ function TournamentScene(props) {
                                 </View>
                             </View> : null
                     }
-                    <View style={[styles.detailsContainer, { marginTop: 10 }]} >
-                        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
-                            <Text style={{ fontSize: 14, fontWeight: '500', color: GREY_2 }} >
-                                USER ID: {userGameIdResult.success ? userGameIdResult.response : 'NOT SET'}
-                            </Text>
-                        </View>
-                        {
-                            !userGameIdResult.success ?
-                                <View style={{ flex: 2, flexDirection: 'row' }} >
-                                    <View style={{ flex: 1, padding: 5 }} >
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                navigate('AddGameUserId', { gameId, getUserId: () => navigate('InstructionGenerator', { title: "How to get user id", steps: guide }) });
-                                            }}
-                                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                                            <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="pen" size={14} />
-                                            <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >ADD</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    {
-                                        guide.length ?
-                                            <View style={{ flex: 3, padding: 5 }} >
+                    {
+                        tournament.status != "completed" ?
+                            <View style={[styles.detailsContainer, { marginTop: 10 }]} >
+                                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
+                                    <Text style={{ fontSize: 14, fontWeight: '500', color: GREY_2 }} >
+                                        USER ID: {userGameIdResult.success ? userGameIdResult.response : 'NOT SET'}
+                                    </Text>
+                                </View>
+                                {
+                                    !userGameIdResult.success ?
+                                        <View style={{ flex: 2, flexDirection: 'row' }} >
+                                            <View style={{ flex: 1, padding: 5 }} >
                                                 <TouchableOpacity
-                                                    onPress={() => navigate('InstructionGenerator', { title: "How to get user id", steps: guide })}
-                                                    style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: ON_PRIMARY, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                                                    <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="user" size={14} />
-                                                    <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >HOW TO GET USER ID</Text>
+                                                    onPress={() => {
+                                                        navigate('AddGameUserId', { gameId, getUserId: () => navigate('InstructionGenerator', { title: "How to get user id", steps: guide }) });
+                                                    }}
+                                                    style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                                    <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="pen" size={14} />
+                                                    <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >ADD</Text>
                                                 </TouchableOpacity>
                                             </View>
-                                            : null
-                                    }
-                                </View> : null
-                        }
-                        {
-                            instructions.length ?
-                                <TouchableOpacity
-                                    onPress={() => navigate('InstructionGenerator', { title: "How to Play?", steps: instructions })}
-                                    style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', marginTop: 10, margintBottom: 10 }}>
-                                    <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name="list" size={14} />
-                                    <Text style={{ fontSize: 14, color: ON_PRIMARY, marginLeft: 10 }} >TOURNAMENT INSTRUCTIONS</Text>
-                                </TouchableOpacity> : null
-                        }
-                    </View>
+                                            {
+                                                guide.length ?
+                                                    <View style={{ flex: 3, padding: 5 }} >
+                                                        <TouchableOpacity
+                                                            onPress={() => navigate('InstructionGenerator', { title: "How to get user id", steps: guide })}
+                                                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: ON_PRIMARY, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                                            <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="user" size={14} />
+                                                            <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >HOW TO GET USER ID</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    : null
+                                            }
+                                        </View> : null
+                                }
+                                {
+                                    instructions.length ?
+                                        <TouchableOpacity
+                                            onPress={() => navigate('InstructionGenerator', { title: "How to Play?", steps: instructions })}
+                                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', marginTop: 10, margintBottom: 10 }}>
+                                            <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name="list" size={14} />
+                                            <Text style={{ fontSize: 14, color: ON_PRIMARY, marginLeft: 10 }} >TOURNAMENT INSTRUCTIONS</Text>
+                                        </TouchableOpacity> : null
+                                }
+                            </View> : null
+                    }
                     <View style={[styles.detailsContainer, { marginTop: 10, overflow: 'hidden', height: 390 }]} >
                         <Tabs>
                             {
                                 participents.length ?
-                                    <Leaderboard key="2" tabLabel="Participents" participents={participents} /> : null
+                                    <Leaderboard key="2" tabLabel="Participents" payoutReleased={tournament.payout_released} participents={participents} rankWise={rankWise} perKill={perKill} onlineList={onlineList} /> : null
                             }
-                            <PrizeTab key="0" tabLabel="Prize" rank={rank} />
+                            <PrizeTab key="0" tabLabel="Prize" rank={rank} rankWise={rankWise} />
                             {
                                 (message && tnc) ?
                                     <Instruction key="1" tabLabel="Organizer Instructions" message={message} tnc={tnc} /> : null
@@ -252,6 +316,10 @@ function TournamentScene(props) {
 }
 
 function RenderButton({ tournamentStatus, joinTournament, tournament, isJoined }) {
+    if (tournament.status == "completed") {
+        return null;
+    }
+
     if (isJoined) {
         return (
             <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
@@ -327,13 +395,14 @@ function RenderButton({ tournamentStatus, joinTournament, tournament, isJoined }
     }
 }
 
-function PrizeTab({ rank }) {
+function PrizeTab({ rank, rankWise }) {
     return (
         <ScrollView style={{ padding: 10 }} >
             {
-                rank.filter((item) => item.amount || item.props).map((item) => (
-                    <RankDetail rank={item.rank} amount={item.amount} props={item.props} />
-                ))
+                rank.filter((item) => item.amount || item.props).map((item) => {
+                    rankWise[item.rank] = item.amount;
+                    return <RankDetail rank={item.rank} amount={item.amount} props={item.props} />;
+                })
             }
             <Title>Note:</Title>
             <Text style={{ textAlign: 'left', fontSize: 14, paddingBottom: 5 }} >
@@ -396,41 +465,98 @@ function RankDetail({ rank, amount, props }) {
     )
 }
 
-function ParticipentItem({ participent = {} }) {
+function ParticipentItem({ participent = {}, perKill = 0, rankWise = {}, online }) {
+    const user = AccessNestedObject(participent, 'user', {});
+    const resultMeta = AccessNestedObject(participent, 'result_meta', {});
+    const kill = resultMeta.kills;
+    const rank = resultMeta.rank;
+    const amount = (rankWise[rank] || 0) + ((kill || 0) * (perKill || 0))
     return (
         <View style={{ borderBottomColor: GREY_BG, borderBottomWidth: 1, flexDirection: 'row', height: 50, }} >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                <IconComponent
-                    font="fontawesome"
-                    size={25}
-                    name="user-circle"
-                    focused
-                    tintColor={GREY_1}
-                />
+                {
+                    user.profile_image ?
+                        <>
+                            <Image source={{ uri: user.profile_image }} style={{ width: 25, height: 25 }} resizeMode="contain" />
+                            {
+                                online ?
+                                    <View style={{ width: 15, height: 15, backgroundColor: GREEN, borderRadius: 15, position: 'absolute', right: 5, bottom: 5, borderWidth: 1, borderColor: ON_PRIMARY }} />
+                                    : null
+                            }
+                        </>
+                        :
+                        <IconComponent
+                            font="fontawesome"
+                            size={25}
+                            name="user-circle"
+                            focused
+                            tintColor={GREY_1}
+                        />
+                }
             </View>
-            <View style={{ flex: 4, alignItems: 'flex-start', justifyContent: 'center' }} >
-                <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{AccessNestedObject(participent, 'user.name')}</Text>
+            <View style={{ flex: 3, alignItems: 'flex-start', justifyContent: 'center' }} >
+                <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{AccessNestedObject(user, 'name')}</Text>
             </View>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
-                <IconComponent
-                    font="fontawesome"
-                    size={25}
-                    name="mobile"
-                    focused
-                    tintColor={participent.online ? GREEN : YELLOW}
-                />
+            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                {
+                    rank ?
+                        <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >#{rank}</Text>
+                        : null
+                }
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                {
+                    kill ?
+                        <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{kill}</Text>
+                        : null
+                }
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{DisplayPrice(amount)}</Text>
             </View>
         </View>
     )
 }
 
-function Leaderboard({ participents = [] }) {
+function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, onlineList }) {
+
+    const list = participents.sort((first = {}, second = {}) => {
+        return Number(AccessNestedObject(second, 'result_meta.rank', 0)) - Number(AccessNestedObject(first, 'result_meta.rank', 0))
+    });
+
     return (
         <ScrollView style={{ padding: 10 }} >
+            <View style={{ flexDirection: 'row', height: 50 }} >
+                <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center' }} >
+
+                </View>
+                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                    <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Rank</Text>
+                </View>
+                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                    <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Kills</Text>
+                </View>
+                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                    <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Won</Text>
+                </View>
+            </View>
             {
-                participents.map((item) => (
-                    <ParticipentItem participent={item} />
+                list.map((item) => (
+                    <ParticipentItem participent={item} rankWise={rankWise} perKill={perKill} online={onlineList[AccessNestedObject(item, 'user._id')]} />
                 ))
+            }
+            {
+                payoutReleased ?
+                    <View style={{ flexDirection: 'row', height: 50, alignItems: 'center', justifyContent: 'center' }} >
+                        <IconComponent
+                            font="fontawesome"
+                            size={25}
+                            name="check-circle"
+                            focused
+                            tintColor={GREEN}
+                        />
+                        <Text style={{ color: GREEN, fontSize: 14, fontWeight: 'bold', paddingLeft: 10 }} >Payout Released</Text>
+                    </View> : null
             }
         </ScrollView>
     )
@@ -490,7 +616,8 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    user: state.user
+    user: state.user,
+    onlineList: state.online
 });
 
 export default connect(mapStateToProps)(TournamentScene);

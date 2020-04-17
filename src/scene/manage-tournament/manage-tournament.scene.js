@@ -101,7 +101,6 @@ class ManageTournamentScene extends PureComponent {
                 onPress: async () => {
                     this.setState({ loading: true });
                     const result = await PrivateApi.RolloutPayment(tournament._id);
-                    console.log('result', result)
                     this.setState({ loading: false });
                     if (result.success) {
                         callback();

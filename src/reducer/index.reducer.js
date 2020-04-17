@@ -7,6 +7,7 @@ import tournament from './tournament.reducer';
 import organizer from './organizer.reducer';
 import battle from './battle.reducer';
 import allJoinedMatch from './all-match.reducer';
+import online from './online.reducer';
 
 const rootReducer = combineReducers({
     user,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     tournament,
     organizer,
     battle,
-    allJoinedMatch
+    allJoinedMatch,
+    online
 });
 
 export default rootReducer;
