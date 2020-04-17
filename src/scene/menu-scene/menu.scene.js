@@ -9,7 +9,7 @@ import { setMode } from '../../action/mode.action';
 import { navigate, resetToScreen } from '../../service/navigation.service';
 import { HasRole, DisplayPrice } from '../../utils/common.util';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { PRIMARY_COLOR, GREEN, YELLOW, SECONDARY_COLOR, GREY_2, GREY_1, ON_PRIMARY } from '../../constant/color.constant';
+import { PRIMARY_COLOR, GREEN, YELLOW, SECONDARY_COLOR, GREY_2, GREY_1, ON_PRIMARY, GREY_3 } from '../../constant/color.constant';
 import IconComponent from '../../component/icon/icon.component';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 
@@ -74,22 +74,23 @@ class MenuScene extends Component {
                 >
                     <View style={{ width: widthPercentageToDP(100), height: 250, flexDirection: 'row', paddingBottom: 10, paddingTop: 10 }} >
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                            <View style={{ width: 100, height: 100, borderWidth: 5, borderColor: GREY_2, borderRadius: 100, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: GREY_1 }} >
-                                <FastImage resizeMode="contain" style={{ width: 80, height: 80 }} source={{ uri: this.getFullImage() }} />
+                            <View>
+                                <View style={{ width: 100, height: 100, borderWidth: 5, borderColor: GREY_2, borderRadius: 100, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: GREY_1 }} >
+                                    <FastImage resizeMode="contain" style={{ width: 80, height: 80 }} source={{ uri: this.getFullImage() }} />
+                                </View>
+                                <View style={{ width: 20, height: 20, backgroundColor: GREEN, borderRadius: 20, position: 'absolute', right: 10, bottom: 0, borderWidth: 4, borderColor: ON_PRIMARY, overflow: 'visible' }} />
                             </View>
+
                             <Text style={{ fontSize: 22, color: PRIMARY_COLOR, fontWeight: 'bold' }} >{user.name}</Text>
                             <Text style={{ fontSize: 16, color: SECONDARY_COLOR, fontWeight: '100' }} >@{user.username}</Text>
-                        </View>
-                        {/* <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'center' }} >
                             <View style={{ flexDirection: 'row', alignItems: 'center' }} >
-                                <Text style={{ fontSize: 18, color: PRIMARY_COLOR, marginRight: 5 }} >{user.mobile}</Text>
+                                <Text style={{ fontSize: 18, color: GREY_3, marginRight: 5 }} >+91 {user.mobile}</Text>
                                 <this.renderVerified success={user.is_mobile_verified} />
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }} >
-                                <Text style={{ fontSize: 18, color: PRIMARY_COLOR, marginRight: 5 }} >{user.email}</Text>
-                                <this.renderVerified success={true} />
+                                <Text style={{ fontSize: 18, color: GREY_3, marginRight: 5 }} >{user.email}</Text>
                             </View>
-                        </View> */}
+                        </View>
                     </View>
                     {
                         (HasRole(user, 'Organizer') || HasRole(user, 'Admin')) ?

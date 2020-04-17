@@ -202,11 +202,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
                         <View style={{ flex: 1, flexDirection: 'row', borderWidth: 1, borderColor: GREY_BG }} >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                                 <Image source={{ uri: AccessNestedObject(participent, 'user.profile_image') }} style={{ width: 40, height: 40, resizeMode: 'contain', borderRadius: 50 }} />
-                                {
-                                    onlineList[AccessNestedObject(participent, 'user._id')] ?
-                                        <View style={{ width: 15, height: 15, backgroundColor: GREEN, borderRadius: 15, position: 'absolute', right: 0, bottom: 10, borderWidth: 1, borderColor: ON_PRIMARY }} />
-                                        : null
-                                }
+                                <View style={{ width: 15, height: 15, backgroundColor: onlineList[AccessNestedObject(participent, 'user._id')] ? GREEN : YELLOW, borderRadius: 15, position: 'absolute', right: 0, bottom: 10, borderWidth: 1, borderColor: ON_PRIMARY }} />
                             </View>
                             <View style={{ flex: 3, padding: 5, alignItems: 'center' }} >
                                 <View style={{ flex: 1, justifyContent: 'center' }} >

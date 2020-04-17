@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { PureComponent, AppState } from 'react';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
@@ -25,6 +25,7 @@ class AppResolve extends PureComponent {
         this.userId = null;
     }
     componentDidMount = () => {
+        AppState.addEventListener('change', this._handleAppStateChange);
         setTimeout(this.getInitialNotification, 100);
         this.askPermission();
     }
@@ -80,6 +81,11 @@ class AppResolve extends PureComponent {
     }
 
     componentWillUnmount = () => {
+        AppState.removeEventListener('change', this._handleAppStateChange);
+        this.appClose();
+    }
+
+    appClose = () => {
         const userId = this.userId;
         if (userId) {
             socket.emit('offline', { userId });
@@ -87,6 +93,12 @@ class AppResolve extends PureComponent {
             socket.emit("disconnect");
         }
     }
+
+    _handleAppStateChange = (nextAppState) => {
+        if (nextAppState === 'inactive' || nextAppState === 'background') {
+            appClose();
+        }
+    };
 
     setFreshchatUser = (user) => {
         const freshchatUser = new FreshchatUser();
