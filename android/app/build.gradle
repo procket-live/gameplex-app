@@ -143,8 +143,8 @@ android {
         applicationId "com.gameplexapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
-        versionName "2.4.22"
+        versionCode 25
+        versionName "2.4.25"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
         vectorDrawables.useSupportLibrary = true

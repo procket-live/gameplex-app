@@ -13,6 +13,7 @@ import { GetTournamentStatus, GetUserGameId, IsJoined } from '../../utils/tourna
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import NotifyService from '../../service/notify.service';
 import PrivateApi from '../../api/private.api';
+import HeaderBattleComponent from '../../component/header/header-battle.component';
 
 function TournamentScene(props) {
     const tournamentId = props.navigation.getParam('id');
@@ -22,6 +23,8 @@ function TournamentScene(props) {
     const [loading, setLoading] = useState(!!tournamentId);
 
     const gameId = AccessNestedObject(tournament, 'game._id');
+    const gameTarget = AccessNestedObject(tournament, 'game.game_target');
+    const gameRoute = AccessNestedObject(tournament, 'game.game_route');
     const date = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('MMM DD');
     const time = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('hh:mm A');
     const name = AccessNestedObject(tournament, 'tournament_name');
@@ -41,17 +44,22 @@ function TournamentScene(props) {
     const guide = AccessNestedObject(tournament, 'game.guide', []);
     const organizerName = AccessNestedObject(tournament, 'organizer.organizer_name', '')
     const onlineList = AccessNestedObject(props, 'onlineList', {});
+    const endTime = AccessNestedObject(tournament, 'tournament_end_time');
 
     let perKill = 0;
     const rankWise = {}
 
     function joinTournament() {
-        if (!userGameIdResult.success) {
+        if (gameTarget != "native" && !userGameIdResult.success) {
             NotifyService.notify({ title: "Please add game user id first.", type: 'error' })
             return;
         }
 
-        navigate('Checkout', { tournament })
+        navigate('Checkout', {
+            tournament, callback: () => {
+                fetchTournaments(tournament._id)
+            }
+        })
     }
 
     useEffect(() => {
@@ -72,6 +80,16 @@ function TournamentScene(props) {
         }
     }
 
+    async function updateScore({ score }) {
+        const myParticipent = AccessNestedObject(tournament, 'participents', []).find((item = {}) => item.user._id == AccessNestedObject(props, 'user._id'));
+        setLoading(true);
+        const result = await PrivateApi.UpdateParticipentScore(myParticipent._id, score);
+        setLoading(false);
+        if (result.success) {
+            fetchTournaments(initTournament._id);
+        }
+    }
+
     if (loading) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
@@ -88,6 +106,9 @@ function TournamentScene(props) {
 
     return (
         <>
+            <HeaderBattleComponent
+                name={name}
+            />
             <ScrollView
                 style={styles.container}
                 contentContainerStyle={{ paddingBottom: 100 }}
@@ -108,25 +129,33 @@ function TournamentScene(props) {
                     <View style={styles.detailsContainer} >
                         <View style={styles.detailsContainer} >
                             <View style={{ paddingTop: 2, paddingBottom: 2 }} >
-                                <Text style={{ fontSize: 12, color: GREY_2 }} >
-                                    {`${date} - STARTING AT ${time}`}
-                                </Text>
+                                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                                    <Text style={{ fontSize: 12, color: GREY_2 }} >
+                                        {`${date} - STARTING AT ${time}`}
+                                    </Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', height: 35 }} >
-                                <IconComponent
-                                    font="fontawesome"
-                                    size={12}
-                                    name="cog"
-                                    tintColor={GREEN}
-                                    focused
-                                />
-                                <Text style={{ fontSize: 12, color: GREEN, paddingLeft: 3 }} >
-                                    Organizer
-                                </Text>
-                                <Text style={{ fontSize: 12, color: TEXT_COLOR, paddingLeft: 5, fontWeight: 'bold' }} >
-                                    {organizerName}
-                                </Text>
-                            </View>
+                            {
+                                organizerName ?
+                                    <>
+                                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', height: 35 }} >
+                                            <IconComponent
+                                                font="fontawesome"
+                                                size={12}
+                                                name="cog"
+                                                tintColor={GREEN}
+                                                focused
+                                            />
+                                            <Text style={{ fontSize: 12, color: GREEN, paddingLeft: 3 }} >
+                                                Organizer
+                                            </Text>
+                                            <Text style={{ fontSize: 12, color: TEXT_COLOR, paddingLeft: 5, fontWeight: 'bold' }} >
+                                                {organizerName}
+                                            </Text>
+                                        </View>
+                                    </> : null
+                            }
+
                             <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
                                 {
                                     prize.map((item, index) => {
@@ -151,6 +180,26 @@ function TournamentScene(props) {
                                     })
                                 }
                             </View>
+                            {
+                                tournament.status == "active" ?
+                                    <>
+                                        <View style={{ paddingTop: 2, paddingBottom: 2 }} >
+                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                                                <Text style={{ fontSize: 12, color: GREEN, fontWeight: 'bold' }} >
+                                                    Tournament will end in {moment(endTime).fromNow()}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={{ paddingTop: 2, paddingBottom: 2 }} >
+                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                                                <Text style={{ fontSize: 12, color: PRIMARY_COLOR, fontWeight: 'bold' }} >
+                                                    {moment(endTime).fromNow()} ranking will be created. According to score
+                                        ranking will be decided. Winning amount will be transferred to Wallet.
+                                    </Text>
+                                            </View>
+                                        </View>
+                                    </> : null
+                            }
                             {
                                 tournamentMeta.length ?
                                     <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
@@ -245,7 +294,7 @@ function TournamentScene(props) {
                             </View> : null
                     }
                     {
-                        tournament.status != "completed" ?
+                        (tournament.status != "completed" && gameTarget == "extern") ?
                             <View style={[styles.detailsContainer, { marginTop: 10 }]} >
                                 <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
                                     <Text style={{ fontSize: 14, fontWeight: '500', color: GREY_2 }} >
@@ -294,7 +343,7 @@ function TournamentScene(props) {
                         <Tabs>
                             {
                                 participents.length ?
-                                    <Leaderboard key="2" tabLabel="Participents" payoutReleased={tournament.payout_released} participents={participents} rankWise={rankWise} perKill={perKill} onlineList={onlineList} /> : null
+                                    <Leaderboard key="2" tabLabel="Participents" payoutReleased={tournament.payout_released} participents={participents} rankWise={rankWise} perKill={perKill} onlineList={onlineList} gameTarget={gameTarget} /> : null
                             }
                             <PrizeTab key="0" tabLabel="Prize" rank={rank} rankWise={rankWise} />
                             {
@@ -306,6 +355,9 @@ function TournamentScene(props) {
                 </View>
             </ScrollView>
             <RenderButton
+                updateScore={updateScore}
+                gameRoute={gameRoute}
+                gameTarget={gameTarget}
                 tournament={tournament}
                 tournamentStatus={tournamentStatus}
                 joinTournament={joinTournament}
@@ -315,12 +367,26 @@ function TournamentScene(props) {
     )
 }
 
-function RenderButton({ tournamentStatus, joinTournament, tournament, isJoined }) {
+function RenderButton({ tournamentStatus, joinTournament, tournament, isJoined, gameTarget, gameRoute, updateScore }) {
     if (tournament.status == "completed") {
         return null;
     }
 
     if (isJoined) {
+        if (gameTarget == "native") {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        navigate(gameRoute, { callback: updateScore });
+                    }}
+                    style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
+                    <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
+                        PLAY
+                    </Text>
+                </TouchableOpacity>
+            )
+        }
+
         return (
             <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
                 <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
@@ -465,11 +531,12 @@ function RankDetail({ rank, amount, props }) {
     )
 }
 
-function ParticipentItem({ participent = {}, perKill = 0, rankWise = {}, online }) {
+function ParticipentItem({ participent = {}, perKill = 0, rankWise = {}, online, gameTarget }) {
     const user = AccessNestedObject(participent, 'user', {});
     const resultMeta = AccessNestedObject(participent, 'result_meta', {});
     const kill = resultMeta.kills;
     const rank = resultMeta.rank;
+    const score = resultMeta.score;
     const amount = (rankWise[rank] || 0) + ((kill || 0) * (perKill || 0))
     return (
         <View style={{ borderBottomColor: GREY_BG, borderBottomWidth: 1, flexDirection: 'row', height: 50, }} >
@@ -494,31 +561,40 @@ function ParticipentItem({ participent = {}, perKill = 0, rankWise = {}, online 
                         />
                 }
             </View>
-            <View style={{ flex: 3, alignItems: 'flex-start', justifyContent: 'center' }} >
+            <View style={{ flex: 4, alignItems: 'flex-start', justifyContent: 'center' }} >
                 <Text style={{ color: TEXT_COLOR, fontSize: 18 }} >{AccessNestedObject(user, 'name')}</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                {
-                    rank ?
-                        <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >#{rank}</Text>
-                        : null
-                }
+                <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{rank ? `#${rank}` : '--'}</Text>
             </View>
-            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                {
-                    kill ?
-                        <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{kill}</Text>
-                        : null
-                }
-            </View>
-            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{DisplayPrice(amount)}</Text>
-            </View>
+            {
+                gameTarget == "native" ?
+                    <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                        <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{score || 0}</Text>
+                    </View> : null
+            }
+            {
+                gameTarget == "extern" ?
+                    <>
+                        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                            {
+                                kill ?
+                                    <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{kill}</Text>
+                                    : null
+                            }
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                            <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold' }} >{DisplayPrice(amount)}</Text>
+                        </View>
+                    </>
+                    : null
+            }
+
         </View>
     )
 }
 
-function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, onlineList }) {
+function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, onlineList, gameTarget }) {
 
     const list = participents.sort((first = {}, second = {}) => {
         return Number(AccessNestedObject(second, 'result_meta.rank', 0)) - Number(AccessNestedObject(first, 'result_meta.rank', 0))
@@ -533,16 +609,27 @@ function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, onl
                 <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                     <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Rank</Text>
                 </View>
-                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                    <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Kills</Text>
-                </View>
-                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                    <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Won</Text>
-                </View>
+                {
+                    gameTarget == "native" ?
+                        <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                            <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Score</Text>
+                        </View> : null
+                }
+                {
+                    gameTarget == "extern" ?
+                        <>
+                            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                                <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Kills</Text>
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                                <Text style={{ color: TEXT_COLOR, fontSize: 14, fontWeight: 'bold' }} >Won</Text>
+                            </View>
+                        </> : null
+                }
             </View>
             {
                 list.map((item) => (
-                    <ParticipentItem participent={item} rankWise={rankWise} perKill={perKill} online={onlineList[AccessNestedObject(item, 'user._id')]} />
+                    <ParticipentItem participent={item} rankWise={rankWise} perKill={perKill} online={onlineList[AccessNestedObject(item, 'user._id')]} gameTarget={gameTarget} />
                 ))
             }
             {

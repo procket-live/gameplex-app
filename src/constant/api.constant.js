@@ -32,3 +32,4 @@ export const ALL_COMPLETED_JOINED_BATTLE = `${BATTLE}/all-joined`
 export const ROLLOUT_PAYMENT = 'rollout-payment';
 export const BATTLE_PAYOUT = `${BATTLE}/payout`
 export const WITHDRAW = `${USER}/withdraw`;
+export const UPDATE_SCORE = `${TOURNAMENT}/${TOURNAMENT_PARTICIPENTS}/update-score`;

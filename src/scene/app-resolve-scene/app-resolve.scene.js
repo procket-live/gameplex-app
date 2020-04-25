@@ -1,10 +1,10 @@
-import { PureComponent, AppState } from 'react';
+import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
 import firebase from 'react-native-firebase';
-import { PermissionsAndroid } from 'react-native';
-import io from 'socket.io-client';
+import { PermissionsAndroid, AppState } from 'react-native';
+
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -17,7 +17,7 @@ import { fetchTournaments } from '../../action/tournament.action';
 import { fetchBattle } from '../../action/battle.action';
 import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
 import { GetSocket } from '../../utils/soket.utils';
-
+SplashScreen.hide();
 const socket = GetSocket();
 class AppResolve extends PureComponent {
     constructor(props) {
@@ -96,7 +96,7 @@ class AppResolve extends PureComponent {
 
     _handleAppStateChange = (nextAppState) => {
         if (nextAppState === 'inactive' || nextAppState === 'background') {
-            appClose();
+            this.appClose();
         }
     };
 

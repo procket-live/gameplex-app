@@ -46,6 +46,10 @@ const BattleSliderComponent = ({ battle = {} }) => {
                     if (battleItem.battle_type == "gather") {
                         navigate("TournamentList", { battle: battleItem })
                     }
+
+                    if (battleItem.battle_type == "tournament") {
+                        navigate("Battle", { battle: battleItem });
+                    }
                 }}
                 key={key}
             >
@@ -61,7 +65,7 @@ const BattleSliderComponent = ({ battle = {} }) => {
         <>
             <TitleComponent title="Games" />
             <FlatList
-                contentContainerStyle={{ marginLeft: widthPercentageToDP(5), alignItems: 'center', flexWrap: 'wrap', flexDirection: 'row' }}
+                contentContainerStyle={styles.contentContainer}
                 data={list}
                 showsHorizontalScrollIndicator={false}
                 renderItem={RenderCard}
@@ -80,6 +84,12 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         padding: widthPercentageToDP(2.5),
         margin: widthPercentageToDP(2.5),
+    },
+    contentContainer: {
+        marginLeft: widthPercentageToDP(5),
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        flexDirection: 'row'
     }
 });
 

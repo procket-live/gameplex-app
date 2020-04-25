@@ -4,4 +4,5 @@
     <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
     <string name="reactNativeCodePush_androidDeploymentKey" moduleConfig="true" translatable="false">yC19RGZee6kly3fWaB0LFLbXll4kv4SpHTxvl</string>
     <string name="truecaller_appkey">7L0yedd66a3e5b0074a52bae70ef159aa485b</string>
+    <string name="freshchat_file_provider_authority">com.gameplex.provider</string>
 </resources>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import { Freshchat, ConversationOptions } from 'react-native-freshchat-sdk';
@@ -12,6 +12,9 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { PRIMARY_COLOR, GREEN, YELLOW, SECONDARY_COLOR, GREY_2, GREY_1, ON_PRIMARY, GREY_3 } from '../../constant/color.constant';
 import IconComponent from '../../component/icon/icon.component';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+import DiamondIcon from '../../assets/svg/diamong';
+import TicketIcon from '../../assets/svg/ticket';
+import CoinIcon from '../../assets/svg/coin';
 
 class MenuScene extends Component {
     organizer = () => {
@@ -111,53 +114,48 @@ class MenuScene extends Component {
                             </>
                             : null
                     }
-                    <View style={{ width: widthPercentageToDP(95), height: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: '#10ac84', borderRadius: 10, flexDirection: 'row' }} >
+                    <TouchableOpacity
+                        onPress={() => navigate('WalletScene')}
+                        style={{ width: widthPercentageToDP(95), height: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: '#10ac84', borderRadius: 10, flexDirection: 'row' }} >
                         <View style={{ flex: 1 }} >
-                            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }} >
-                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold' }} >
-                                    {DisplayPrice(user.wallet_cash_balance)}
+                            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
+                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
+                                    {user.wallet_cash_balance}
                                 </Text>
+                                <DiamondIcon width={15} height={15} />
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
-                                <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Cash Amount</Text>
+                                <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Diamonds</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1 }} >
-                            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }} >
-                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold' }} >
-                                    {DisplayPrice(user.wallet_bonous_balance)}
+                            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
+                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
+                                    {(user.wallet_bonous_balance)}
                                 </Text>
+                                <TicketIcon width={20} height={20} />
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
-                                <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Bonous Amount</Text>
+                                <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Ticket</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1 }} >
-                            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }} >
-                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold' }} >
-                                    {DisplayPrice(user.wallet_win_balance)}
+                            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
+                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
+                                    {(user.wallet_win_balance)}
                                 </Text>
+                                <CoinIcon width={20} height={20} />
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
-                                <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Win Balance</Text>
+                                <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Win Coin</Text>
                             </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                     <View style={{ height: 20 }} />
                     <View style={{ width: widthPercentageToDP(95), height: 80, flexDirection: 'row', justifyContent: 'space-between' }} >
                         <TouchableNativeFeedback
-                            onPress={this.navigateToJoinedTournaments}
-                            style={{ width: widthPercentageToDP(45), height: 80, alignItems: 'center', justifyContent: 'center', backgroundColor: '#ee5253', borderRadius: 10 }} >
-                            <>
-                                <IconComponent size={18} font="fontawesome" focused tintColor={ON_PRIMARY} name={"list"} />
-                                <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingTop: 10 }} >
-                                    Tournaments
-                                </Text>
-                            </>
-                        </TouchableNativeFeedback>
-                        <TouchableNativeFeedback
                             onPress={this.showFAQ}
-                            style={{ width: widthPercentageToDP(45), height: 80, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0abde3', borderRadius: 10 }} >
+                            style={{ width: widthPercentageToDP(94), height: 80, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0abde3', borderRadius: 10 }} >
                             <>
                                 <IconComponent size={18} font="fontawesome" focused tintColor={ON_PRIMARY} name={"question-circle"} />
                                 <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingTop: 10 }} >

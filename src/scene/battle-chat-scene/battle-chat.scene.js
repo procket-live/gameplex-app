@@ -5,8 +5,11 @@ import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import useAppState from 'react-native-appstate-hook';
 import OpenApp from 'react-native-open-app';
+import AppLink from 'react-native-app-link';
+import { AppInstalledChecker } from 'react-native-check-app-install';
 import ImagePicker from 'react-native-image-crop-picker';
 import firebase from 'react-native-firebase';
+// import RNTesseractOcr from 'react-native-tesseract-ocr';
 
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import HeaderBattleComponent from '../../component/header/header-battle.component';
@@ -33,6 +36,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
     const [loading, setLoading] = useState(false);
     const [reconnectId, setReconnectId] = useState(Math.random());
     const [loadingText, setLoadingText] = useState('Loading ...');
+    const [isAppInstalled, setIsAppInstalled] = useState(false);
 
     const headerTitle = AccessNestedObject(battleQueue, 'match.name');
     const headerIcon = AccessNestedObject(battleQueue, 'tournament.game.thumbnail');
@@ -42,6 +46,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
     const participents = AccessNestedObject(battleQueue, 'tournament.participents', []);
     const completed = AccessNestedObject(battleQueue, 'completed', false);
     const scorecardUploaded = !!AccessNestedObject(battleQueue, 'scorecard.image_link');
+    const createdAt = AccessNestedObject(battleQueue, 'created_at');
     const noOpponent = participents.length == 1;
 
     const { appState } = useAppState({
@@ -64,6 +69,8 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
                 const battleQueue = result.response;
                 setRoomId(battleQueue.chat_room);
                 setBattleQueue(battleQueue);
+                const playStoreId = AccessNestedObject(battleQueue, 'tournament.game.packageId');
+                AppInstalledChecker.isAppInstalledAndroid(playStoreId).then(setIsAppInstalled);
             }
         }
     }
@@ -186,14 +193,21 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
             <HeaderBattleComponent
                 name={headerTitle}
                 icon={headerIcon}
-                actionText="Play"
-                actionIcon={"play-circle"}
+                actionText={isAppInstalled ? "Play" : "Install"}
+                actionIcon={isAppInstalled ? "play-circle" : "download"}
                 action={() => {
-                    const config = {
-                        playStoreId: AccessNestedObject(battleQueue, 'tournament.game.packageId'),
-                    };
+                    const playStoreId = AccessNestedObject(battleQueue, 'tournament.game.packageId');
 
-                    OpenApp.openInStore(config);
+                    if (isAppInstalled) {
+                        AppLink.maybeOpenURL('', {
+                            playStoreId: playStoreId,
+                        })
+                    } else {
+                        OpenApp.openInStore({
+                            playStoreId: playStoreId
+                        })
+                    }
+
                 }}
             />
             <View style={{ flexDirection: 'row', height: 70 }} >
@@ -341,6 +355,11 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
                     </View>
                     : null
             }
+            <View style={{ height: 40, justifyContent: 'center', alignItems: 'center' }} >
+                <Text style={{ color: TEXT_COLOR, padding: 5, fontWeight: 'bold', fontSize: 12 }} >
+                    This room will expire {moment(createdAt).add(24, 'hours').fromNow()}. And joining amount will be refunded to wallet if match is not completed.
+                </Text>
+            </View>
 
             <GiftedChat
                 style={{ height: 400 }}
@@ -359,7 +378,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
                         />
                     </View>
                 )}
-                renderInputToolbar={((participents.length == 1) || completed) ? () => null : undefined}
+                // renderInputToolbar={((participents.length == 1) || completed) ? () => null : undefined}
                 onPressActionButton={uploadImage}
             />
             <Spinner

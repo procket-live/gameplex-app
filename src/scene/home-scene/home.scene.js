@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import codepush from 'react-native-code-push';
 import Analytics from 'appcenter-analytics';
+import { showNavigationBar } from 'react-native-navigation-bar-color';
 
 import OfferSlider from '../../component/offer-slider/offer-slider.component';
 import TournamentSlider from '../tournament-slider/tournament-slider.component';
@@ -20,6 +21,7 @@ function HomeScene({ user, navigation, CheckUpdate }) {
     const [offers, setOffers] = React.useState([{ loading: true }]);
 
     useEffect(() => {
+        showNavigationBar();
         fetchOffers();
         codepush.checkForUpdate();
         Analytics.trackEvent("My custom event");

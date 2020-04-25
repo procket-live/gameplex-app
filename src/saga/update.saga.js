@@ -6,8 +6,6 @@ import compareVersion from 'compare-versions';
 import APP_CONFIG from '../config/app.config';
 import { navigate } from '../service/navigation.service';
 import { AccessNestedObject } from '../utils/common.util';
-import { Alert } from 'react-native';
-import AppUpdate from 'react-native-appupdate';
 
 function* updateSaga() {
     const result = yield call(PublicApi.GetLatestApp);

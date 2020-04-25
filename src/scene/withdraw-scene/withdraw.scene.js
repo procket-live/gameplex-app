@@ -10,6 +10,7 @@ import { DisplayPrice } from '../../utils/common.util';
 import PrivateApi from '../../api/private.api';
 import NotifyService from '../../service/notify.service';
 import { refreshUser } from '../../action/user.action';
+import HeaderBattleComponent from '../../component/header/header-battle.component';
 
 function WithdrawScene({ user, refreshUserObject }) {
     const [amount, setAmount] = useState('');
@@ -45,35 +46,40 @@ function WithdrawScene({ user, refreshUserObject }) {
     }
 
     return (
-        <ScrollView
-            style={styles.container}
-        >
-            <View style={{ height: 100 }} >
-                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
-                    <Text style={styles.fontMini} >Current balance</Text>
+        <>
+            <HeaderBattleComponent
+                name={"Withdraw win amount"}
+            />
+            <ScrollView
+                style={styles.container}
+            >
+                <View style={{ height: 100 }} >
+                    <View style={{ paddingTop: 5, paddingBottom: 5 }} >
+                        <Text style={styles.fontMini} >Current balance</Text>
+                    </View>
+                    <View style={{ paddingTop: 5, paddingBottom: 5 }} >
+                        <Text style={styles.fontH1} >Available: {DisplayPrice(walletBalance || 0)}</Text>
+                    </View>
                 </View>
-                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
-                    <Text style={styles.fontH1} >Available: {DisplayPrice(walletBalance || 0)}</Text>
+                <View style={{ height: 100 }} >
+                    <TextInput
+                        label="Amount"
+                        keyboardType="number-pad"
+                        value={amount}
+                        onChangeText={onChangeText}
+                    />
+                    <Text style={[styles.fontMini, { color: RED }]} >{error}</Text>
                 </View>
-            </View>
-            <View style={{ height: 100 }} >
-                <TextInput
-                    label="Amount"
-                    keyboardType="number-pad"
-                    value={amount}
-                    onChangeText={onChangeText}
-                />
-                <Text style={[styles.fontMini, { color: RED }]} >{error}</Text>
-            </View>
-            <View style={styles.buttonContainer} >
-                <Button
-                    loading={loading}
-                    text="Withdraw"
-                    disabled={loading || !isDisabled()}
-                    onPress={withdraw}
-                />
-            </View>
-        </ScrollView>
+                <View style={styles.buttonContainer} >
+                    <Button
+                        loading={loading}
+                        text="Withdraw"
+                        disabled={loading || !isDisabled()}
+                        onPress={withdraw}
+                    />
+                </View>
+            </ScrollView>
+        </>
     )
 }
 

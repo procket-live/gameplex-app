@@ -10,6 +10,7 @@ import { DisplayPrice, AccessNestedObject } from '../../utils/common.util';
 import moment from 'moment';
 import { RazorpayIcon } from '../../config/image.config';
 import WithdrawRequestCard from '../../component/withdraw-request-component/withdraw-request.component';
+import HeaderBattleComponent from '../../component/header/header-battle.component';
 
 function TransactionsScene(props) {
     const [transactions, setTransactions] = React.useState([]);
@@ -150,35 +151,40 @@ function TransactionsScene(props) {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: GREY_BG }}>
-            <Tabs >
-                <Box tabLabel="Paid"  >
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        style={{ flex: 1 }}
-                        renderItem={RenderCard}
-                        data={transactions}
-                    />
-                </Box>
-                <Box tabLabel="Wallet Statements"  >
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        style={{ flex: 1 }}
-                        renderItem={RenderWalletTransaction}
-                        data={walletStatements}
-                    />
-                </Box>
-                <Box tabLabel="Withdrawal"  >
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        style={{ flex: 1 }}
-                        renderItem={WithdrawRequestCard}
-                        data={withdrawals}
-                    />
-                </Box>
-                <View tabLabel="" style={{ flex: 1 }}  ></View>
-            </Tabs>
-        </View>
+        <>
+            <HeaderBattleComponent
+                name={"Transactions"}
+            />
+            <View style={{ flex: 1, backgroundColor: GREY_BG }}>
+                <Tabs >
+                    <Box tabLabel="Paid"  >
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            style={{ flex: 1 }}
+                            renderItem={RenderCard}
+                            data={transactions}
+                        />
+                    </Box>
+                    <Box tabLabel="Wallet Statements"  >
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            style={{ flex: 1 }}
+                            renderItem={RenderWalletTransaction}
+                            data={walletStatements}
+                        />
+                    </Box>
+                    <Box tabLabel="Withdrawal"  >
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            style={{ flex: 1 }}
+                            renderItem={WithdrawRequestCard}
+                            data={withdrawals}
+                        />
+                    </Box>
+                    <View tabLabel="" style={{ flex: 1 }}  ></View>
+                </Tabs>
+            </View>
+        </>
     )
 }
 

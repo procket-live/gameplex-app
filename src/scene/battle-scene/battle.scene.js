@@ -15,6 +15,7 @@ import PrivateApi from '../../api/private.api';
 import { navigate } from '../../service/navigation.service';
 import Tabs from '../../component/tabs/tabs.component';
 import JoinBattleComponent from '../../component/join-battle-component/join-battle.component';
+import TournamentWideComponent from '../../component/tournament-wide-card/tournament-wide-card.component';
 import { refreshUser } from '../../action/user.action';
 
 
@@ -26,6 +27,7 @@ function BattleScene({ navigation, user, refreshUser }) {
     const game = AccessNestedObject(battle, 'game', {});
     const offers = AccessNestedObject(battle, 'offers', []);
     const matchList = AccessNestedObject(battle, 'match_list', []);
+    const tournamentList = AccessNestedObject(battle, 'tournament_list', []);
     const [match, setMatch] = useState(null);
     let bottomSheetRef = React.createRef()
     let fall = new Animated.Value(1)
@@ -113,6 +115,10 @@ function BattleScene({ navigation, user, refreshUser }) {
         bottomSheetRef.current?.snapTo(1);
     }
 
+    function joinTournament(tournament) {
+
+    }
+
     function proceedToChat(queueEntry) {
         navigate('BattleChat', { battleQueue: queueEntry });
     }
@@ -152,13 +158,26 @@ function BattleScene({ navigation, user, refreshUser }) {
                 <OfferSlider height={100} offers={offers} />
             </View>
             <Tabs>
-                <FlatList
-                    tabLabel="Select a Battle"
-                    style={{ marginTop: 10 }}
-                    contentContainerStyle={{ alignItems: 'center' }}
-                    data={matchList}
-                    renderItem={({ item }) => <BattleCard item={item} joinMatch={joinMatch} />}
-                />
+                {
+                    matchList.length ?
+                        <FlatList
+                            tabLabel="Select a Battle"
+                            style={{ marginTop: 10 }}
+                            contentContainerStyle={{ alignItems: 'center' }}
+                            data={matchList}
+                            renderItem={({ item }) => <BattleCard item={item} joinMatch={joinMatch} />}
+                        /> : null
+                }
+                {
+                    tournamentList.length ?
+                        <FlatList
+                            tabLabel="Tournaments"
+                            style={{ marginTop: 10 }}
+                            contentContainerStyle={{ alignItems: 'center' }}
+                            data={tournamentList}
+                            renderItem={({ item }) => <TournamentWideComponent item={item} joinTournament={joinTournament} />}
+                        /> : null
+                }
                 <FlatList
                     tabLabel={"Joined Battle" + `${joinedBattle.length ? " •" : ""}`}
                     style={{ marginTop: 10 }}

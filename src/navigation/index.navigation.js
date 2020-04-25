@@ -21,7 +21,7 @@ import MenuScene from '../scene/menu-scene/menu.scene';
 import TournamentList from '../scene/tournament-list-scene/tournament-list.scene';
 import DashboardScene from '../scene/dashboard-scene/dashboard.scene';
 import AddTournamentScene from '../scene/add-tournement/add-tournament.scene';
-import { GREY_BG, PRIMARY_COLOR, TEXT_COLOR, GREY_2, GREY_3, SECONDARY_COLOR } from '../constant/color.constant';
+import { GREY_BG, PRIMARY_COLOR, TEXT_COLOR, GREY_2, GREY_3, SECONDARY_COLOR, ON_PRIMARY } from '../constant/color.constant';
 import DashboardTournamentListScene from '../scene/dashboard-tournament-list/dashboard-tournament-list.scene';
 import ManageTournamentScene from '../scene/manage-tournament/manage-tournament.scene';
 import AddTournamentGeneralDetailScene from '../scene/add-tournament-general-detail-scene/add-tournament-general-detail.scene';
@@ -50,6 +50,10 @@ import UpdateScene from '../scene/update-scene/update.scene';
 import ManageCompletedMatchScene from '../scene/manage-completed-match-scene/manage-completed-match.scene';
 import WithdrawScene from '../scene/withdraw-scene/withdraw.scene';
 import PendingWithdrawScene from '../scene/pending-withdraw-scene/pending-withdraw.scene';
+import FlappyBirdScene from '../scene/flappy-bird-scene/flappy-bird.scene';
+
+import EsportIcon from '../assets/svg/esports';
+import HighScoreScene from '../scene/high-score-scene/high-score.scene';
 
 const headerStyle = {
     elevation: 0,
@@ -84,6 +88,21 @@ const WalletStack = createStackNavigator({
     {
         navigationOptions: {
             tabBarIcon: ({ focused, tintColor }) => <IconComponent font="fontawesome" focused={focused} tintColor={tintColor} name="wallet" />,
+        }
+    }
+);
+
+const TournamentStack = createStackNavigator({
+    Wallet: {
+        screen: JoinedTournamentScene,
+        navigationOptions: {
+            header: null
+        }
+    }
+},
+    {
+        navigationOptions: {
+            tabBarIcon: ({ focused, tintColor }) => <IconComponent focused={focused} tintColor={tintColor} font="fontawesome" name="list" />,
         }
     }
 );
@@ -168,7 +187,7 @@ const FantasyMyContest = createStackNavigator({
 const TabsNavigator = createBottomTabNavigator(
     {
         Home: HomeStack,
-        Wallet: WalletStack,
+        Tournaments: TournamentStack,
         Notifications: NotificationStack,
         Profile: MenuStack,
     }, {
@@ -178,15 +197,15 @@ const TabsNavigator = createBottomTabNavigator(
         keyboardHidesTabBar: true,
         labelStyle: { display: 'none' },
     },
-    // tabBarComponent: props => (
-    //     <TabBar
-    //         shadow={true}
-    //         tabBarBackground="#fff"
-    //         activeColors="#fff" // or activeColors={'#e6b580'}
-    //         activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
-    //         {...props}
-    //     />
-    // )
+    tabBarComponent: props => (
+        <TabBar
+            shadow={true}
+            tabBarBackground="#fff"
+            activeColors="#fff" // or activeColors={'#e6b580'}
+            activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
+            {...props}
+        />
+    )
 })
 
 const FantasyTabsNavigator = createBottomTabNavigator(
@@ -212,6 +231,18 @@ const FantasyTabsNavigator = createBottomTabNavigator(
 const RootNavigator = createStackNavigator({
     Empty: {
         screen: () => null,
+        navigationOptions: {
+            header: null
+        }
+    },
+    HighScore: {
+        screen: HighScoreScene,
+        navigationOptions: {
+            header: null
+        }
+    },
+    WalletScene: {
+        screen: WalletScene,
         navigationOptions: {
             header: null
         }
@@ -255,15 +286,13 @@ const RootNavigator = createStackNavigator({
     Transactions: {
         screen: TransactionsScene,
         navigationOptions: {
-            title: "Transactions",
-            headerStyle
+            header: null
         }
     },
     AddMoney: {
         screen: AddMoneyScene,
         navigationOptions: {
-            title: "Add money",
-            headerStyle
+            header: null
         }
     },
     TournamentList: {
@@ -332,8 +361,7 @@ const RootNavigator = createStackNavigator({
     Tournament: {
         screen: TournamentScene,
         navigationOptions: {
-            title: "Tournament",
-            headerStyle
+            header: null
         }
     },
     InstructionGenerator: {
@@ -401,8 +429,7 @@ const RootNavigator = createStackNavigator({
     TNC: {
         screen: TNCScene,
         navigationOptions: {
-            title: "Terms & Conditions",
-            headerStyle,
+            header: null
         }
     },
     Game: {
@@ -415,8 +442,7 @@ const RootNavigator = createStackNavigator({
     BankDetail: {
         screen: BankDetailScene,
         navigationOptions: {
-            headerStyle,
-
+            header: null
         }
     },
     Update: {
@@ -435,15 +461,19 @@ const RootNavigator = createStackNavigator({
     Withdraw: {
         screen: WithdrawScene,
         navigationOptions: {
-            title: "Withdraw Amount",
-            headerStyle,
+            header: null
         }
     },
     PendingWithdrawScene: {
         screen: PendingWithdrawScene,
         navigationOptions: {
-            title: "Pending Withdraw Requests",
-            headerStyle,
+            header: null
+        }
+    },
+    FlappyBird: {
+        screen: FlappyBirdScene,
+        navigationOptions: {
+            header: null
         }
     }
 }, {

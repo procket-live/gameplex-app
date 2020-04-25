@@ -5,7 +5,7 @@ const DEFAULT_STATE = [];
 function onlineReducer(state = DEFAULT_STATE, action) {
     switch (action.type) {
         case SET_ONLINE:
-            return Object.assign(state, action.payload);
+            return action.payload;
         default:
             return state;
     }

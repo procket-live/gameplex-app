@@ -9,6 +9,7 @@ import { AccessNestedObject } from '../../utils/common.util';
 import PrivateApi from '../../api/private.api';
 import NotifyService from '../../service/notify.service';
 import IconComponent from '../../component/icon/icon.component';
+import HeaderBattleComponent from '../../component/header/header-battle.component';
 
 function BankDetailScene() {
     const [accountNumber, setAccountNumber] = useState('');
@@ -63,57 +64,62 @@ function BankDetailScene() {
     }
 
     return (
-        <ScrollView
-            style={styles.container}
-        >
-            <View style={{ height: 100 }} >
-                <TextInput
-                    editable={!saved}
-                    label="Account number"
-                    secure
-                    keyboardType="number-pad"
-                    value={accountNumber}
-                    onChangeText={setAccountNumber}
-                    RenderRight={saved ? RenderSuccess : null}
-                />
-            </View>
-            <View style={{ height: 100 }} >
-                <TextInput
-                    editable={!saved}
-                    label="Repeat account number"
-                    keyboardType="number-pad"
-                    value={repeatAccountNumber}
-                    onChangeText={setRepeatAccountNumber}
-                    RenderRight={saved ? RenderSuccess : null}
-                />
-            </View>
-            <View style={{ height: 100 }} >
-                <TextInput
-                    editable={!saved}
-                    label="IFSC"
-                    value={ifsc}
-                    onChangeText={setIfsc}
-                    RenderRight={saved ? RenderSuccess : null}
-                />
-            </View>
-            <View style={{ height: 100 }} >
-                <TextInput
-                    editable={!saved}
-                    label="Name"
-                    value={name}
-                    onChangeText={setName}
-                    RenderRight={saved ? RenderSuccess : null}
-                />
-            </View>
-            <View style={styles.buttonContainer} >
-                <Button
-                    loading={loading}
-                    disabled={saved || isDisabled()}
-                    text={saved ? 'SAVED' : 'SAVE'}
-                    onPress={saveBankDetails}
-                />
-            </View>
-        </ScrollView>
+        <>
+            <HeaderBattleComponent
+                name={"Bank Details"}
+            />
+            <ScrollView
+                style={styles.container}
+            >
+                <View style={{ height: 100 }} >
+                    <TextInput
+                        editable={!saved}
+                        label="Account number"
+                        secure
+                        keyboardType="number-pad"
+                        value={accountNumber}
+                        onChangeText={setAccountNumber}
+                        RenderRight={saved ? RenderSuccess : null}
+                    />
+                </View>
+                <View style={{ height: 100 }} >
+                    <TextInput
+                        editable={!saved}
+                        label="Repeat account number"
+                        keyboardType="number-pad"
+                        value={repeatAccountNumber}
+                        onChangeText={setRepeatAccountNumber}
+                        RenderRight={saved ? RenderSuccess : null}
+                    />
+                </View>
+                <View style={{ height: 100 }} >
+                    <TextInput
+                        editable={!saved}
+                        label="IFSC"
+                        value={ifsc}
+                        onChangeText={setIfsc}
+                        RenderRight={saved ? RenderSuccess : null}
+                    />
+                </View>
+                <View style={{ height: 100 }} >
+                    <TextInput
+                        editable={!saved}
+                        label="Name"
+                        value={name}
+                        onChangeText={setName}
+                        RenderRight={saved ? RenderSuccess : null}
+                    />
+                </View>
+                <View style={styles.buttonContainer} >
+                    <Button
+                        loading={loading}
+                        disabled={saved || isDisabled()}
+                        text={saved ? 'SAVED' : 'SAVE'}
+                        onPress={saveBankDetails}
+                    />
+                </View>
+            </ScrollView>
+        </>
     )
 }
 

@@ -12,6 +12,9 @@ import { setUserAction } from '../../action/user.action';
 import NotifyService from '../../service/notify.service';
 import { navigatePop } from '../../service/navigation.service';
 import { TOKEN } from '../../constant/app.constant';
+import HeaderBattleComponent from '../../component/header/header-battle.component';
+import DiamondIcon from '../../assets/svg/diamong';
+import { DisplayPrice } from '../../utils/common.util';
 
 class AddMoneyScene extends Component {
     constructor(props) {
@@ -73,8 +76,16 @@ class AddMoneyScene extends Component {
     }
 
     initiatePayment = () => {
-        this.setLoading(true);
-        AddAmountToWallet(this.state.amount, this.props.user, this.paymentResponse)
+        if (this.state.amount > 0) {
+            this.setLoading(true);
+            AddAmountToWallet(this.state.amount, this.props.user, this.paymentResponse)
+        } else {
+            NotifyService.notify({
+                title: "Error",
+                message: "Please enter amount",
+                type: "error"
+            })
+        }
     }
 
     setLoading = (success) => {
@@ -104,76 +115,87 @@ class AddMoneyScene extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.amountContainer} >
-                    <Text style={styles.amountText} >₹{this.state.amount}</Text>
-                </View>
-                <View style={{ alignItems: 'center' }} >
-                    <Text style={{ fontWeight: '300', fontSize: 12, color: TEXT_COLOR, marginTop: 5, marginBottom: 5 }} >
-                        Add money
-                    </Text>
-                </View>
-
-                <View style={styles.keybordContainer} >
-                    <View style={styles.row}>
-                        <TouchableOpacity
-                            onPress={this.pressOne}
-                            style={styles.button}
-                        >
-                            <Text style={styles.buttonText} >1</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressTwo} style={styles.button} >
-                            <Text style={styles.buttonText} >2</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressThree} style={styles.button} >
-                            <Text style={styles.buttonText} >3</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.row}>
-                        <TouchableOpacity onPress={this.pressFour} style={styles.button} >
-                            <Text style={styles.buttonText} >4</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressFive} style={styles.button} >
-                            <Text style={styles.buttonText} >5</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressSix} style={styles.button} >
-                            <Text style={styles.buttonText} >6</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.row}>
-                        <TouchableOpacity style={styles.button} >
-                            <Text onPress={this.pressSeven} style={styles.buttonText} >7</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressEight} style={styles.button} >
-                            <Text style={styles.buttonText} >8</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressNine} style={styles.button} >
-                            <Text style={styles.buttonText} >9</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.row}>
-                        <TouchableOpacity style={styles.button} >
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={this.pressZero} style={styles.button} >
-                            <Text style={styles.buttonText} >0</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={this.pressRemove} >
-                            <IconComponent name="left" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                <BottomStickButton
-                    onPress={this.initiatePayment}
-                    text="ADD MONEY"
+            <>
+                <HeaderBattleComponent
+                    name={"Add diamonds"}
                 />
+                <View style={styles.container}>
+                    <View style={styles.amountContainer} >
+                        <Text style={styles.amountText} >{this.state.amount}</Text>
+                        <DiamondIcon width={25} height={25} />
+                    </View>
+                    <View style={{ alignItems: 'center' }} >
+                        <Text style={{ fontWeight: '300', fontSize: 12, color: TEXT_COLOR, marginTop: 5, marginBottom: 5 }} >
+                            Add diamonds to wallet
+                        </Text>
+                        {
+                            this.state.amount > 0 ?
+                                < Text style={{ fontWeight: '300', fontSize: 12, color: TEXT_COLOR, marginTop: 5, marginBottom: 5 }} >
+                                    You have to pay {DisplayPrice(this.state.amount)}
+                                </Text> : null
+                        }
+                    </View>
+                    <View style={styles.keybordContainer} >
+                        <View style={styles.row}>
+                            <TouchableOpacity
+                                onPress={this.pressOne}
+                                style={styles.button}
+                            >
+                                <Text style={styles.buttonText} >1</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressTwo} style={styles.button} >
+                                <Text style={styles.buttonText} >2</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressThree} style={styles.button} >
+                                <Text style={styles.buttonText} >3</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.row}>
+                            <TouchableOpacity onPress={this.pressFour} style={styles.button} >
+                                <Text style={styles.buttonText} >4</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressFive} style={styles.button} >
+                                <Text style={styles.buttonText} >5</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressSix} style={styles.button} >
+                                <Text style={styles.buttonText} >6</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.row}>
+                            <TouchableOpacity style={styles.button} >
+                                <Text onPress={this.pressSeven} style={styles.buttonText} >7</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressEight} style={styles.button} >
+                                <Text style={styles.buttonText} >8</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressNine} style={styles.button} >
+                                <Text style={styles.buttonText} >9</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.row}>
+                            <TouchableOpacity style={styles.button} >
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pressZero} style={styles.button} >
+                                <Text style={styles.buttonText} >0</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} onPress={this.pressRemove} >
+                                <IconComponent name="left" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
-                <Spinner
-                    visible={this.state.loading}
-                    textContent={'Loading...'}
-                    textStyle={{ color: TEXT_COLOR }}
-                />
-            </View>
+                    <BottomStickButton
+                        onPress={this.initiatePayment}
+                        text={`Pay ${DisplayPrice(this.state.amount)}`}
+                    />
+
+                    <Spinner
+                        visible={this.state.loading}
+                        textContent={'Loading...'}
+                        textStyle={{ color: TEXT_COLOR }}
+                    />
+                </View>
+            </>
         );
     }
 }
@@ -186,12 +208,14 @@ const styles = StyleSheet.create({
     amountContainer: {
         height: 60,
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'center',
+        flexDirection: 'row'
     },
     amountText: {
         fontSize: 30,
         color: TEXT_COLOR,
-        fontWeight: '500'
+        fontWeight: '500',
+        paddingRight: 10
     },
     keybordContainer: {
         width: widthPercentageToDP(100),

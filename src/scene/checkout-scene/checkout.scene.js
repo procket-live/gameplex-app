@@ -18,6 +18,7 @@ function CheckoutScene(props) {
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState({});
     const tournament = props.navigation.getParam('tournament') || {};
+    const callback = props.navigation.getParam('callback') || (() => { });
     const user = props.user;
     const organizer = AccessNestedObject(tournament, 'organizer', {});
     const entryFee = AccessNestedObject(tournament, 'prize', []).find((item) => item.key == 'Entry Fee').value;
@@ -46,7 +47,8 @@ function CheckoutScene(props) {
             props.setUserAction(user);
         }
         props.fetchTournaments();
-        navigate('TabNavigator')
+        navigate('Tournament');
+        callback();
     }
 
     return (

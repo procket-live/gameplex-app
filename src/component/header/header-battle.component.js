@@ -7,7 +7,7 @@ import { navigatePop } from '../../service/navigation.service';
 import { HeaderBackButton } from 'react-navigation-stack';
 import IconComponent from '../icon/icon.component';
 
-function HeaderBattleComponent({ name, icon, actionIcon, action = () => [], actionText }) {
+function Header({ name, icon, actionIcon, action = () => [], actionText }) {
     return (
         <View style={{
             height: 60,
@@ -19,16 +19,21 @@ function HeaderBattleComponent({ name, icon, actionIcon, action = () => [], acti
                 <HeaderBackButton tintColor={ON_PRIMARY} onPress={navigatePop} />
             </View>
             <View style={{ flex: 4, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row' }} >
-                <Image source={{ uri: icon }} style={{ width: 40, height: 40, resizeMode: 'contain', borderRadius: 5, marginRight: 20 }} />
+                {
+                    icon ? <Image source={{ uri: icon }} style={{ width: 40, height: 40, resizeMode: 'contain', borderRadius: 5, marginRight: 20 }} /> : null
+                }
                 <Text style={{ fontSize: 20, color: ON_PRIMARY }} >{name}</Text>
             </View>
             <View style={{ flex: 1.5, alignItems: 'center', justifyContent: 'center' }} >
-                <TouchableOpacity style={{ padding: 10, borderRadius: 10, backgroundColor: SECONDARY_COLOR, flexDirection: 'row' }} onPress={action}>
-                    <Text style={{ color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 10 }} >
-                        {actionText}
-                    </Text>
-                    <IconComponent size={18} font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
-                </TouchableOpacity>
+                {
+                    actionText ?
+                        <TouchableOpacity style={{ padding: 10, borderRadius: 10, backgroundColor: SECONDARY_COLOR, flexDirection: 'row' }} onPress={action}>
+                            <Text style={{ color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 10 }} >
+                                {actionText}
+                            </Text>
+                            <IconComponent size={18} font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
+                        </TouchableOpacity> : null
+                }
             </View>
         </View >
     )
@@ -38,4 +43,6 @@ const mapStateToProps = state => ({
     user: state.user
 });
 
-export default connect(mapStateToProps)(HeaderBattleComponent);
+const HeaderBattleComponent = connect(mapStateToProps)(Header);
+
+export default HeaderBattleComponent;
