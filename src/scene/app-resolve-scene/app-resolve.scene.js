@@ -1,11 +1,11 @@
-import { PureComponent } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
 import messaging from '@react-native-firebase/messaging';
-// import notification from '@react-native-firebase'
+import links from '@react-native-firebase/dynamic-links';
 import { PermissionsAndroid, AppState } from 'react-native';
-
+import { useQuery } from '@apollo/react-hooks';
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -18,76 +18,79 @@ import { fetchTournaments } from '../../action/tournament.action';
 import { fetchBattle } from '../../action/battle.action';
 import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
 import { GetSocket } from '../../utils/soket.utils';
+import { UserQuery } from '../../graphql/graphql.query';
 SplashScreen.hide();
 const socket = GetSocket();
-class AppResolve extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.userId = null;
-    }
-    componentDidMount = () => {
-        AppState.addEventListener('change', this._handleAppStateChange);
-        setTimeout(this.getInitialNotification, 100);
-        this.askPermission();
-    }
+function AppResolve(props) {
+    let userId = null;
 
-    init = () => {
-        const { user, mode } = this.props;
+    const { loading, error, data } = useQuery(UserQuery);
+
+    console.log('data', data);
+
+    useEffect(() => {
+        AppState.addEventListener('change', _handleAppStateChange);
+        setTimeout(getInitialNotification, 100);
+        askPermission();
+
+        return componentWillUnmount;
+    }, [])
+
+    function init() {
+        const { user, mode } = props;
 
         if (user == null) {
             resetToScreen('Login')
             SplashScreen.hide();
         } else {
             const token = user.token;
-            this.userId = user._id;
+            userId = user._id;
             APP.TOKEN = token;
-            this.updateUser(token);
-            this.setFiretoken();
-            this.connectSocket();
+            updateUser(token);
+            setFiretoken();
+            connectSocket();
 
             const result = IsUserDetailsSet(user, true);
             if (!result.allStepDone) {
                 resetToScreen('UserDetailInput', { step: result.step });
             } else {
                 if (mode == 'user') {
-                    this.props.fetchGames();
-                    this.props.fetchTournaments();
-                    this.props.fetchBattle();
-                    this.props.fetchAllJoinedMatchAction();
+                    props.fetchGames();
+                    props.fetchTournaments();
+                    props.fetchBattle();
+                    props.fetchAllJoinedMatchAction();
                     resetToScreen('TabNavigator');
                 } else {
                     resetToScreen('Dashboard');
                 }
             }
 
-            this.setFreshchatUser(user);
+            setFreshchatUser(user);
 
             SplashScreen.hide();
         }
     }
 
-    askPermission = async () => {
+    async function askPermission() {
         await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE]);
-        this.props.InitFreshchat();
+        props.InitFreshchat();
     }
 
-    connectSocket = () => {
-        const userId = this.userId;
+    function connectSocket() {
         if (userId) {
             socket.emit('online', { userId });
             socket.on('online_user_list', (data) => {
-                this.props.setOnlineList(data);
+                props.setOnlineList(data);
             })
         }
     }
 
-    componentWillUnmount = () => {
-        AppState.removeEventListener('change', this._handleAppStateChange);
-        this.appClose();
+    function componentWillUnmount() {
+        AppState.removeEventListener('change', _handleAppStateChange);
+        appClose();
     }
 
-    appClose = () => {
-        const userId = this.userId;
+    function appClose() {
         if (userId) {
             socket.emit('offline', { userId });
             socket.off();
@@ -95,13 +98,13 @@ class AppResolve extends PureComponent {
         }
     }
 
-    _handleAppStateChange = (nextAppState) => {
+    function _handleAppStateChange(nextAppState) {
         if (nextAppState === 'inactive' || nextAppState === 'background') {
-            this.appClose();
+            appClose();
         }
     };
 
-    setFreshchatUser = (user) => {
+    function setFreshchatUser() {
         const freshchatUser = new FreshchatUser();
         freshchatUser.firstName = user.name;
         freshchatUser.lastName = "";
@@ -113,23 +116,23 @@ class AppResolve extends PureComponent {
         });
     }
 
-    updateUser = async (token) => {
+    async function updateUser(token) {
         const result = await PrivateApi.GetUser();
         if (result.success) {
             const user = AccessNestedObject(result, 'response');
             const newUser = Object.assign(user, { token });
-            this.props.setUserAction(newUser);
+            props.setUserAction(newUser);
         }
     }
 
-    setFiretoken = async () => {
+    async function setFiretoken() {
         const fcmToken = await messaging().getToken();
         if (fcmToken) {
             PrivateApi.SetUser({ firebase_token: fcmToken });
         }
     }
 
-    getInitialNotification = async () => {
+    async function getInitialNotification() {
         const notificationOpen = await messaging().getInitialNotification();
 
         if (notificationOpen) {
@@ -154,11 +157,11 @@ class AppResolve extends PureComponent {
             }
         }
 
-        this.getInitialLink();
+        getInitialLink();
     }
 
-    getInitialLink = async () => {
-        const link = await firebase.links().getInitialLink();
+    async function getInitialLink() {
+        const link = await links().getInitialLink();
         if (link) {
             if (link.includes('tournament')) {
                 const parts = link.split('/');
@@ -173,12 +176,11 @@ class AppResolve extends PureComponent {
             }
         }
 
-        this.init()
+        init()
     }
 
-    render() {
-        return null;
-    }
+
+    return null;
 }
 
 const mapStateToProps = state => ({

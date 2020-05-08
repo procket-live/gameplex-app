@@ -13,6 +13,8 @@
         "codepush": "appcenter codepush release-react -a GamePlex/Gameplex-Android -d Production --mandatory"
     },
     "dependencies": {
+        "@apollo/react-hooks": "^3.1.5",
+        "@emotion/unitless": "^0.7.5",
         "@react-native-community/async-storage": "^1.6.2",
         "@react-native-community/geolocation": "^2.0.2",
         "@react-native-community/viewpager": "^3.1.0",
@@ -32,6 +34,7 @@
         "@twotalltotems/react-native-otp-input": "^1.1.2",
         "add": "^2.0.6",
         "agenda": "^3.1.0",
+        "apollo-boost": "^0.4.7",
         "appcenter": "^2.6.0",
         "appcenter-analytics": "^2.4.0",
         "appcenter-cli": "^2.3.5",
@@ -41,6 +44,7 @@
         "compare-versions": "^3.6.0",
         "d3-interpolate": "^1.4.0",
         "event-state-manager": "^1.0.2",
+        "graphql": "^15.0.0",
         "libmoji": "^2.3.0",
         "lodash": "^4.17.15",
         "matter-js": "^0.14.2",
