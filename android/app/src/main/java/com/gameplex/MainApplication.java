@@ -17,14 +17,6 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.links.RNFirebaseLinksPackage;
-import io.invertase.firebase.config.RNFirebaseRemoteConfigPackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-import io.invertase.firebase.perf.RNFirebasePerformancePackage;
-import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
-import io.invertase.firebase.storage.RNFirebaseStoragePackage;
-
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
     private final ReactNativeHost mReactNativeHost =
@@ -40,13 +32,6 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Packages that cannot be autolinked yet can be added manually here, for example:
                     // packages.add(new MyReactNativePackage());
-                    packages.add(new RNFirebaseMessagingPackage());
-                    packages.add(new RNFirebaseLinksPackage());
-                    packages.add(new RNFirebaseRemoteConfigPackage());
-                    packages.add(new RNFirebaseNotificationsPackage());
-                    packages.add(new RNFirebasePerformancePackage());
-                    packages.add(new RNFirebaseAnalyticsPackage());
-                    packages.add(new RNFirebaseStoragePackage());
                     return packages;
         }
 
