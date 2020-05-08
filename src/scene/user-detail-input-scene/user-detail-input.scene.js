@@ -28,6 +28,7 @@ class UserDetailInputScene extends Component {
     constructor(props) {
         super(props);
         const user = props.user || {};
+        console.log('user', user);
         this.state = {
             step: props.navigation.getParam('step') || STEPS.USER_DETAIL,
             loading: false,

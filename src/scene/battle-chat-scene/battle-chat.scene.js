@@ -8,8 +8,7 @@ import OpenApp from 'react-native-open-app';
 import AppLink from 'react-native-app-link';
 import { AppInstalledChecker } from 'react-native-check-app-install';
 import ImagePicker from 'react-native-image-crop-picker';
-import firebase from 'react-native-firebase';
-// import RNTesseractOcr from 'react-native-tesseract-ocr';
+import storage from '@react-native-firebase/storage';
 
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import HeaderBattleComponent from '../../component/header/header-battle.component';
@@ -86,7 +85,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
         if (image && battleQueueId) {
             setLoading(true);
             setLoadingText('Uploading ...');
-            const result = await firebase.storage().ref(`/chat_rooms/${roomId}_${Math.random()}`).putFile(image.path)
+            const result = await storage().ref(`/chat_rooms/${roomId}_${Math.random()}`).putFile(image.path)
             const link = result.downloadURL;
             const uploadResult = await PrivateApi.UploadScorecardBattleQueueEntry(battleQueueId, { link });
             setLoadingText('Loading ...');
@@ -169,7 +168,7 @@ function BattleChatScene({ navigation, user, fetchAllJoinedMatchAction, onlineLi
         if (image) {
             setLoading(true);
             setLoadingText('Uploading ...');
-            const result = await firebase.storage().ref(`/chat_rooms/${roomId}_${Math.random()}`).putFile(image.path)
+            const result = await storage().ref(`/chat_rooms/${roomId}_${Math.random()}`).putFile(image.path)
             setLoadingText('Loading ...');
             setLoading(false);
             sendMessage('', result.downloadURL);

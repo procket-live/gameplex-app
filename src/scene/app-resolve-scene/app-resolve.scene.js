@@ -2,7 +2,8 @@ import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
-import firebase from 'react-native-firebase';
+import messaging from '@react-native-firebase/messaging';
+// import notification from '@react-native-firebase'
 import { PermissionsAndroid, AppState } from 'react-native';
 
 
@@ -122,14 +123,14 @@ class AppResolve extends PureComponent {
     }
 
     setFiretoken = async () => {
-        const fcmToken = await firebase.messaging().getToken();
+        const fcmToken = await messaging().getToken();
         if (fcmToken) {
             PrivateApi.SetUser({ firebase_token: fcmToken });
         }
     }
 
     getInitialNotification = async () => {
-        const notificationOpen = await firebase.notifications().getInitialNotification();
+        const notificationOpen = await messaging().getInitialNotification();
 
         if (notificationOpen) {
             const data = notificationOpen.notification.data;
