@@ -4,11 +4,12 @@ import { View, Text, FlatList } from 'react-native';
 import GameCard from '../game-card/game-card.component';
 import { AccessNestedObject } from '../../utils/common.util';
 import { TEXT_COLOR, ON_PRIMARY, PRIMARY_COLOR } from '../../constant/color.constant';
+import { useQuery } from '@apollo/react-hooks';
+import { GetPlayground } from '../../graphql/graphql.query';
 
-const GameSlider = props => {
-    const games = AccessNestedObject(props, 'game.list', []);
-    const loading = AccessNestedObject(props, 'game.loading', false);
-
+const GameSlider = () => {
+    const { data, loading } = useQuery(GetPlayground);
+    console.log('data', data)
     return (
         <>
             <View style={{ flexDirection: 'row', backgroundColor: PRIMARY_COLOR, paddingLeft: 15, paddingRight: 15, marginBottom: 10, marginTop: 10 }}>
@@ -20,16 +21,18 @@ const GameSlider = props => {
             </View>
             <FlatList
                 horizontal
-                data={games}
+                data={data?.playground || [1, 2, 3]}
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item, key }) => <GameCard game={item} loading={loading} key={key} />}
+                renderItem={({ item = {}, key }) =>
+                    <GameCard
+                        game={item?.game}
+                        loading={loading}
+                        key={key}
+                    />
+                }
             />
         </>
     )
 }
 
-const mapStateToProps = state => ({
-    game: state.game
-})
-
-export default connect(mapStateToProps)(GameSlider);
+export default GameSlider;

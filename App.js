@@ -11,6 +11,7 @@ import codePush from 'react-native-code-push';
 import { Freshchat, FreshchatConfig } from 'react-native-freshchat-sdk';
 import { ApolloProvider } from '@apollo/react-hooks';
 
+
 import Navigator, { getPersistenceFunctions } from './src/navigation/index.navigation';
 import NotifyService from './src/service/notify.service';
 import store, { persistor } from './src/store/index.store';

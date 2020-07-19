@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Linking, ImageBackground, TouchableOpacity, Text, StyleSheet, ScrollView, Clipboard, ActivityIndicator, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { AccessNestedObject, DisplayPrice, ShareTournament } from '../../utils/common.util';
+import { AccessNestedObject, DisplayPrice, ShareTournament, GetReadableDate, Capitalize } from '../../utils/common.util';
 import { ON_PRIMARY, PRIMARY_COLOR, TEXT_COLOR, GREY_3, GREY_2, GREY_BG, GREY_1, GREEN, YELLOW, RED } from '../../constant/color.constant';
 import ParticipentsCircle from '../../component/participents-circle/participents-circle.component';
 import moment from 'moment';
@@ -12,82 +12,55 @@ import { Title } from '../instruction-generator-scene/instruction-generator.scen
 import { GetTournamentStatus, GetUserGameId, IsJoined } from '../../utils/tournament.utils';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import NotifyService from '../../service/notify.service';
-import PrivateApi from '../../api/private.api';
 import HeaderBattleComponent from '../../component/header/header-battle.component';
+import { VerifiedLogo } from '../../config/image.config';
+import GameUserIdComponent from '../../component/game-user-id/game-user-id.component';
+import { useQuery } from '@apollo/react-hooks';
+import { GetFullTournamentQuery } from '../../graphql/graphql.query';
+
+const positions = ['flex-start', 'center', 'flex-end'];
+const positions2 = ['flex-start', 'flex-end'];
 
 function TournamentScene(props) {
     const tournamentId = props.navigation.getParam('id');
-    const initTournament = props.navigation.getParam('tournament');
+    const [tournament, setTournament] = useState({});
 
-    const [tournament, setTournament] = useState(initTournament || {});
-    const [loading, setLoading] = useState(!!tournamentId);
-
-    const gameId = AccessNestedObject(tournament, 'game._id');
+    const gameId = AccessNestedObject(tournament, 'game.id');
+    const gameName = AccessNestedObject(tournament, 'game.name');
     const gameTarget = AccessNestedObject(tournament, 'game.game_target');
     const gameRoute = AccessNestedObject(tournament, 'game.game_route');
-    const date = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('MMM DD');
-    const time = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('hh:mm A');
-    const name = AccessNestedObject(tournament, 'tournament_name');
-    const prize = AccessNestedObject(tournament, 'prize', []);
-    const rank = AccessNestedObject(tournament, 'rank', []);
+
+    const date = GetReadableDate(tournament?.tournament_start, 'MMM DD');
+    const time = GetReadableDate(tournament?.tournament_end, 'hh:mm A');
+    const name = AccessNestedObject(tournament, 'name');
     const tournamentMeta = AccessNestedObject(tournament, 'tournament_meta', []);
-    const positions = ['flex-start', 'center', 'flex-end'];
+    const status = AccessNestedObject(tournament, 'status');
+
     const message = AccessNestedObject(tournament, 'form_message', '');
     const tnc = AccessNestedObject(tournament, 'tnc_link', '')
     const participents = AccessNestedObject(tournament, 'participents', []).filter((item = {}) => item.user);
     const tournamentStatus = GetTournamentStatus(tournament);
-    const userGameIdResult = GetUserGameId(props.user, gameId);
     const isJoined = IsJoined(participents, AccessNestedObject(props, 'user._id'))
-    const roomId = AccessNestedObject(tournament, 'room_detail.room_id', '');
-    const roomPassword = AccessNestedObject(tournament, 'room_detail.room_password', '');
-    const instructions = AccessNestedObject(tournament, 'game.instructions', []);
-    const guide = AccessNestedObject(tournament, 'game.guide', []);
+
     const organizerName = AccessNestedObject(tournament, 'organizer.organizer_name', '')
-    const onlineList = AccessNestedObject(props, 'onlineList', {});
+    const organizerVerified = AccessNestedObject(tournament, 'organizer.verified', false)
     const endTime = AccessNestedObject(tournament, 'tournament_end_time');
+
+    const { loading } = useQuery(GetFullTournamentQuery, {
+        variables: { id: tournamentId },
+        onCompleted({ getTournament }) {
+            console.log("getTournament", getTournament)
+            if (getTournament) {
+                setTournament(getTournament);
+            }
+        }
+    })
 
     let perKill = 0;
     const rankWise = {}
 
     function joinTournament() {
-        if (gameTarget != "native" && !userGameIdResult.success) {
-            NotifyService.notify({ title: "Please add game user id first.", type: 'error' })
-            return;
-        }
 
-        navigate('Checkout', {
-            tournament, callback: () => {
-                fetchTournaments(tournament._id)
-            }
-        })
-    }
-
-    useEffect(() => {
-        if (tournamentId) {
-            fetchTournaments(tournamentId);
-        }
-        return () => {
-
-        }
-    }, []);
-
-    async function fetchTournaments(id) {
-        setLoading(true);
-        const result = await PrivateApi.GetTournament(id);
-        setLoading(false);
-        if (result.success) {
-            setTournament(result.response);
-        }
-    }
-
-    async function updateScore({ score }) {
-        const myParticipent = AccessNestedObject(tournament, 'participents', []).find((item = {}) => item.user._id == AccessNestedObject(props, 'user._id'));
-        setLoading(true);
-        const result = await PrivateApi.UpdateParticipentScore(myParticipent._id, score);
-        setLoading(false);
-        if (result.success) {
-            fetchTournaments(initTournament._id);
-        }
     }
 
     if (loading) {
@@ -102,12 +75,15 @@ function TournamentScene(props) {
         )
     }
 
-
-
     return (
         <>
             <HeaderBattleComponent
-                name={name}
+                name={gameName}
+                actionIcon={"share"}
+                actionText="Share"
+                action={() => {
+                    ShareTournament(tournament);
+                }}
             />
             <ScrollView
                 style={styles.container}
@@ -135,10 +111,10 @@ function TournamentScene(props) {
                                     </Text>
                                 </View>
                             </View>
-                            {
+                            {/* {
                                 organizerName ?
                                     <>
-                                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', height: 35 }} >
+                                        <View style={{ alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', height: 40 }} >
                                             <IconComponent
                                                 font="fontawesome"
                                                 size={12}
@@ -147,41 +123,17 @@ function TournamentScene(props) {
                                                 focused
                                             />
                                             <Text style={{ fontSize: 12, color: GREEN, paddingLeft: 3 }} >
-                                                Organizer
+                                                Organized by
                                             </Text>
                                             <Text style={{ fontSize: 12, color: TEXT_COLOR, paddingLeft: 5, fontWeight: 'bold' }} >
                                                 {organizerName}
                                             </Text>
+                                            
                                         </View>
                                     </> : null
-                            }
-
-                            <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
-                                {
-                                    prize.map((item, index) => {
-                                        if (item.key == "Per Kill") {
-                                            perKill = item.value;
-                                        }
-
-                                        return (
-                                            <View style={{ flex: 1 }} >
-                                                <View style={{ flex: 1, alignItems: positions[index] }} >
-                                                    <Text style={{ fontSize: 12, color: GREY_3 }} >
-                                                        {item.key}
-                                                    </Text>
-                                                </View>
-                                                <View style={{ flex: 1, alignItems: positions[index] }} >
-                                                    <Text style={{ fontSize: 14, fontWeight: '500', color: TEXT_COLOR }} >
-                                                        {DisplayPrice(item.value)}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        )
-                                    })
-                                }
-                            </View>
+                            } */}
                             {
-                                tournament.status == "active" ?
+                                status == "active" ?
                                     <>
                                         <View style={{ paddingTop: 2, paddingBottom: 2 }} >
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
@@ -194,8 +146,8 @@ function TournamentScene(props) {
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                                                 <Text style={{ fontSize: 12, color: PRIMARY_COLOR, fontWeight: 'bold' }} >
                                                     {moment(endTime).fromNow()} ranking will be created. According to score
-                                        ranking will be decided. Winning amount will be transferred to Wallet.
-                                    </Text>
+                                                    ranking will be decided. Winning amount will be transferred to Wallet.
+                                                </Text>
                                             </View>
                                         </View>
                                     </> : null
@@ -213,7 +165,7 @@ function TournamentScene(props) {
                                                     </View>
                                                     <View style={{ flex: 1, alignItems: positions[index] }} >
                                                         <Text style={{ fontSize: 14, fontWeight: '500', color: TEXT_COLOR }} >
-                                                            {item.value}
+                                                            {Capitalize(item.value)}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -221,21 +173,55 @@ function TournamentScene(props) {
                                         }
                                     </View> : null
                             }
-                            {
-                                tournament.status != "completed" ?
-                                    <TouchableOpacity
-                                        style={{ padding: 10, margin: 5, borderWidth: 1, borderRadius: 5, flexDirection: 'row', borderColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center' }}
-                                        onPress={() => {
-                                            ShareTournament(tournament);
-                                        }}
-                                    >
-                                        <IconComponent font={'fontawesome'} size={16} focused tintColor={PRIMARY_COLOR} name={"share"} />
-                                        <Text style={{ color: PRIMARY_COLOR, fontSize: 12, marginRight: 5, marginLeft: 5 }} >Invite and Share</Text>
-                                    </TouchableOpacity> : null
-                            }
+                            <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
+                                <View style={{ flex: 1 }} >
+                                    <View style={{ flex: 1, alignItems: positions[0] }} >
+                                        <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                                            Organizer
+                                        </Text>
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: positions[0], flexDirection: 'row', alignItems: 'center' }} >
+                                        <Text style={{ fontSize: 14, fontWeight: 'bold', color: TEXT_COLOR }} >
+                                            {organizerName}
+                                        </Text>
+                                        {
+                                            !organizerVerified ?
+                                                <View
+                                                    style={{ marginLeft: 5 }}
+                                                >
+                                                    <Image source={VerifiedLogo()} style={{ width: 15, height: 15, resizeMode: 'contain' }} />
+                                                </View> : null
+                                        }
+                                    </View>
+                                </View>
+                                <View style={{ flex: 1 }} >
+                                    <View style={{ flex: 1, alignItems: positions[1] }} >
+                                        <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                                            Entry Fee
+                                        </Text>
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: positions[1] }} >
+                                        <Text style={{ fontSize: 14, fontWeight: '500', color: PRIMARY_COLOR }} >
+                                            {DisplayPrice(AccessNestedObject(tournament, 'tournament_payment.entry_fee'))}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={{ flex: 1 }} >
+                                    <View style={{ flex: 1, alignItems: positions[2] }} >
+                                        <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                                            Prize Pool
+                                        </Text>
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: positions[2] }} >
+                                        <Text style={{ fontSize: 14, fontWeight: '500', color: PRIMARY_COLOR }} >
+                                            {DisplayPrice(AccessNestedObject(tournament, 'tournament_payment.prize_pool'))}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
                         </View>
                     </View>
-                    {
+                    {/* {
                         (isJoined && roomId && roomPassword && tournament.status != "completed") ?
                             <View style={[styles.detailsContainer, { marginTop: 10 }]} >
                                 <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
@@ -292,70 +278,23 @@ function TournamentScene(props) {
                                     </View>
                                 </View>
                             </View> : null
-                    }
-                    {
-                        (tournament.status != "completed" && gameTarget == "extern") ?
-                            <View style={[styles.detailsContainer, { marginTop: 10 }]} >
-                                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center', padding: 5 }} >
-                                    <Text style={{ fontSize: 14, fontWeight: '500', color: GREY_2 }} >
-                                        USER ID: {userGameIdResult.success ? userGameIdResult.response : 'NOT SET'}
-                                    </Text>
-                                </View>
-                                {
-                                    !userGameIdResult.success ?
-                                        <View style={{ flex: 2, flexDirection: 'row' }} >
-                                            <View style={{ flex: 1, padding: 5 }} >
-                                                <TouchableOpacity
-                                                    onPress={() => {
-                                                        navigate('AddGameUserId', { gameId, getUserId: () => navigate('InstructionGenerator', { title: "How to get user id", steps: guide }) });
-                                                    }}
-                                                    style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                                                    <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="pen" size={14} />
-                                                    <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >ADD</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            {
-                                                guide.length ?
-                                                    <View style={{ flex: 3, padding: 5 }} >
-                                                        <TouchableOpacity
-                                                            onPress={() => navigate('InstructionGenerator', { title: "How to get user id", steps: guide })}
-                                                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: ON_PRIMARY, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                                                            <IconComponent font="fontawesome" focused tintColor={PRIMARY_COLOR} name="user" size={14} />
-                                                            <Text style={{ fontSize: 14, color: PRIMARY_COLOR, marginLeft: 10 }} >HOW TO GET USER ID</Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                    : null
-                                            }
-                                        </View> : null
-                                }
-                                {
-                                    instructions.length ?
-                                        <TouchableOpacity
-                                            onPress={() => navigate('InstructionGenerator', { title: "How to Play?", steps: instructions })}
-                                            style={{ borderWidth: 1, height: 35, borderRadius: 10, borderColor: PRIMARY_COLOR, backgroundColor: PRIMARY_COLOR, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', marginTop: 10, margintBottom: 10 }}>
-                                            <IconComponent font="fontawesome" focused tintColor={ON_PRIMARY} name="list" size={14} />
-                                            <Text style={{ fontSize: 14, color: ON_PRIMARY, marginLeft: 10 }} >TOURNAMENT INSTRUCTIONS</Text>
-                                        </TouchableOpacity> : null
-                                }
-                            </View> : null
-                    }
-                    <View style={[styles.detailsContainer, { marginTop: 10, overflow: 'hidden', height: 390 }]} >
+                    } */}
+                    <GameUserIdComponent
+                        gameId={gameId}
+                    />
+                    <View style={[styles.detailsContainer, { marginTop: 10, overflow: 'hidden', height: 500 }]} >
                         <Tabs>
                             {
                                 participents.length ?
-                                    <Leaderboard key="2" tabLabel="Participents" payoutReleased={tournament.payout_released} participents={participents} rankWise={rankWise} perKill={perKill} onlineList={onlineList} gameTarget={gameTarget} /> : null
+                                    <Leaderboard key="2" tabLabel="Participents" payoutReleased={tournament.payout_released} participents={participents} rankWise={rankWise} perKill={perKill} onlineList={[]} gameTarget={gameTarget} /> : null
                             }
-                            <PrizeTab key="0" tabLabel="Prize" rank={rank} rankWise={rankWise} />
-                            {
-                                (message && tnc) ?
-                                    <Instruction key="1" tabLabel="Organizer Instructions" message={message} tnc={tnc} /> : null
-                            }
+                            <PrizeTab key="0" tabLabel="Prize" prizeDetails={AccessNestedObject(tournament, 'tournament_payment', {})} />
                         </Tabs>
                     </View>
                 </View>
             </ScrollView>
             <RenderButton
-                updateScore={updateScore}
+                status={status}
                 gameRoute={gameRoute}
                 gameTarget={gameTarget}
                 tournament={tournament}
@@ -367,35 +306,31 @@ function TournamentScene(props) {
     )
 }
 
-function RenderButton({ tournamentStatus, joinTournament, tournament, isJoined, gameTarget, gameRoute, updateScore }) {
-    if (tournament.status == "completed") {
-        return null;
-    }
+function RenderButton({ status, tournamentStatus, joinTournament, tournament }) {
+    // if (isJoined) {
+    //     if (gameTarget == "native") {
+    //         return (
+    //             <TouchableOpacity
+    //                 onPress={() => {
+    //                     navigate(gameRoute, { callback: updateScore });
+    //                 }}
+    //                 style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
+    //                 <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
+    //                     PLAY
+    //                 </Text>
+    //             </TouchableOpacity>
+    //         )
+    //     }
 
-    if (isJoined) {
-        if (gameTarget == "native") {
-            return (
-                <TouchableOpacity
-                    onPress={() => {
-                        navigate(gameRoute, { callback: updateScore });
-                    }}
-                    style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
-                    <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
-                        PLAY
-                    </Text>
-                </TouchableOpacity>
-            )
-        }
-
-        return (
-            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
-                <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
-                    JOINED. TOURNAMENT WILL START
-                    {` ${moment(AccessNestedObject(tournament, 'tournament_start_time')).fromNow().toUpperCase()}`}
-                </Text>
-            </View>
-        )
-    }
+    //     return (
+    //         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: widthPercentageToDP(100), height: 50, backgroundColor: GREEN, alignItems: 'center', justifyContent: 'center' }} >
+    //             <Text style={{ color: ON_PRIMARY, fontSize: 14 }} >
+    //                 JOINED. TOURNAMENT WILL START
+    //                 {` ${moment(AccessNestedObject(tournament, 'tournament_start_time')).fromNow().toUpperCase()}`}
+    //             </Text>
+    //         </View>
+    //     )
+    // }
 
     if (tournamentStatus == "pending") {
         return (
@@ -459,23 +394,37 @@ function RenderButton({ tournamentStatus, joinTournament, tournament, isJoined, 
             </View>
         )
     }
+
+    return null;
 }
 
-function PrizeTab({ rank, rankWise }) {
+function PrizeTab({ prizeDetails }) {
+    const rewardPayment = AccessNestedObject(prizeDetails, 'tournament_reward_payment', []);
+    const rankPayment = AccessNestedObject(prizeDetails, 'tournament_rank_payment', []);
+
     return (
         <ScrollView style={{ padding: 10 }} >
-            {
-                rank.filter((item) => item.amount || item.props).map((item) => {
-                    rankWise[item.rank] = item.amount;
-                    return <RankDetail rank={item.rank} amount={item.amount} props={item.props} />;
-                })
-            }
+            <View style={{ paddingBottom: 15 }} >
+                <Title>Rewards:</Title>
+                {
+                    rewardPayment.map((item) => (
+                        <RankDetail rank={item.key.key} amount={item.amount} />
+                    ))
+                }
+            </View>
+            <View style={{ paddingBottom: 15 }} >
+                <Title>Rank Rewards:</Title>
+                {rankPayment.map((item) => (<RankDetail rank={`Rank #${item.rank}`} amount={item.amount} />))}
+            </View>
             <Title>Note:</Title>
             <Text style={{ textAlign: 'left', fontSize: 14, paddingBottom: 5 }} >
                 1. All Scores and ranks are subjected to verification after tournament ends to ensure fairplay.
             </Text>
             <Text style={{ textAlign: 'left' }} >
                 2. Actual prize may change if these is a tie at any winning ranks.
+            </Text>
+            <Text style={{ textAlign: 'left' }} >
+                3. Hacking is not allowed.
             </Text>
         </ScrollView>
     )
@@ -513,18 +462,15 @@ function Instruction({ message, tnc }) {
 }
 
 
-function RankDetail({ rank, amount, props }) {
+function RankDetail({ rank, amount }) {
     return (
         <View style={{ backgroundColor: GREY_BG, padding: 5, flexDirection: 'row', height: 35, marginBottom: 5 }} >
             <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                <Text>Rank {rank}</Text>
+                <Text>{rank}</Text>
             </View>
             <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
                 {
                     amount ? <Text>{DisplayPrice(amount)}</Text> : null
-                }
-                {
-                    props ? <Text>{props}</Text> : null
                 }
             </View>
         </View>
@@ -594,7 +540,7 @@ function ParticipentItem({ participent = {}, perKill = 0, rankWise = {}, online,
     )
 }
 
-function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, onlineList, gameTarget }) {
+function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, gameTarget }) {
 
     const list = participents.sort((first = {}, second = {}) => {
         return Number(AccessNestedObject(second, 'result_meta.rank', 0)) - Number(AccessNestedObject(first, 'result_meta.rank', 0))
@@ -629,7 +575,7 @@ function Leaderboard({ participents = [], rankWise, perKill, payoutReleased, onl
             </View>
             {
                 list.map((item) => (
-                    <ParticipentItem participent={item} rankWise={rankWise} perKill={perKill} online={onlineList[AccessNestedObject(item, 'user._id')]} gameTarget={gameTarget} />
+                    <ParticipentItem participent={item} rankWise={rankWise} perKill={perKill} online={[]} gameTarget={gameTarget} />
                 ))
             }
             {

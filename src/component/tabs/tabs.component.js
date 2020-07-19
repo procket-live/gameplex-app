@@ -26,6 +26,7 @@ const Tabs = props => {
     return (
         <ScrollTabView
             {...TAB_BAR_DEFAULT_STYLES}
+            initialPage={props.initialPage || 0}
         >
             {props.children}
         </ScrollTabView>

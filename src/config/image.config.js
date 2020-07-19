@@ -33,3 +33,7 @@ export const CompanyLogo = () => {
 export const AppUpdateLogo = () => {
     return require('../assets/images/force_update_cover.jpg');
 }
+
+export const VerifiedLogo = () => {
+    return require('../assets/images/tick.png');
+}

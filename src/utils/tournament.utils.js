@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { AccessNestedObject } from "./common.util";
+import { AccessNestedObject, GetDateObject } from "./common.util";
 
 /**
  * 
@@ -7,21 +7,12 @@ import { AccessNestedObject } from "./common.util";
  * 
  * @returns pending|registration_open|slot_full|registration_will_start|registration_closed|tournament_started
  */
-export function GetTournamentStatus(tournament) {
+export function GetTournamentStatus(tournament = {}) {
     const status = AccessNestedObject(tournament, 'status');
-    const registrationStartTime = AccessNestedObject(tournament, 'registration_opening');
-    const registrationEndTime = AccessNestedObject(tournament, 'registration_closing');
-    const tournamentStartTime = AccessNestedObject(tournament, 'tournament_start_time');
-    const participents = AccessNestedObject(tournament, 'participents', []);
-    const size = AccessNestedObject(tournament, 'size', 0);
 
-    if (status == "pending") {
-        return "pending";
-    }
-
-    if (participents.length == size) {
-        return "slot_full"
-    }
+    const registrationStartTime = GetDateObject(tournament?.registration_start);
+    const registrationEndTime = GetDateObject(tournament?.registration_end);
+    const tournamentStartTime = GetDateObject(tournament?.tournament_start);
 
     if (moment().isBetween(moment(registrationStartTime), moment(registrationEndTime))) {
         return "registration_open"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Clipboard } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -10,55 +10,45 @@ import { ON_PRIMARY, PRIMARY_COLOR } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { navigatePop, navigate } from '../../service/navigation.service';
 import IconComponent from '../icon/icon.component';
+import Header from '../header/header-battle.component';
+import { useMutation } from '@apollo/react-hooks';
+import { AddGameUserIdMutation } from '../../graphql/graphql-mutation';
 
-class AddGameUserId extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        const getUserId = navigation.getParam('getUserId');
 
-        return {
-            headerRight:
-                getUserId ?
-                    <View style={{ marginRight: 15 }} >
-                        <Text
-                            onPress={getUserId}
-                            style={{ color: PRIMARY_COLOR, fontSize: 14 }}
-                        >
-                            How to get?
-                        </Text>
-                    </View> : null
-        };
-    };
+function AddGameUserIdScene({ navigation }) {
+    const gameId = navigation.getParam('gameId');
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: '',
-            loading: false
+    const [userId, setUserId] = useState("");
+    const [addGameId, { loading }] = useMutation(AddGameUserIdMutation, {
+        onCompleted({ addGameUserId }) {
+            if (addGameUserId) {
+                navigatePop();
+            }
         }
+    })
+
+    function process() {
+        addGameId({
+            variables: {
+                game_id: gameId,
+                game_username: userId
+            }
+        })
     }
 
-    process = async () => {
-        const gameId = this.props.navigation.getParam('gameId');
-        this.setState({ loading: true });
-        const result = await PrivateApi.AddGameUserId(gameId, { user_id: this.state.userId });
-        this.setState({ loading: false });
-        if (result.success) {
-            this.props.setUserAction(result.response);
-            navigatePop();
-        }
-    }
-
-    inputHandler = (userId) => {
-        this.setState({ userId })
-    }
-
-    isButtonDisabled = () => {
-        return this.state.userId == ""
-    }
-
-    render() {
-        return (
-            <View style={{ backgroundColor: ON_PRIMARY, width: widthPercentageToDP(100), height: this.props.contentHeight, alignItems: 'center' }} >
+    return (
+        <>
+            <Header
+                name={"Add Username"}
+                actionText="Instruction"
+                actionIcon="question"
+                action={() => navigate('InstructionGenerator', {
+                    title: "How to get user id",
+                    gameId: gameId,
+                    category: "get_user_id"
+                })}
+            />
+            <View style={{ backgroundColor: ON_PRIMARY, width: widthPercentageToDP(100), alignItems: 'center' }} >
                 <View style={{ alignItems: 'flex-start', width: widthPercentageToDP(100), padding: 10, paddingLeft: 10, paddingRight: 15 }}>
                     <View style={{ paddingTop: 5, paddingBottom: 5 }} >
                         <Text style={styles.fontH1} >Enter User ID</Text>
@@ -67,14 +57,14 @@ class AddGameUserId extends React.Component {
                 <View style={styles.inputTextContainer} >
                     <TextInputComponent
                         label="User ID"
-                        value={this.state.userId}
-                        onChangeText={this.inputHandler}
+                        value={userId}
+                        onChangeText={setUserId}
                         RenderRight={() => (
                             <TouchableOpacity
                                 style={{ padding: 5, borderWidth: 1, borderRadius: 5, flexDirection: 'row', borderColor: PRIMARY_COLOR, alignItems: 'center' }}
                                 onPress={async () => {
                                     const userId = await Clipboard.getString();
-                                    this.setState({ userId })
+                                    setUserId(userId)
                                 }}
                             >
                                 <IconComponent font={'fontawesome'} size={20} focused tintColor={PRIMARY_COLOR} name={"clipboard"} />
@@ -85,15 +75,15 @@ class AddGameUserId extends React.Component {
                 </View>
                 <View style={styles.buttonContainer} >
                     <Button
-                        loading={this.state.loading}
+                        loading={loading}
                         text={'SAVE'}
-                        onSubmitEditing={this.propcess}
-                        onPress={this.process}
+                        onSubmitEditing={process}
+                        onPress={process}
                     />
                 </View>
             </View>
-        )
-    }
+        </>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -106,4 +96,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(null, { setUserAction })(AddGameUserId);;
+export default AddGameUserIdScene;

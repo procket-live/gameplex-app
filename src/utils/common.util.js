@@ -1,5 +1,7 @@
 import { CURRENCY } from '../constant/app.constant';
 import Share from 'react-native-share';
+import { DISPLAY_DATE_TIME_FORMAT } from '../constant/app.constant';
+import moment from 'moment';
 
 export function IsUserDetailsSet(user = {}, skipEmail = false) {
     if (!user.name || !user.dob) {
@@ -60,6 +62,11 @@ export function Camelize(str) {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
         return index == 0 ? word.toLowerCase() : word.toUpperCase();
     }).replace(/\s+/g, '');
+}
+
+export function Capitalize(s) {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 export function ConvertToWord(str) {
@@ -133,4 +140,13 @@ export function ShareTournament(tournament = {}) {
         message: `Hello Let's Play Tournament, \n\n ${tournament.tournament_name} \n\n  And winning exciting prize. Join the tournament now ... \n\n`,
         title: `Hello Let's Play Tournament, \n\n ${tournament.tournament_name} \n\n  And winning exciting prize. Join the tournament now ... \n\n`
     })
+}
+
+export function GetReadableDate(datetime, format = DISPLAY_DATE_TIME_FORMAT) {
+    return GetDateObject(datetime).format(format)
+}
+
+export function GetDateObject(datetime) {
+    console.log("datetime", datetime);
+    return moment.unix((datetime / 1000) - 19800)
 }

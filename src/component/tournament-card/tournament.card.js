@@ -4,7 +4,7 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { GREY_BG, TEXT_COLOR, GREY_3, ON_PRIMARY, PRIMARY_COLOR, YELLOW, RED, GREEN } from '../../constant/color.constant';
 import IconComponent from '../icon/icon.component';
 import TournamentCardPlaceholder from './tournament.card.placeholder';
-import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
+import { AccessNestedObject, DisplayPrice, Camelize, Capitalize, GetReadableDate } from '../../utils/common.util';
 import moment from 'moment';
 import { navigate } from '../../service/navigation.service';
 import ParticipentsCircle from '../participents-circle/participents-circle.component';
@@ -12,31 +12,33 @@ import { GetTournamentStatus, IsJoined } from '../../utils/tournament.utils';
 console.disableYellowBox = true;
 
 const WIDTH = 93;
+const positions = ['flex-start', 'center', 'flex-end'];
 
-const TournamentCard = props => {
-    if (props.loading) {
+const TournamentCard = ({ item: tournament = {}, loading = false }) => {
+    if (loading) {
         return <TournamentCardPlaceholder />
     }
 
-    const tournament = props.tournament || {};
-    const imageUrl = AccessNestedObject(tournament, 'game.thumbnail');
-    const date = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('MMM DD');
-    const time = moment(AccessNestedObject(tournament, 'tournament_start_time')).format('hh:mm A');
-    const name = AccessNestedObject(tournament, 'tournament_name');
-    const prize = AccessNestedObject(tournament, 'prize', []);
+    const isJoined = false;
+
+    const name = AccessNestedObject(tournament, 'name');
+    const imageUrl = AccessNestedObject(tournament, 'game.wallpaper');
+    const date = GetReadableDate(tournament?.tournament_start, 'MMM DD');
+    const time = GetReadableDate(tournament?.tournament_end, 'HH:mm A');
+
+    const registrationStartDate = GetReadableDate(tournament?.registration_start, 'MMM DD');
+    const registrationStartTime = GetReadableDate(tournament?.registration_start, 'hh:mm A');
+
     const participents = AccessNestedObject(tournament, 'participents', []);
-    const positions = ['flex-start', 'center', 'flex-end'];
-    const registrationStartDate = moment(AccessNestedObject(tournament, 'registration_opening')).format('MMM DD');
-    const registrationStartTime = moment(AccessNestedObject(tournament, 'registration_opening')).format('hh:mm A');
     const tournamentStatus = GetTournamentStatus(tournament);
-    const size = AccessNestedObject(tournament, 'size');
-    const isJoined = IsJoined(participents, AccessNestedObject(props, 'user._id'));
+    const size = AccessNestedObject(tournament, 'max_size');
     const organizerName = AccessNestedObject(tournament, 'organizer.organizer_name', '')
+    const tournamentMeta = AccessNestedObject(tournament, 'tournament_meta', []);
 
     return (
         <TouchableOpacity
             style={styles.container}
-            onPress={() => navigate('Tournament', { tournament: tournament })}
+            onPress={() => navigate('Tournament', { id: tournament.id })}
         >
             {
                 isJoined ?
@@ -53,7 +55,7 @@ const TournamentCard = props => {
                 />
             </View>
             <View style={styles.detailsContainer} >
-                <View style={{ paddingTop: 2, paddingBottom: 2, flexDirection: 'row' }} >
+                <View style={{ height: 40, paddingTop: 2, paddingBottom: 2, flexDirection: 'row' }} >
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
                             {`${date} - STARTING AT ${time}`}
@@ -68,14 +70,14 @@ const TournamentCard = props => {
                             focused
                         />
                         <Text style={{ fontSize: 12, color: GREEN, paddingLeft: 3 }} >
-                            Organizer
+                            Organized by
                         </Text>
                         <Text style={{ fontSize: 12, color: TEXT_COLOR, paddingLeft: 5, fontWeight: 'bold' }} >
                             {organizerName}
                         </Text>
                     </View>
                 </View>
-                <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center' }} >
+                <View style={{ height: 40, paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center' }} >
                     <IconComponent
                         font="fontawesome"
                         size={20}
@@ -87,7 +89,7 @@ const TournamentCard = props => {
                 </View>
                 <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
                     {
-                        prize.map((item, index) => (
+                        tournamentMeta.map((item, index) => (
                             <View style={{ flex: 1 }} >
                                 <View style={{ flex: 1, alignItems: positions[index] }} >
                                     <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
@@ -96,7 +98,49 @@ const TournamentCard = props => {
                                 </View>
                                 <View style={{ flex: 1, alignItems: positions[index] }} >
                                     <Text style={{ fontSize: 14, fontWeight: '500', color: PRIMARY_COLOR }} >
-                                        {DisplayPrice(item.value)}
+                                        {Capitalize(item.value)}
+                                    </Text>
+                                </View>
+                            </View>
+                        ))
+                    }
+                </View>
+                <View style={{ paddingTop: 5, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', height: 50 }} >
+                    <View style={{ flex: 1 }} >
+                        <View style={{ flex: 1, alignItems: positions[0] }} >
+                            <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                                Entry Fee
+                            </Text>
+                        </View>
+                        <View style={{ flex: 1, alignItems: positions[0] }} >
+                            <Text style={{ fontSize: 14, fontWeight: '500', color: PRIMARY_COLOR }} >
+                                {DisplayPrice(AccessNestedObject(tournament, 'tournament_payment.entry_fee'))}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1 }} >
+                        <View style={{ flex: 1, alignItems: positions[1] }} >
+                            <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                                Prize Pool
+                            </Text>
+                        </View>
+                        <View style={{ flex: 1, alignItems: positions[1] }} >
+                            <Text style={{ fontSize: 14, fontWeight: '500', color: PRIMARY_COLOR }} >
+                                {DisplayPrice(AccessNestedObject(tournament, 'tournament_payment.prize_pool'))}
+                            </Text>
+                        </View>
+                    </View>
+                    {
+                        AccessNestedObject(tournament, 'tournament_payment.tournament_reward_payment', []).map((item) => (
+                            <View style={{ flex: 1 }} >
+                                <View style={{ flex: 1, alignItems: positions[2] }} >
+                                    <Text style={{ fontSize: 12, color: TEXT_COLOR }} >
+                                        {item.key.key}
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 1, alignItems: positions[2] }} >
+                                    <Text style={{ fontSize: 14, fontWeight: '500', color: PRIMARY_COLOR }} >
+                                        {DisplayPrice(item.amount)}
                                     </Text>
                                 </View>
                             </View>
@@ -105,7 +149,7 @@ const TournamentCard = props => {
                 </View>
             </View>
             {
-                tournamentStatus == "pending" && !props.hideStatus ?
+                tournamentStatus == "pending" ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 14, color: YELLOW }} >
@@ -115,7 +159,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "registration_closed" && !props.hideStatus ?
+                tournamentStatus == "registration_closed" ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 14, color: YELLOW }} >
@@ -125,11 +169,11 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "registration_will_start" && !props.hideStatus ?
+                tournamentStatus == "registration_will_start" ?
                     <View style={[styles.bottomContainer, { paddingTop: 15, paddingBottom: 15 }]} >
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }} >
                             <Text style={{ fontSize: 10, color: TEXT_COLOR }} >
-                                {`REGISTRATION STARTING`}
+                                REGISTRATION STARTING
                             </Text>
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
@@ -140,7 +184,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "registration_open" && !props.hideStatus ?
+                tournamentStatus == "registration_open" ?
                     <View style={styles.bottomContainer} >
                         <ParticipentsCircle participents={participents} />
                         <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
@@ -151,7 +195,7 @@ const TournamentCard = props => {
                     </View> : null
             }
             {
-                tournamentStatus == "slot_full" && !props.hideStatus ?
+                tournamentStatus == "slot_full" ?
                     <View style={styles.bottomContainer} >
                         <ParticipentsCircle participents={participents} />
                         <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
@@ -178,7 +222,7 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     detailsContainer: {
-        height: 120,
+        height: 200,
         padding: 10,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
@@ -194,7 +238,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: widthPercentageToDP(WIDTH),
-        height: 100,
+        height: 120,
         resizeMode: 'cover',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10

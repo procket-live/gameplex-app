@@ -56,15 +56,15 @@ function HomeScene({ user, navigation, CheckUpdate }) {
                 <View style={{ paddingTop: 5, paddingBottom: 5 }} >
                     <OfferSlider offers={offers} />
                 </View>
-                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
+                {/* <View style={{ paddingTop: 5, paddingBottom: 5 }} >
                     <JoinedMatchSliderComponent />
-                </View>
+                </View> */}
                 <View style={{ paddingTop: 5, paddingBottom: 5 }} >
                     <BattleSliderComponent />
                 </View>
-                <View style={{ paddingTop: 5, paddingBottom: 5 }} >
+                {/* <View style={{ paddingTop: 5, paddingBottom: 5 }} >
                     <TournamentSlider user={user} />
-                </View>
+                </View> */}
             </ScrollView >
         </>
     )

@@ -5,7 +5,7 @@ import { Freshchat, FreshchatUser } from 'react-native-freshchat-sdk';
 import messaging from '@react-native-firebase/messaging';
 import links from '@react-native-firebase/dynamic-links';
 import { PermissionsAndroid, AppState } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import { resetToScreen } from '../../service/navigation.service';
 import APP from '../../constant/app.constant';
@@ -17,90 +17,83 @@ import { setOnlineList } from '../../action/online.action';
 import { fetchTournaments } from '../../action/tournament.action';
 import { fetchBattle } from '../../action/battle.action';
 import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
-import { GetSocket } from '../../utils/soket.utils';
-import { UserQuery } from '../../graphql/graphql.query';
-SplashScreen.hide();
-const socket = GetSocket();
+import { UserIdQuery } from '../../graphql/graphql.query';
+import { SetFirebaseToken } from '../../graphql/graphql-mutation';
+
 function AppResolve(props) {
-    let userId = null;
-
-    const { loading, error, data } = useQuery(UserQuery);
-
-    console.log('data', data);
+    const [setFirebaseToken] = useMutation(SetFirebaseToken);
+    const { data } = useQuery(UserIdQuery, {
+        onCompleted({ me }) {
+            setTimeout(() => {
+                if (me && me.id) {
+                    resetToScreen('TabNavigator');
+                    setFiretoken();
+                } else {
+                    resetToScreen('Login');
+                }
+            }, 100)
+            SplashScreen.hide();
+        },
+        onError() {
+            SplashScreen.hide();
+            resetToScreen('Login');
+        }
+    });
 
     useEffect(() => {
-        AppState.addEventListener('change', _handleAppStateChange);
-        setTimeout(getInitialNotification, 100);
+        // AppState.addEventListener('change', _handleAppStateChange);
+        // setTimeout(getInitialNotification, 100);
         askPermission();
 
         return componentWillUnmount;
     }, [])
 
-    function init() {
-        const { user, mode } = props;
+    // function init() {
+    //     const { user, mode } = props;
 
-        if (user == null) {
-            resetToScreen('Login')
-            SplashScreen.hide();
-        } else {
-            const token = user.token;
-            userId = user._id;
-            APP.TOKEN = token;
-            updateUser(token);
-            setFiretoken();
-            connectSocket();
+    //     if (user == null) {
+    //         resetToScreen('Login')
+    //         SplashScreen.hide();
+    //     } else {
+    //         const token = user.token;
+    //         userId = user._id;
+    //         APP.TOKEN = token;
+    //         updateUser(token);
+    //         setFiretoken();
 
-            const result = IsUserDetailsSet(user, true);
-            if (!result.allStepDone) {
-                resetToScreen('UserDetailInput', { step: result.step });
-            } else {
-                if (mode == 'user') {
-                    props.fetchGames();
-                    props.fetchTournaments();
-                    props.fetchBattle();
-                    props.fetchAllJoinedMatchAction();
-                    resetToScreen('TabNavigator');
-                } else {
-                    resetToScreen('Dashboard');
-                }
-            }
+    //         const result = IsUserDetailsSet(user, true);
+    //         if (!result.allStepDone) {
+    //             resetToScreen('UserDetailInput', { step: result.step });
+    //         } else {
+    //             if (mode == 'user') {
+    //                 props.fetchGames();
+    //                 props.fetchTournaments();
+    //                 props.fetchBattle();
+    //                 props.fetchAllJoinedMatchAction();
+    //               
+    //             } else {
+    //               
+    //             }
+    //         }
 
-            setFreshchatUser(user);
+    //         setFreshchatUser(user);
 
-            SplashScreen.hide();
-        }
-    }
+    //         SplashScreen.hide();
+    //     }
+    // }
 
     async function askPermission() {
         await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE]);
         props.InitFreshchat();
     }
 
-    function connectSocket() {
-        if (userId) {
-            socket.emit('online', { userId });
-            socket.on('online_user_list', (data) => {
-                props.setOnlineList(data);
-            })
-        }
-    }
-
     function componentWillUnmount() {
         AppState.removeEventListener('change', _handleAppStateChange);
-        appClose();
+        // appClose();
     }
-
-    function appClose() {
-        if (userId) {
-            socket.emit('offline', { userId });
-            socket.off();
-            socket.emit("disconnect");
-        }
-    }
-
     function _handleAppStateChange(nextAppState) {
         if (nextAppState === 'inactive' || nextAppState === 'background') {
-            appClose();
+            // appClose();
         }
     };
 
@@ -128,7 +121,7 @@ function AppResolve(props) {
     async function setFiretoken() {
         const fcmToken = await messaging().getToken();
         if (fcmToken) {
-            PrivateApi.SetUser({ firebase_token: fcmToken });
+            setFirebaseToken({ variables: { firebaseToken: fcmToken } });
         }
     }
 

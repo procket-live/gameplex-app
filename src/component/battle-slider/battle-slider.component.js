@@ -4,58 +4,69 @@ import { Text, FlatList, StyleSheet, TouchableOpacity, Image, View } from 'react
 import {
     Placeholder,
     PlaceholderLine,
-    Shine
+    Shine,
+    Fade,
+    PlaceholderMedia
 } from "rn-placeholder";
-import { TEXT_COLOR } from '../../constant/color.constant';
+import { useQuery } from '@apollo/react-hooks';
+
+import { TEXT_COLOR, GREY_2, GREY_3 } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { navigate } from '../../service/navigation.service';
 import { AccessNestedObject } from '../../utils/common.util';
 import TitleComponent from '../title-component/title.component';
-import { } from 'native-base';
+import { GetPlayground } from '../../graphql/graphql.query';
+import { navigate } from '../../service/navigation.service';
 
 const BattleSliderComponent = ({ battle = {} }) => {
-    const { list, loading } = battle;
+    const { data, loading } = useQuery(GetPlayground);
 
-    function RenderCard({ item: battleItem = {}, key }) {
-
-        if (loading) {
-            return (
-                <Placeholder
-                    Animation={Shine}
-                >
-                    <View>
-                        <PlaceholderLine color={'red'} width={widthPercentageToDP(40)} height={200} />
-                        <PlaceholderLine width={30} style={{ margin: 3 }} />
+    if (loading) {
+        return (
+            <>
+                <TitleComponent title="Games" />
+                <View style={{ marginLeft: widthPercentageToDP(5), width: widthPercentageToDP(90), height: widthPercentageToDP(40), flexDirection: 'row' }} >
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                        <ShinyCard />
                     </View>
-                </Placeholder>
+                    <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
+                        <ShinyCard />
+                    </View>
+                </View>
+                <View style={{ marginTop: 20, marginLeft: widthPercentageToDP(5), width: widthPercentageToDP(90), height: widthPercentageToDP(40), flexDirection: 'row' }} >
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                        <ShinyCard />
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
+                        <ShinyCard />
+                    </View>
+                </View>
+            </>
+        )
+    }
 
-            )
-        }
+    function ShinyCard() {
+        return (
+            <Placeholder Animation={Fade} >
+                <PlaceholderLine style={[styles.image]} />
+            </Placeholder>
+        )
+    }
 
+    function RenderCard({ item: playground = {}, key }) {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    if (battleItem.battle_type == "match") {
-                        navigate('Battle', { battle: battleItem });
-                    }
-
-                    if (battleItem.battle_type == "fantasy") {
-                        navigate('Fantasy', { battle: battleItem })
-                    }
-
-                    if (battleItem.battle_type == "gather") {
-                        navigate("TournamentList", { battle: battleItem })
-                    }
-
-                    if (battleItem.battle_type == "tournament") {
-                        navigate("Battle", { battle: battleItem });
-                    }
+                    navigate("Battle", {
+                        id: playground.id,
+                        title: playground.game.name,
+                        icon: playground.game.thumbnail
+                    })
                 }}
                 key={key}
             >
-                <Image style={styles.image} source={{ uri: AccessNestedObject(battleItem, 'game.thumbnail') }} />
+                <Image style={styles.image} source={{ uri: AccessNestedObject(playground, 'game.thumbnail') }} />
                 <Text style={{ color: TEXT_COLOR, fontSize: 16, fontWeight: 'bold', marginLeft: 10 }} >
-                    {AccessNestedObject(battleItem, 'game.name')}
+                    {AccessNestedObject(playground, 'game.name')}
                 </Text>
             </TouchableOpacity >
         )
@@ -66,7 +77,7 @@ const BattleSliderComponent = ({ battle = {} }) => {
             <TitleComponent title="Games" />
             <FlatList
                 contentContainerStyle={styles.contentContainer}
-                data={list}
+                data={data?.getPlayground}
                 showsHorizontalScrollIndicator={false}
                 renderItem={RenderCard}
             />
@@ -77,7 +88,7 @@ const BattleSliderComponent = ({ battle = {} }) => {
 const styles = StyleSheet.create({
     image: {
         width: widthPercentageToDP(40),
-        height: 200,
+        height: widthPercentageToDP(40),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,

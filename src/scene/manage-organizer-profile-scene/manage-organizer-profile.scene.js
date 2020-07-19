@@ -1,47 +1,103 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { connect } from 'react-redux';
+import storage from '@react-native-firebase/storage';
+import ImagePicker from 'react-native-image-crop-picker';
 
-import { GREY_1, GREY_2, GREY_3, ON_PRIMARY } from '../../constant/color.constant';
+import { GREY_1, GREY_2, GREY_3, ON_PRIMARY, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 import Button from '../../component/button/button.component';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import PrivateApi from '../../api/private.api';
 import { setOrganizerActions } from '../../action/organizer.action';
 import { AccessNestedObject } from '../../utils/common.util';
-import { navigate } from '../../service/navigation.service';
+import { navigate, navigatePop } from '../../service/navigation.service';
+import { useMutation } from '@apollo/react-hooks';
+import { AddOrganizerMutation } from '../../graphql/graphql-mutation';
 
 
-function ManageOrganizerProfile(props) {
-    const [loading, setLoading] = useState(false);
-    const [organizerName, setOrganizerName] = useState(AccessNestedObject(props, 'organizer.organizer_name'));
-    const [organizerUpi, setOrganizerUpi] = useState(AccessNestedObject(props, 'organizer.upi_address'));
+function ManageOrganizerProfile({ navigation }) {
+    const params = AccessNestedObject(navigation, 'state.params', {});
+    const organizer = AccessNestedObject(params, 'organizer', {});
 
+    const [uploading, setUploading] = useState(false);
+    const [organizerLogo, setOrganizerLogo] = useState(organizer?.organizer_logo);
+    const [organizerName, setOrganizerName] = useState(organizer?.organizer_name);
+    const [organizerUpi, setOrganizerUpi] = useState(organizer?.upi_address);
+    const [addOrganizer, { loading }] = useMutation(AddOrganizerMutation, {
+        onCompleted({ addOrganizer }) {
+            if (addOrganizer) {
+                navigatePop();
+            }
+        }
+    });
 
     function disabled() {
-        return organizerName && organizerUpi;
+        return !!(organizer)
     }
 
-    async function createProfile() {
-        const callback = props.navigation.getParam('callback');
+    function submitDisabled() {
+        return (!organizerLogo || !organizerName || !organizerUpi) || uploading
+    }
 
-        const body = {
-            organizer_name: organizerName,
-            // upi_address: organizerUpi
+    async function uploadImage() {
+        const image = await ImagePicker
+            .openPicker({
+                width: 512,
+                height: 512,
+                cropping: true
+            });
+
+        if (image) {
+            setUploading(true);
+            const path = `/chat_rooms/${Math.random()}`;
+            await storage().ref(path).putFile(image.path);
+            const url = await storage().ref(path).getDownloadURL();
+            setUploading(false);
+            setOrganizerLogo(url);
         }
-        setLoading(true);
-        const result = await PrivateApi.CreateOrganizerProfile(body);
-        setLoading(false);
-        if (result.success) {
-            navigate('Dashboard');
-            props.setOrganizerActions(AccessNestedObject(result, 'response', {}))
-            callback();
-        }
+    }
+
+
+    async function createProfile() {
+        addOrganizer({
+            variables: {
+                organizer_name: organizerName,
+                organizer_logo: organizerLogo,
+                upi_address: organizerUpi
+            }
+        })
     }
 
     return (
         <>
             <ScrollView style={styles.container} >
+                <View style={styles.inputContainer} >
+                    <Text style={styles.inputLabel} >Organizer Logo</Text>
+                    <TouchableOpacity
+                        disabled={disabled()}
+                        onPress={uploadImage}
+                        style={{ borderWidth: 1, borderRadius: 10, padding: 10, width: 150, height: 150, alignItems: 'center', justifyContent: 'center' }}
+                    >
+                        {
+                            uploading ?
+                                <ActivityIndicator color={SECONDARY_COLOR} animating size={"large"} />
+                                :
+                                (
+                                    organizerLogo ?
+                                        <Image
+                                            source={{ uri: organizerLogo }}
+                                            style={{ width: 150, height: 150, resizeMode: 'contain', borderRadius: 10 }}
+                                        /> :
+                                        <Text style={{ fontWeight: '300', fontSize: 20, color: PRIMARY_COLOR }} >
+                                            Add Image
+                                        </Text>
+                                )
+                        }
+                    </TouchableOpacity>
+                    <Text style={[styles.inputLabel, { color: SECONDARY_COLOR }]} >Image Should be 512 x 512 px</Text>
+                </View>
+
                 <View style={styles.inputContainer} >
                     <Text style={styles.inputLabel} >Organizer Name</Text>
                     <TextInput
@@ -53,7 +109,7 @@ function ManageOrganizerProfile(props) {
                     />
                 </View>
 
-                {/* <View style={styles.inputContainer} >
+                <View style={styles.inputContainer} >
                     <Text style={styles.inputLabel} >Organizer UPI ID</Text>
                     <TextInput
                         style={styles.input}
@@ -62,16 +118,20 @@ function ManageOrganizerProfile(props) {
                         onChangeText={setOrganizerUpi}
                         placeholder="Enter UPI ID. eg - ba"
                     />
-                </View> */}
-
-                <View style={styles.information} >
-                    <Text style={styles.inputLabel} >Q. What is Organizer Name?</Text>
-                    <Text style={styles.informationText} >
-                        Please enter valid organizer name.
-                    </Text>
                 </View>
+
+                <View style={{ height: 50 }} />
+
                 {
-                    !disabled() ? <Button style={styles.button} onPress={createProfile} text="Submit" /> : null
+                    !disabled() ?
+                        <Button
+                            style={styles.button}
+                            onPress={createProfile}
+                            text="Submit"
+                            disabled={submitDisabled()}
+                            loading={loading}
+                        />
+                        : null
                 }
             </ScrollView>
             <Spinner
@@ -134,4 +194,4 @@ const mapStateToProps = state => ({
     organizer: state.organizer
 })
 
-export default connect(mapStateToProps, { setOrganizerActions })(ManageOrganizerProfile)
+export default ManageOrganizerProfile;

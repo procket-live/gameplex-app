@@ -6,20 +6,22 @@ import {
     PlaceholderLine,
     Fade
 } from "rn-placeholder";
-
+import { useQuery } from '@apollo/react-hooks';
 
 import { widthPercentageToDP } from 'react-native-responsive-screen';
+import { OffersQuery } from '../../graphql/graphql.query';
 
-const OfferSlider = ({ offers = [], height = 180 }) => {
+const OfferSlider = ({ height = 180 }) => {
     const width = widthPercentageToDP(85);
-
+    const { data, loading } = useQuery(OffersQuery)
+    console.log('data', data)
     return (
         <Carousel
             autoplay
             loop
-            data={offers}
+            data={data?.offers || [1]}
             renderItem={({ item, key }) => {
-                if (item.loading) {
+                if (loading) {
                     return (
                         <Placeholder
                             Animation={Fade}

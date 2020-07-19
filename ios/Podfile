@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 target 'gameplex' do
@@ -22,8 +22,8 @@ target 'gameplex' do
   pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
   pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
   pod 'React-Core/RCTWebSocket', :path => '../node_modules/react-native/'
-  pod 'RNPayTm', :path => '../node_modules/@philly25/react-native-paytm'
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
+  pod 'react-native-razorpay', :path => '../node_modules/react-native-razorpay'
 
   pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
   pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'

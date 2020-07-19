@@ -1,71 +1,87 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { connect } from 'react-redux';
 
-import { PRIMARY_COLOR, ON_PRIMARY } from '../../constant/color.constant';
-import { AccessNestedObject } from '../../utils/common.util';
-import DiamondIcon from '../../assets/svg/diamong';
-import TicketIcon from '../../assets/svg/ticket';
-import CoinIcon from '../../assets/svg/coin';
+import { ON_PRIMARY } from '../../constant/color.constant';
+import { AccessNestedObject, DisplayPrice } from '../../utils/common.util';
+import { useQuery, useLazyQuery } from '@apollo/react-hooks';
+import { GetWalletQuery } from '../../graphql/graphql.query';
+import { useFocusEffect, useNavigationEvents } from 'react-navigation-hooks';
 
-const WalletDetail = props => {
-    const cashBalance = AccessNestedObject(props, 'user.wallet_cash_balance', 0);
-    const bonousBalance = AccessNestedObject(props, 'user.wallet_bonous_balance', 0);
-    const winAmount = AccessNestedObject(props, 'user.wallet_win_balance', 0);
+function WalletDetail() {
+    const { data, loading, refetch } = useQuery(GetWalletQuery, { partialRefetch: true }) || {};
+
+    const cashBalance = AccessNestedObject(data, 'me.wallet.wallet_cash_balance');
+    const bonousBalance = AccessNestedObject(data, 'me.wallet.wallet_bonous_balance');
+    const winAmount = AccessNestedObject(data, 'me.wallet.wallet_win_balance');
+
+    useNavigationEvents((event) => {
+        if (event?.state?.routeName == "WalletScene") {
+            if (refetch && typeof refetch == "function") {
+                refetch();
+            }
+        }
+    })
+
+    function DisplayAmount({ amount }) {
+        if (loading) {
+            return (
+                <ActivityIndicator
+                    animating
+                    size="small"
+                    color={ON_PRIMARY}
+                />
+            )
+        }
+
+        return (
+            <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
+                {DisplayPrice(amount)}
+            </Text>
+        )
+    }
 
     return (
         <View
             style={{ width: widthPercentageToDP(95), height: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: '#10ac84', borderRadius: 10, flexDirection: 'row' }} >
             <View style={{ flex: 1 }} >
                 <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
-                    <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
-                        {cashBalance}
-                    </Text>
-                    <DiamondIcon width={15} height={15} />
+                    <DisplayAmount
+                        amount={cashBalance}
+                    />
                 </View>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
-                    <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Diamonds</Text>
+                    <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >
+                        Cash Balance
+                    </Text>
                 </View>
             </View>
             <View style={{ flex: 1 }} >
                 <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
-                    <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
-                        {bonousBalance}
-                    </Text>
-                    <TicketIcon width={20} height={20} />
+                    <DisplayAmount
+                        amount={bonousBalance}
+                    />
                 </View>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
-                    <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Ticket</Text>
+                    <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >
+                        Bonous Balance
+                    </Text>
                 </View>
             </View>
             <View style={{ flex: 1 }} >
                 <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }} >
-                    <Text style={{ fontSize: 18, color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 5 }} >
-                        {winAmount}
-                    </Text>
-                    <CoinIcon width={20} height={20} />
+                    <DisplayAmount
+                        amount={winAmount}
+                    />
                 </View>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }} >
-                    <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >Win Coin</Text>
+                    <Text style={{ fontSize: 16, color: ON_PRIMARY, fontWeight: '100', opacity: 0.5 }} >
+                        Win Balance
+                    </Text>
                 </View>
             </View>
         </View>
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        width: widthPercentageToDP(90),
-        height: 150,
-        padding: 10,
-        backgroundColor: PRIMARY_COLOR,
-        borderRadius: 10,
-    }
-});
-
-const mapStateToProps = state => ({
-    user: state.user
-});
-
-export default connect(mapStateToProps)(WalletDetail);
+export default WalletDetail;

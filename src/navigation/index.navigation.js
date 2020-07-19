@@ -203,6 +203,15 @@ const TabsNavigator = createBottomTabNavigator(
             tabBarBackground="#fff"
             activeColors="#fff" // or activeColors={'#e6b580'}
             activeTabBackgrounds={[PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR, PRIMARY_COLOR]} // or activeTabBackgrounds={'#ede7e6'}
+            getLabelText={({ route }) => {
+                switch (route) {
+                    case "Home":
+                        return "Playground";
+                    default:
+                        return route;
+
+                }
+            }}
             {...props}
         />
     )
@@ -367,14 +376,13 @@ const RootNavigator = createStackNavigator({
     InstructionGenerator: {
         screen: InstructionGenerator,
         navigationOptions: {
-            headerStyle,
+            header: null
         }
     },
     AddGameUserId: {
         screen: addGameUserIdComponent,
         navigationOptions: {
-            title: "Add user id?",
-            headerStyle,
+            header: null
         }
     },
     Checkout: {

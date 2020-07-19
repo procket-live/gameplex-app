@@ -1,52 +1,88 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { connect } from 'react-redux';
 import SmsRetriever from 'react-native-sms-retriever';
+import { useMutation } from '@apollo/react-hooks';
 
 import Steps from '../../component/steps/steps.component';
 import { GREY_3, TEXT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../../constant/color.constant';
 import TextInput from '../../component/text-input/text-input.component';
 import Button from '../../component/button/button.component';
-import PublicApi from '../../api/public.api';
-import { setUserAction } from '../../action/user.action';
 import { resetToScreen } from '../../service/navigation.service';
-import APP from '../../constant/app.constant';
-import { IsUserDetailsSet } from '../../utils/common.util';
-import { fetchGames } from '../../action/game.action';
-import { fetchTournaments } from '../../action/tournament.action';
-import { fetchBattle } from '../../action/battle.action';
-import { fetchAllJoinedMatchAction } from '../../action/all-match.action';
+import { GenerateOtpMutation, VerifyOtpMutation, ResendOtp } from '../../graphql/graphql-mutation';
+import NotifyService from '../../service/notify.service';
 
 const STEPS = {
     MOBILE_NUMBER_INPUT: 1,
     OTP_INPUT: 2
 }
 
-class LoginScene extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            step: 1,
-            loading: false,
-            mobile: '',
-            otp: ''
+function LoginScene() {
+    const [step, setStep] = useState(1);
+    const [otpId, setOptId] = useState(null);
+    const [mobile, setMobile] = useState('');
+    const [otp, setOtp] = useState('');
+
+    const [generateOtp, { loading: generateOtpLoading }] = useMutation(GenerateOtpMutation, {
+        onCompleted({ generateOtp }) {
+            setOptId(generateOtp.id);
+            setStep(STEPS.OTP_INPUT);
+            detectOtp();
+        },
+        onError() {
+            NotifyService.notify({
+                title: "Error!",
+                message: "Unable to generate otp.",
+                type: 'error'
+            })
         }
-    }
+    });
 
-    componentDidMount = () => {
-        this.detectOTP();
-        this.fechMobileNumber();
-    }
+    const [verifyOtp, { loading: verifyOtpLoading }] = useMutation(VerifyOtpMutation, {
+        onCompleted({ verifyOtp }) {
+            if (verifyOtp && verifyOtp.token && verifyOtp.user) {
+                resetToScreen('TabNavigator');
+                SmsRetriever.removeSmsListener();
+            }
+        },
+        onError() {
+            NotifyService.notify({
+                title: "Error!",
+                message: "Unable to verify otp.",
+                type: 'error'
+            })
+        }
+    })
 
-    fechMobileNumber = async () => {
-    }
+    const [resendOtp] = useMutation(ResendOtp, {
+        onCompleted({ resendOtp }) {
+            console.log('resendOtp', resendOtp);
+            if (resendOtp) {
+                setOptId(resendOtp.id);
+            }
 
-    componentWillUnmout() {
-        SmsRetriever.removeSmsListener();
-    }
+            NotifyService.notify({
+                title: "",
+                message: "Otp sent",
+                type: 'success'
+            })
+        },
+        onError() {
+            NotifyService.notify({
+                title: "Error!",
+                message: "Unable to resend otp.",
+                type: 'error'
+            })
+        }
+    })
 
-    detectOTP = async () => {
+    useEffect(() => {
+        return () => {
+            SmsRetriever.removeSmsListener();
+        }
+    }, []);
+
+    async function detectOtp() {
         try {
             const registered = await SmsRetriever.startSmsRetriever();
             if (registered) {
@@ -54,7 +90,8 @@ class LoginScene extends Component {
                     const message = event.message;
                     if (message) {
                         const otp = message.match(/\d/g).join("").substring(0, 4);
-                        this.setState({ otp }, this.verifyOTP);
+                        setOtp(otp);
+                        verifyOTP();
                         SmsRetriever.removeSmsListener();
                     }
                 });
@@ -63,80 +100,54 @@ class LoginScene extends Component {
         }
     }
 
-    inputHandler = (mobile) => {
-        this.setState({ mobile });
-
+    function inputHandler(mobile) {
+        setMobile(mobile);
         if (mobile.length == 10) {
             Keyboard.dismiss();
         }
     }
 
-    inputOTPHandler = (otp) => {
-        this.setState({ otp });
-
-        if (otp.length == 6) {
-            Keyboard.dismiss();
-        }
+    function isButtonDisabled() {
+        return (!(mobile.length == 10) || generateOtpLoading)
     }
 
-    isButtonDisabled = () => {
-        return (!(this.state.mobile.length == 10) || this.state.loading)
+    function isOtpButtonDisabled() {
+        return (!(otp.length == 4) || verifyOtpLoading);
     }
 
-    editMobileNumber = () => {
-        this.setState({ step: 1 })
+    function editMobileNumber() {
+        setStep(1);
     }
 
-    resendOTP = async () => {
-        this.setState({ loading: true });
-        await PublicApi.ResendOTP(this.state.otpRef);
-        this.setState({ loading: false });
-    }
-
-    proceed = () => {
-        this.setState({ loading: true, step: 2 })
-    }
-
-    generateOTP = async () => {
-        const { mobile } = this.state;
-        this.setState({ loading: true });
-        const result = await PublicApi.GenerateOTP(mobile);
-        this.setState({ loading: false });
-        if (result.success) {
-            const otpRef = result._id;
-            this.setState({ step: STEPS.OTP_INPUT, otpRef });
-        }
-    }
-
-    verifyOTP = async () => {
-        const { mobile, otp } = this.state;
-        this.setState({ loading: true });
-        const result = await PublicApi.VerifyOTP(mobile, otp);
-        if (result.success) {
-            const userObj = result.response;
-            const token = result.token;
-
-            const userRecord = Object.assign(userObj, { token });
-            this.props.setUserAction(userRecord)
-            APP.TOKEN = token;
-
-            const userDetailSet = IsUserDetailsSet(userRecord);
-            if (!userDetailSet.allStepDone) {
-                resetToScreen('UserDetailInput', { step: userDetailSet.step });
-            } else {
-                resetToScreen('TabNavigator');
+    async function resendOTP() {
+        resendOtp({
+            variables: {
+                id: otpId
             }
-
-            this.props.fetchGames();
-            this.props.fetchTournaments();
-            this.props.fetchBattle();
-            this.props.fetchAllJoinedMatchAction();
-        } else {
-            this.setState({ loading: false });
-        }
+        })
     }
 
-    RenderMobileNumberInputForm = () => {
+    function proceed() {
+        setLoading(true);
+        setStep(STEPS.OTP_INPUT);
+    }
+
+    async function generateOTP() {
+        generateOtp({
+            variables: { mobile: mobile }
+        })
+    }
+
+    async function verifyOTP() {
+        verifyOtp({
+            variables: {
+                mobile: mobile,
+                otp: otp
+            }
+        });
+    }
+
+    function RenderMobileNumberInputForm() {
         return (
             <>
                 <View style={{ paddingTop: 5, paddingBottom: 5 }} >
@@ -154,23 +165,23 @@ class LoginScene extends Component {
                         prefix="+91"
                         keyboardType="number-pad"
                         maxLength={10}
-                        value={this.state.mobile}
-                        onChangeText={this.inputHandler}
+                        value={mobile}
+                        onChangeText={inputHandler}
                     />
                 </View>
                 <View style={styles.buttonContainer} >
                     <Button
-                        loading={this.state.loading}
-                        disabled={this.isButtonDisabled()}
+                        loading={generateOtpLoading}
+                        disabled={isButtonDisabled()}
                         text={'PROCEED'}
-                        onPress={this.generateOTP}
+                        onPress={generateOTP}
                     />
                 </View>
             </>
         )
     }
 
-    RenerOTPInputForm = () => {
+    function RenerOTPInputForm() {
         return (
             <>
                 <View style={{ paddingTop: 5, paddingBottom: 5 }} >
@@ -183,8 +194,8 @@ class LoginScene extends Component {
                     <Text style={styles.fontMiniLight} >Code sent to this number</Text>
                 </View>
                 <View style={{ paddingTop: 0, paddingBottom: 5, flexDirection: 'row' }} >
-                    <Text style={styles.mobileNumberText} >{`+91 ${this.state.mobile}`}</Text>
-                    <TouchableOpacity onPress={this.editMobileNumber} >
+                    <Text style={styles.mobileNumberText} >{`+91 ${mobile}`}</Text>
+                    <TouchableOpacity onPress={editMobileNumber} >
                         <Text style={styles.editText} >Edit</Text>
                     </TouchableOpacity>
                 </View>
@@ -196,25 +207,23 @@ class LoginScene extends Component {
                         codeInputHighlightStyle={styles.underlineStyleHighLighted}
                         onCodeChange={(code) => {
                         }}
-                        onCodeFilled={(code => {
-                            this.setState({ otp: code })
-                        })}
+                        onCodeFilled={setOtp}
                     />
                 </View>
                 <View style={styles.otpButtonContainer} >
                     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
                         <View style={{ flexDirection: 'row' }} >
-                            <TouchableOpacity onPress={this.resendOTP} >
+                            <TouchableOpacity onPress={resendOTP} >
                                 <Text style={styles.editText} >Resend OTP</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }} >
                         <Button
-                            loading={this.state.loading}
-                            disabled={this.isButtonDisabled()}
+                            loading={verifyOtpLoading}
+                            disabled={isOtpButtonDisabled()}
                             text={'PROCEED'}
-                            onPress={this.verifyOTP}
+                            onPress={verifyOTP}
                         />
                     </View>
                 </View>
@@ -222,19 +231,15 @@ class LoginScene extends Component {
         )
     }
 
-    render() {
-        const { step } = this.state;
-
-        return (
-            <ScrollView
-                style={styles.container}
-            >
-                <Steps currentStep={step} steps={2} />
-                {step == STEPS.MOBILE_NUMBER_INPUT ? this.RenderMobileNumberInputForm() : null}
-                {step == STEPS.OTP_INPUT ? this.RenerOTPInputForm() : null}
-            </ScrollView>
-        );
-    }
+    return (
+        <ScrollView
+            style={styles.container}
+        >
+            <Steps currentStep={step} steps={2} />
+            {step == STEPS.MOBILE_NUMBER_INPUT ? RenderMobileNumberInputForm() : null}
+            {step == STEPS.OTP_INPUT ? RenerOTPInputForm() : null}
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -297,4 +302,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(null, { setUserAction, fetchGames, fetchTournaments, fetchBattle, fetchAllJoinedMatchAction })(LoginScene);
+export default LoginScene;

@@ -24,13 +24,16 @@ function Header({ name, icon, actionIcon, action = () => [], actionText }) {
                 }
                 <Text style={{ fontSize: 20, color: ON_PRIMARY }} >{name}</Text>
             </View>
-            <View style={{ flex: 1.5, alignItems: 'center', justifyContent: 'center' }} >
+            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }} >
                 {
-                    actionText ?
+                    (actionText || actionIcon) ?
                         <TouchableOpacity style={{ padding: 10, borderRadius: 10, backgroundColor: SECONDARY_COLOR, flexDirection: 'row' }} onPress={action}>
-                            <Text style={{ color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 10 }} >
-                                {actionText}
-                            </Text>
+                            {
+                                actionText ?
+                                    <Text style={{ color: ON_PRIMARY, fontWeight: 'bold', paddingRight: 10 }} >
+                                        {actionText}
+                                    </Text> : null
+                            }
                             <IconComponent size={18} font="fontawesome" focused tintColor={ON_PRIMARY} name={actionIcon || "question-circle"} />
                         </TouchableOpacity> : null
                 }
@@ -39,10 +42,4 @@ function Header({ name, icon, actionIcon, action = () => [], actionText }) {
     )
 }
 
-const mapStateToProps = state => ({
-    user: state.user
-});
-
-const HeaderBattleComponent = connect(mapStateToProps)(Header);
-
-export default HeaderBattleComponent;
+export default Header;

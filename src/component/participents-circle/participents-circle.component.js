@@ -8,11 +8,8 @@ import { AccessNestedObject } from '../../utils/common.util';
 
 function ParticipentsCircle({ participents = [], onlineList }) {
     const participentCount = participents.length;
-    if (participentCount == 0) {
-        return <Text style={{ fontSize: 14, color: GREEN }} >Registration Open</Text>;
-    }
-
     const firstThree = participents.slice(0, 3);
+
     return (
         <View style={styles.container} >
             {

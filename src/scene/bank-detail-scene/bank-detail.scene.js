@@ -10,19 +10,39 @@ import PrivateApi from '../../api/private.api';
 import NotifyService from '../../service/notify.service';
 import IconComponent from '../../component/icon/icon.component';
 import HeaderBattleComponent from '../../component/header/header-battle.component';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { GetBankAccountQuery } from '../../graphql/graphql.query';
+import { AddBankAccountMutation } from '../../graphql/graphql-mutation';
 
 function BankDetailScene() {
     const [accountNumber, setAccountNumber] = useState('');
     const [repeatAccountNumber, setRepeatAccountNumber] = useState('');
     const [ifsc, setIfsc] = useState(String(''));
     const [name, setName] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [saved, setSaved] = useState(false);
 
+    useQuery(GetBankAccountQuery, {
+        onCompleted({ getBankAccount }) {
+            setLoading(false);
+            if (getBankAccount) {
+                setName(getBankAccount.user_name);
+                setIfsc(getBankAccount.ifsc);
+                setAccountNumber(getBankAccount.account_number);
+                setSaved(true);
+            }
+        }
+    })
 
-    useEffect(() => {
-        getBankDetails();
-    }, [])
+    const [addBankAccount] = useMutation(AddBankAccountMutation, {
+        onCompleted({ updateBankDetails }) {
+            if (updateBankDetails) {
+                setLoading(false);
+                NotifyService.notify({ title: "Bank account", message: "Bank account details submitted.", type: 'success' });
+                navigatePop();
+            }
+        }
+    })
 
     function isDisabled() {
         const regex = /[A-Z|a-z]{4}[0][a-zA-Z0-9]{6}$/;
@@ -32,35 +52,18 @@ function BankDetailScene() {
         return !(accountNumber == repeatAccountNumber && isCorrentifsc && isCorrectName);
     }
 
-    async function getBankDetails() {
-        setLoading(true);
-        const result = await PrivateApi.GetBankDetail();
-        setLoading(false);
-        if (result.success) {
-            const response = AccessNestedObject(result, 'response', {});
-            const { accont_number, user_name, ifsc } = response;
-            setAccountNumber(accont_number || '');
-            setRepeatAccountNumber(accont_number || '');
-            setIfsc(ifsc || '');
-            setName(user_name || '');
-            setSaved(!!Object.keys(response).length);
-        } else {
-            setSaved(false);
-        }
-    }
-
-    async function saveBankDetails() {
-        setLoading(true);
-        const result = await PrivateApi.SetBankDetail({ accont_number: accountNumber, user_name: name, ifsc });
-        setLoading(false);
-        if (result.success) {
-            NotifyService.notify({ title: "Bank account", message: "Bank account details submitted.", type: 'success' });
-            navigatePop();
-        }
-    }
-
     function RenderSuccess() {
         return <IconComponent font={'fontawesome'} size={20} focused tintColor={GREEN} name={'check-circle'} />
+    }
+
+    function saveBankDetails() {
+        addBankAccount({
+            variables: {
+                ifsc: ifsc,
+                user_name: name,
+                account_number: accountNumber
+            }
+        })
     }
 
     return (
@@ -82,16 +85,19 @@ function BankDetailScene() {
                         RenderRight={saved ? RenderSuccess : null}
                     />
                 </View>
-                <View style={{ height: 100 }} >
-                    <TextInput
-                        editable={!saved}
-                        label="Repeat account number"
-                        keyboardType="number-pad"
-                        value={repeatAccountNumber}
-                        onChangeText={setRepeatAccountNumber}
-                        RenderRight={saved ? RenderSuccess : null}
-                    />
-                </View>
+                {
+                    !saved ?
+                        <View style={{ height: 100 }} >
+                            <TextInput
+                                editable={!saved}
+                                label="Repeat account number"
+                                keyboardType="number-pad"
+                                value={repeatAccountNumber}
+                                onChangeText={setRepeatAccountNumber}
+                                RenderRight={saved ? RenderSuccess : null}
+                            />
+                        </View> : null
+                }
                 <View style={{ height: 100 }} >
                     <TextInput
                         editable={!saved}

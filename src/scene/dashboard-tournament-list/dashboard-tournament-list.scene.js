@@ -1,96 +1,86 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Image, FlatList } from 'react-native';
 import PrivateApi from '../../api/private.api';
 import { PRIMARY_COLOR, GREY_BG, TEXT_COLOR, GREY_3, GREY_2, GREY_1 } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-import { AccessNestedObject } from '../../utils/common.util';
+import { AccessNestedObject, GetReadableDate } from '../../utils/common.util';
 import moment from 'moment';
 import { DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
+import { useQuery } from '@apollo/react-hooks';
+import { GetOrganizerTournamentList } from '../../graphql/graphql.query';
+import { navigate } from '../../service/navigation.service';
 
-class DashboardTournamentListScene extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false,
-            list: []
+
+function DashboardTournamentListScene({ navigation }) {
+    const params = AccessNestedObject(navigation, 'state.params', {});
+    const organizer = AccessNestedObject(params, 'organizer', {});
+    const status = AccessNestedObject(params, 'status', "draft");
+
+    const [list, setList] = useState([]);
+
+    const { loading } = useQuery(GetOrganizerTournamentList, {
+        variables: {
+            id: organizer.id,
+            status
+        },
+        onCompleted({ getOrganizerTournamentList }) {
+            setList(getOrganizerTournamentList);
         }
-    }
+    });
 
-    componentDidMount = () => {
-        this.fetchData();
-    }
 
-    fetchData = async (allowCallback = false) => {
-        const query = this.props.navigation.getParam('query');
-        const callback = this.props.navigation.getParam('callback');
-
-        this.setState({ loading: true });
-        const result = await PrivateApi.GetDashboardTournaments(query)
-        this.setState({ loading: false });
-        if (result.success) {
-            this.setState({ list: result.response });
-            if (allowCallback && callback && typeof callback == 'function') {
-                callback();
-            }
-        }
-    }
-
-    navigateToManagePage = (id) => {
-        this.props.navigation.push('ManageTournament', { id, callback: () => this.fetchData(true) });
-    }
-
-    RenderListItem = ({ item }) => {
-        const imageUrl = AccessNestedObject(item, 'game.thumbnail');
-        const name = AccessNestedObject(item, 'tournament_name')
-        const gameName = AccessNestedObject(item, 'game.name');
-        const createdAt = AccessNestedObject(item, 'create_at');
-        const status = AccessNestedObject(item, 'status');
-
+    if (loading) {
         return (
-            <TouchableOpacity
-                onPress={() => this.navigateToManagePage(item._id)}
-                style={styles.card}
-            >
-                <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
-                    <Image source={{ uri: imageUrl }} style={styles.image} />
-                </View>
-                <View style={{ flex: 2, alignItems: 'flex-start', padding: 10 }} >
-                    <Text style={styles.bold} >{name}</Text>
-                    <Text style={styles.bold} >Game: {gameName}</Text>
-                    <Text style={styles.light} >Created : {moment(createdAt).format(DISPLAY_DATE_TIME_FORMAT)}</Text>
-                    <Text style={styles.light} >Status :
-                        <Text style={{ color: PRIMARY_COLOR, marginLeft: 10 }} >{status}</Text>
-                    </Text>
-                </View>
-            </TouchableOpacity>
+            <View style={{ flex: 1 }} >
+                <ActivityIndicator
+                    animating
+                    size="large"
+                    color={PRIMARY_COLOR}
+                />
+            </View>
         )
     }
 
-    render() {
-        const { loading, list } = this.state;
-
-        if (loading) {
-            return (
-                <View style={{ flex: 1 }} >
-                    <ActivityIndicator
-                        animating
-                        size="large"
-                        color={PRIMARY_COLOR}
-                    />
-                </View>
-            )
-        }
-
-        return (
-            <FlatList
-                contentContainerStyle={{ alignItems: 'center' }}
-                style={{ flex: 1 }}
-                data={list}
-                renderItem={this.RenderListItem}
-            />
-        )
-    }
+    return (
+        <FlatList
+            contentContainerStyle={{ alignItems: 'center' }}
+            style={{ flex: 1 }}
+            data={list}
+            renderItem={RenderListItem}
+        />
+    )
 }
+
+function RenderListItem({ item: tournament }) {
+    const imageUrl = AccessNestedObject(tournament, 'game.thumbnail');
+    const name = AccessNestedObject(tournament, 'name')
+    const gameName = AccessNestedObject(tournament, 'game.name');
+    const createdAt = AccessNestedObject(tournament, 'registration_start');
+    const status = AccessNestedObject(tournament, 'status');
+
+    return (
+        <TouchableOpacity
+            onPress={() => {
+                navigate("ManageTournament", { id: tournament.id })
+            }}
+            style={styles.card}
+        >
+            <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'center' }} >
+                <Image source={{ uri: imageUrl }} style={styles.image} />
+            </View>
+            <View style={{ flex: 2, alignItems: 'flex-start', padding: 10 }} >
+                <Text style={styles.bold} >{name}</Text>
+                <Text style={styles.bold} >Game: {gameName}</Text>
+                <Text style={styles.light} >Registration Start : {GetReadableDate(createdAt)}</Text>
+                <Text style={styles.light} >Status :
+                    <Text style={{ color: PRIMARY_COLOR, marginLeft: 10 }} >{status}</Text>
+                </Text>
+            </View>
+        </TouchableOpacity>
+    )
+}
+
+// this.props.navigation.push('', { id, callback: () => this.fetchData(true) });
 
 const styles = StyleSheet.create({
     card: {

@@ -6,30 +6,31 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { ON_PRIMARY, GREY_BG, GREEN, GREY_1, GREY_3, GREY_2, YELLOW, RED, TEXT_COLOR, PRIMARY_COLOR } from '../../constant/color.constant';
 import { DISPLAY_DATE_TIME_FORMAT } from '../../constant/app.constant';
 
-import { DisplayPrice, AccessNestedObject } from '../../utils/common.util';
+import { DisplayPrice, AccessNestedObject, GetReadableDate } from '../../utils/common.util';
 import moment from 'moment';
 import { RazorpayIcon } from '../../config/image.config';
 import WithdrawRequestCard from '../../component/withdraw-request-component/withdraw-request.component';
 import HeaderBattleComponent from '../../component/header/header-battle.component';
+import { useQuery } from '@apollo/react-hooks';
+import { FetchOrdersQuery } from '../../graphql/graphql.query';
 
 function TransactionsScene(props) {
     const [transactions, setTransactions] = React.useState([]);
     const [walletStatements, setWalletStatements] = React.useState([]);
     const [withdrawals, setWithdrawals] = React.useState([]);
 
+    useQuery(FetchOrdersQuery, {
+        onCompleted({ fetchOrders = [] }) {
+            console.log("fetchOrders", fetchOrders);
+            setTransactions(fetchOrders);
+        }
+    })
+
     React.useEffect(() => {
-        fetchData();
-        fetchWalletStatements();
-        fetchWithdrawals();
+        // fetchWalletStatements();
+        // fetchWithdrawals();
         return () => { }
     }, [])
-
-    async function fetchData() {
-        const result = await PrivateApi.GetTransactions();
-        if (result.success) {
-            setTransactions(result.response);
-        }
-    }
 
     async function fetchWalletStatements() {
         const result = await PrivateApi.GetWalletTransactions();
@@ -105,14 +106,13 @@ function TransactionsScene(props) {
     }
 
     function RenderCard({ item }) {
-        const response = JSON.parse(item.response || JSON.stringify({}));
         const status = item.status;
         return (
             <View style={{ width: widthPercentageToDP(95), backgroundColor: ON_PRIMARY, marginBottom: 10, marginTop: 10, borderRadius: 10 }} >
                 <View style={{ padding: 10, flexDirection: 'row', }} >
                     <View style={{ flex: 3 }} >
                         <Text style={{ fontSize: 14, color: GREY_3 }} >Order Id: {item.order_id}</Text>
-                        <Text style={{ fontSize: 14, color: GREY_1 }}>{moment(item.created_at).format(DISPLAY_DATE_TIME_FORMAT)}</Text>
+                        <Text style={{ fontSize: 14, color: GREY_1 }}>{GetReadableDate(item?.created_at)}</Text>
                         <View style={{ flexDirection: 'row' }} >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 10, paddingBottom: 10 }} >
                                 <Image source={RazorpayIcon()} style={{ width: 50, height: 50, resizeMode: 'contain' }} />

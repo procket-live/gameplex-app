@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
-import { TEXT_COLOR, GREY_3, GREY_2, GREY_1, PRIMARY_COLOR } from '../../constant/color.constant';
+import { GREY_2, GREY_1, PRIMARY_COLOR } from '../../constant/color.constant';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
+import { useQuery } from '@apollo/react-hooks';
+import { GetGameInstructionQuery } from '../../graphql/graphql.query';
+import HeaderBattleComponent from '../../component/header/header-battle.component';
 
 export function Title(props) {
     return (
@@ -36,33 +39,49 @@ export function Break() {
 }
 
 function InstructionGeneratorScene({ navigation }) {
-    const steps = navigation.getParam('steps') || [];
+    const gameId = navigation.getParam('gameId');
+    const category = navigation.getParam('category');
+    const title = navigation.getParam('title');
+
+    const [steps, setSteps] = useState([]);
+
+    const { loading } = useQuery(GetGameInstructionQuery, {
+        variables: { game_id: gameId, category: category },
+        onCompleted({ gameInstruction }) {
+            setSteps(gameInstruction);
+        }
+    });
 
     return (
-        <ScrollView style={styles.container} >
-            {
-                steps.map((item) => {
-                    return (
-                        <>
-                            <Title>{item.name}</Title>
-                            <Content>
-                                {item.message}
-                            </Content>
-                            <Content bold >
-                                {item.note}
-                            </Content>
-                            {
-                                item.image ?
-                                    <ImageComponent>
-                                        {item.image}
-                                    </ImageComponent> : null
-                            }
-                            <Break />
-                        </>
-                    )
-                })
-            }
-        </ScrollView>
+        <>
+            <HeaderBattleComponent
+                name={title}
+            />
+            <ScrollView style={styles.container} >
+                {
+                    steps.map((item) => {
+                        return (
+                            <>
+                                <Title>{item.name}</Title>
+                                <Content>
+                                    {item.message}
+                                </Content>
+                                <Content bold >
+                                    {item.note}
+                                </Content>
+                                {
+                                    item.image ?
+                                        <ImageComponent>
+                                            {item.image}
+                                        </ImageComponent> : null
+                                }
+                                <Break />
+                            </>
+                        )
+                    })
+                }
+            </ScrollView>
+        </>
     )
 }
 
