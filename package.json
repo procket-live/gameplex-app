@@ -24,7 +24,7 @@
         "appcenter-cli": "^2.3.5",
         "appcenter-crashes": "^2.4.0",
         "appcenter-push": "^2.4.0",
-        "axios": "^0.19.0",
+        "axios": "^0.21.1",
         "compare-versions": "^3.6.0",
         "d3-interpolate": "^1.4.0",
         "event-state-manager": "^1.0.2",
